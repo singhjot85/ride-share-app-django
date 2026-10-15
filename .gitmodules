@@ -1,3 +1,0 @@
-[submodule "core-common-django-apps"]
-	path = core-common-django-apps
-	url = https://github.com/singhjot85/core-common-django-apps.git
