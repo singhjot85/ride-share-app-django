@@ -1,5 +1,7 @@
-from core.config.settings.base import *  # noqa: F401
+from core.config.settings.single_tenant import *  # noqa: F401
 
-WSGI_APPLICATION = "config.wsgi.application"
-ROOT_URLCONF = "config.urls"
-PUBLIC_SCHEMA_URLCONF = "config.urls"
+PROJECT_MIGRATION_PATH = "backend.db_migrations"
+MIGRATION_MODULES = {
+    app.rsplit(".", 1)[-1]: f'{PROJECT_MIGRATION_PATH}.{app.rsplit(".", 1)[-1]}'
+    for app in PROJECT_APPS
+}

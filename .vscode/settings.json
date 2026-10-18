@@ -21,7 +21,6 @@
     "python.analysis.typeCheckingMode": "off",
     "python.analysis.extraPaths": [
         "backend",
-        "core",
-        "backend/core-common-django-apps/core"
+        "backend/core-common-django-apps"
     ]
 }
