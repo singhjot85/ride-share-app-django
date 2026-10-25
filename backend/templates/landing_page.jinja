@@ -1,0 +1,906 @@
+{% extends "views/authenticated_view.jinja" %}
+
+{% from "core/components/common/cards.jinja" import stat_card, card %}
+{% from "core/components/common/buttons.jinja" import button %}
+{% from "core/components/common/icons.jinja" import icon %}
+{% from "core/components/common/badges.jinja" import badge %}
+{% block title %}
+    {{ labels.brand_name }} / {{ labels_hi.brand_name }} — {{ labels.brand_tagline }}
+{% endblock title %}
+{% block content %}
+    <div class="landing-page-container">
+        <!-- Notice Bar: Pilot Phase Corridor -->
+        <div class="bg-primary-container text-surface px-4 py-2 text-center font-size-xs flex items-center justify-center gap-xs rounded-lg mb-lg border border-primary">
+            {{ icon("campaign", size=18, extra_classes="text-warning") }}
+            <span class="lang-text font-weight-medium"
+                  data-en="{{ labels_en.pilot_notice }}"
+                  data-hi="{{ labels_hi.pilot_notice }}">{{ labels.pilot_notice }}</span>
+        </div>
+        <!-- Header Control Strip: Language Switcher & Quick Action -->
+        <div class="flex items-center justify-between pb-md mb-lg border-b">
+            <div class="flex items-center gap-sm">
+                <div class="brand-icon-wrapper"
+                     style="width: 36px;
+                            height: 36px;
+                            border-radius: 8px;
+                            background: rgba(171, 54, 0, 0.12);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center">
+                    {{ icon("local_shipping", size=22, extra_classes="text-secondary") }}
+                </div>
+                <span class="font-size-xl font-weight-bold text-primary">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.brand_name }}"
+                          data-hi="{{ labels_hi.brand_name }}">{{ labels.brand_name }}</span>
+                    <span class="text-muted font-weight-normal font-size-sm">/ {{ labels_hi.brand_name }}</span>
+                </span>
+            </div>
+            <div class="flex items-center gap-md">
+                <!-- Layer 1 & 2 Interactive Language Switcher -->
+                <button type="button"
+                        class="lang-toggle-btn"
+                        id="lang-toggle-btn"
+                        onclick="toggleLanguage()"
+                        aria-label="Toggle language between English and Hindi">
+                    <span id="lang-en"
+                          class="{{ 'lang-active' if current_lang == 'en' else 'lang-inactive' }}">EN</span>
+                    <span class="text-muted mx-xs">/</span>
+                    <span id="lang-hi"
+                          class="{{ 'lang-active' if current_lang == 'hi' else 'lang-inactive' }}">हिंदी</span>
+                </button>
+                <a href="#booking-engine" class="btn btn-secondary btn-sm">
+                    <span class="lang-text" data-en="Book Delivery" data-hi="पार्सल भेजें">
+                        {{ "Book Delivery" if current_lang == "en" else "पार्सल भेजें" }}
+                    </span>
+                </a>
+            </div>
+        </div>
+        <!-- ==================== HERO SECTION ==================== -->
+        <section class="mb-2xl" id="hero">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-center">
+                <div class="lg:col-span-7 flex flex-col items-start">
+                    <!-- Corridor Live Indicator -->
+                    <div class="inline-flex items-center gap-xs px-sm py-xs rounded-full border mb-md"
+                         style="background: var(--color-surface-container);
+                                border-color: rgba(0, 20, 40, 0.1)">
+                        <span class="w-2 h-2 rounded-full"
+                              style="background: var(--color-secondary);
+                                     display: inline-block;
+                                     animation: pulse 2s infinite"></span>
+                        <span class="font-size-xs font-weight-bold text-primary lang-text"
+                              data-en="{{ labels_en.hero_corridor_badge }}"
+                              data-hi="{{ labels_hi.hero_corridor_badge }}">{{ labels.hero_corridor_badge }}</span>
+                    </div>
+                    <!-- Hero Headline -->
+                    <h1 class="text-primary font-weight-bold mb-sm"
+                        style="line-height: 1.25;
+                               font-size: 2rem">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.hero_headline }}"
+                              data-hi="{{ labels_hi.hero_headline }}">{{ labels.hero_headline }}</span>
+                    </h1>
+                    <!-- Subtitle -->
+                    <p class="text-muted font-size-base mb-lg leading-relaxed">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.hero_subtitle }}"
+                              data-hi="{{ labels_hi.hero_subtitle }}">{{ labels.hero_subtitle }}</span>
+                    </p>
+                    <!-- Hero CTAs -->
+                    <div class="flex flex-wrap items-center gap-md mb-lg w-full">
+                        <a href="#booking-engine"
+                           class="btn btn-secondary btn-lg flex items-center gap-xs">
+                            {{ icon("local_shipping", size=20) }}
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.hero_cta_book }}"
+                                  data-hi="{{ labels_hi.hero_cta_book }}">{{ labels.hero_cta_book }}</span>
+                        </a>
+                        <a href="#pilot-route"
+                           class="btn btn-outline btn-lg flex items-center gap-xs">
+                            {{ icon("alt_route", size=20) }}
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.hero_cta_hubs }}"
+                                  data-hi="{{ labels_hi.hero_cta_hubs }}">{{ labels.hero_cta_hubs }}</span>
+                        </a>
+                    </div>
+                    <!-- Trust Badge Strip -->
+                    <div class="w-full p-md rounded-xl border flex items-center gap-sm"
+                         style="background: var(--color-surface);
+                                border-color: rgba(0, 20, 40, 0.1)">
+                        <div style="color: var(--color-secondary);">{{ icon("verified_user", size=22) }}</div>
+                        <div class="font-size-xs text-primary font-weight-medium">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.trust_badge_otp }}"
+                                  data-hi="{{ labels_hi.trust_badge_otp }}">{{ labels.trust_badge_otp }}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Schematic Route Waybill Card -->
+                <div class="lg:col-span-5 w-full">
+                    <div class="card p-md shadow-md border rounded-2xl"
+                         style="background: var(--color-surface)">
+                        <div class="flex justify-between items-center border-b pb-sm mb-md">
+                            <span class="font-size-xs font-mono font-weight-bold text-muted">WAYBILL #DEL-JPR-2025</span>
+                            <span class="badge badge-success font-size-xs">DAILY 6PM - 10PM</span>
+                        </div>
+                        <!-- Route Checkpoints -->
+                        <div class="relative py-xs">
+                            <!-- Origin: Delhi -->
+                            <div class="flex items-start gap-md mb-md">
+                                <div class="w-7 h-7 rounded-full text-white flex items-center justify-center font-size-xs font-weight-bold"
+                                     style="background: var(--color-primary)">1</div>
+                                <div>
+                                    <div class="font-size-sm font-weight-bold text-primary">Delhi Depot (Origin Hub)</div>
+                                    <div class="font-size-xs text-muted">Sanjay Gandhi Transport Nagar • 18:00 cutoff</div>
+                                    <span class="badge badge-surface font-size-xs mt-xs">OTP Handover #1</span>
+                                </div>
+                            </div>
+                            <!-- Waypoint 1: Manesar -->
+                            <div class="flex items-start gap-md mb-md">
+                                <div class="w-7 h-7 rounded-full border-2 flex items-center justify-center font-size-xs font-weight-bold"
+                                     style="border-color: var(--color-primary);
+                                            color: var(--color-primary)">2</div>
+                                <div>
+                                    <div class="font-size-sm font-weight-bold text-primary">Manesar Transit Drop</div>
+                                    <div class="font-size-xs text-muted">IMT Toll Plaza Checkpoint • 15 min stop</div>
+                                </div>
+                            </div>
+                            <!-- Waypoint 2: Kotputli -->
+                            <div class="flex items-start gap-md mb-md">
+                                <div class="w-7 h-7 rounded-full border-2 flex items-center justify-center font-size-xs font-weight-bold"
+                                     style="border-color: var(--color-primary);
+                                            color: var(--color-primary)">3</div>
+                                <div>
+                                    <div class="font-size-sm font-weight-bold text-primary">Kotputli Highway Junction</div>
+                                    <div class="font-size-xs text-muted">Service Bay & Seal Verification Node</div>
+                                </div>
+                            </div>
+                            <!-- Destination: Jaipur -->
+                            <div class="flex items-start gap-md">
+                                <div class="w-7 h-7 rounded-full text-white flex items-center justify-center font-size-xs font-weight-bold"
+                                     style="background: var(--color-secondary)">4</div>
+                                <div>
+                                    <div class="font-size-sm font-weight-bold text-primary">Jaipur Depot (Final Hub)</div>
+                                    <div class="font-size-xs text-muted">VKI Transport Area • 08:00 AM Delivery</div>
+                                    <span class="badge badge-warning font-size-xs mt-xs">Receiver OTP Release</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Barcode Strip -->
+                        <div class="mt-md pt-sm border-t flex flex-col items-center">
+                            <div class="w-full h-5 barcode-strip rounded mb-xs opacity-80"
+                                 style="height: 20px"></div>
+                            <div class="font-mono font-size-xs font-weight-bold text-muted">WAYBILL: LDSH - 4920 - NH48 - IN</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ==================== HOW IT WORKS ==================== -->
+        <section class="py-xl mb-2xl border-t border-b"
+                 style="background: rgba(248, 249, 255, 0.6)">
+            <div class="text-center max-w-xl mx-auto mb-lg">
+                <span class="badge badge-secondary uppercase tracking-wider">Direct Flow</span>
+                <h2 class="text-primary font-weight-bold mt-xs">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.how_it_works_title }}"
+                          data-hi="{{ labels_hi.how_it_works_title }}">{{ labels.how_it_works_title }}</span>
+                </h2>
+                <p class="text-muted font-size-sm mt-xs">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.how_it_works_subtitle }}"
+                          data-hi="{{ labels_hi.how_it_works_subtitle }}">{{ labels.how_it_works_subtitle }}</span>
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+                <!-- Step 1 -->
+                <div class="card p-md rounded-2xl border flex flex-col justify-between shadow-sm">
+                    <div>
+                        <div class="flex items-center justify-between mb-sm">
+                            <span class="font-mono font-weight-bold text-white px-sm py-xs rounded-lg font-size-sm"
+                                  style="background: var(--color-primary)">01</span>
+                            {{ icon("inventory_2", size=24, extra_classes="text-primary") }}
+                        </div>
+                        <h3 class="font-size-md font-weight-bold text-primary mb-xs">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.how_it_works_step1_title }}"
+                                  data-hi="{{ labels_hi.how_it_works_step1_title }}">
+                                {{ labels.how_it_works_step1_title }}
+                            </span>
+                        </h3>
+                        <p class="text-muted font-size-xs leading-relaxed">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.how_it_works_step1_desc }}"
+                                  data-hi="{{ labels_hi.how_it_works_step1_desc }}">
+                                {{ labels.how_it_works_step1_desc }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="mt-md pt-xs border-t font-size-xs font-weight-bold text-secondary flex items-center gap-xs">
+                        {{ icon("check_circle", size=16) }} Instant slab estimation
+                    </div>
+                </div>
+                <!-- Step 2 -->
+                <div class="card p-md rounded-2xl border flex flex-col justify-between shadow-sm">
+                    <div>
+                        <div class="flex items-center justify-between mb-sm">
+                            <span class="font-mono font-weight-bold text-white px-sm py-xs rounded-lg font-size-sm"
+                                  style="background: var(--color-primary)">02</span>
+                            {{ icon("forklift", size=24, extra_classes="text-primary") }}
+                        </div>
+                        <h3 class="font-size-md font-weight-bold text-primary mb-xs">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.how_it_works_step2_title }}"
+                                  data-hi="{{ labels_hi.how_it_works_step2_title }}">
+                                {{ labels.how_it_works_step2_title }}
+                            </span>
+                        </h3>
+                        <p class="text-muted font-size-xs leading-relaxed">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.how_it_works_step2_desc }}"
+                                  data-hi="{{ labels_hi.how_it_works_step2_desc }}">
+                                {{ labels.how_it_works_step2_desc }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="mt-md pt-xs border-t font-size-xs font-weight-bold text-secondary flex items-center gap-xs">
+                        {{ icon("check_circle", size=16) }} Commercial fleet drivers only
+                    </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="card p-md rounded-2xl border flex flex-col justify-between shadow-sm">
+                    <div>
+                        <div class="flex items-center justify-between mb-sm">
+                            <span class="font-mono font-weight-bold text-white px-sm py-xs rounded-lg font-size-sm"
+                                  style="background: var(--color-primary)">03</span>
+                            {{ icon("pin", size=24, extra_classes="text-secondary") }}
+                        </div>
+                        <h3 class="font-size-md font-weight-bold text-primary mb-xs">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.how_it_works_step3_title }}"
+                                  data-hi="{{ labels_hi.how_it_works_step3_title }}">
+                                {{ labels.how_it_works_step3_title }}
+                            </span>
+                        </h3>
+                        <p class="text-muted font-size-xs leading-relaxed">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.how_it_works_step3_desc }}"
+                                  data-hi="{{ labels_hi.how_it_works_step3_desc }}">
+                                {{ labels.how_it_works_step3_desc }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="mt-md pt-xs border-t font-size-xs font-weight-bold text-secondary flex items-center gap-xs">
+                        {{ icon("check_circle", size=16) }} Zero theft / misplacement risk
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ==================== PILOT CORRIDOR (DELHI ⇄ JAIPUR NH48) ==================== -->
+        <section class="mb-2xl" id="pilot-route">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-md gap-sm">
+                <div>
+                    <span class="badge badge-secondary uppercase tracking-wider">Active Pilot Corridor</span>
+                    <h2 class="text-primary font-weight-bold mt-xs">Delhi ⇄ Jaipur Transit Corridor (NH48)</h2>
+                    <p class="text-muted font-size-sm">Operating 270 km daily linehaul transit with guaranteed morning arrival.</p>
+                </div>
+                <button type="button"
+                        class="btn btn-outline btn-sm flex items-center gap-xs"
+                        id="toggle-map-state-btn"
+                        onclick="toggleMapState()">
+                    {{ icon("signal_wifi_off", size=16) }}
+                    <span id="map-toggle-text">Toggle Offline Fallback Simulation</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-md">
+                <div class="card p-md rounded-2xl border">
+                    <div class="font-size-xs font-weight-bold text-secondary mb-xs">ORIGIN HUB</div>
+                    <div class="font-size-base font-weight-bold text-primary">Delhi Depot</div>
+                    <p class="font-size-xs text-muted">Sanjay Gandhi Transport Nagar (GT Karnal Rd)</p>
+                    <span class="badge badge-surface font-size-xs mt-xs">Gate 4, Bay 12</span>
+                </div>
+                <div class="card p-md rounded-2xl border">
+                    <div class="font-size-xs font-weight-bold text-muted mb-xs">EN-ROUTE WAYPOINTS</div>
+                    <div class="font-size-base font-weight-bold text-primary">Manesar &amp; Kotputli</div>
+                    <p class="font-size-xs text-muted">IMT Toll Plaza &amp; Highway Service Bay</p>
+                    <span class="badge badge-surface font-size-xs mt-xs">15 Min Ramp Stops</span>
+                </div>
+                <div class="card p-md rounded-2xl border">
+                    <div class="font-size-xs font-weight-bold text-success mb-xs">DESTINATION HUB</div>
+                    <div class="font-size-base font-weight-bold text-primary">Jaipur Depot</div>
+                    <p class="font-size-xs text-muted">Vishwakarma Industrial Area (VKI) Road No. 14</p>
+                    <span class="badge badge-surface font-size-xs mt-xs">Depot Storage Bay A</span>
+                </div>
+            </div>
+            <!-- Simulated Road Line Telemetry Container -->
+            <div class="card p-md rounded-2xl border shadow-sm" id="corridor-live-map">
+                <div class="flex justify-between items-center mb-md">
+                    <span class="inline-flex items-center gap-xs font-size-xs font-weight-bold badge badge-surface">
+                        <span class="w-2 h-2 rounded-full"
+                              style="background: var(--color-secondary);
+                                     display: inline-block"></span>
+                        GPS CORRIDOR TELEMETRY: NH-48 EXPRESSWAY
+                    </span>
+                    <span class="font-mono font-size-xs text-muted">270 KM • ETA 7.5 HRS</span>
+                </div>
+                <!-- Highway Line Simulation -->
+                <div class="my-lg px-md">
+                    <div class="relative w-full h-3 rounded-full flex items-center"
+                         style="background: var(--color-surface-container)">
+                        <div class="absolute left-0 right-0 h-1 corridor-line opacity-80"></div>
+                        <div class="absolute left-0 -top-2 flex flex-col items-center">
+                            <div class="w-6 h-6 rounded-full text-white flex items-center justify-center font-size-xs font-weight-bold shadow"
+                                 style="background: var(--color-primary)">DEL</div>
+                            <span class="font-size-xs font-weight-bold mt-xs">0 km</span>
+                        </div>
+                        <div class="absolute left-1/4 -top-1 flex flex-col items-center">
+                            <div class="w-4 h-4 rounded-full text-white flex items-center justify-center font-size-xs font-weight-bold"
+                                 style="background: var(--color-primary);
+                                        font-size: 8px">MNS</div>
+                            <span class="font-size-xs text-muted mt-xs">45 km</span>
+                        </div>
+                        <div class="absolute left-1/2 -top-4 flex flex-col items-center">
+                            <div class="px-sm py-xs rounded-full text-white font-mono font-weight-bold flex items-center gap-xs shadow-md"
+                                 style="background: var(--color-secondary);
+                                        font-size: 10px">{{ icon("local_shipping", size=14) }} TRUCK EN-ROUTE</div>
+                        </div>
+                        <div class="absolute left-3/4 -top-1 flex flex-col items-center">
+                            <div class="w-4 h-4 rounded-full text-white flex items-center justify-center font-size-xs font-weight-bold"
+                                 style="background: var(--color-primary);
+                                        font-size: 8px">KTP</div>
+                            <span class="font-size-xs text-muted mt-xs">140 km</span>
+                        </div>
+                        <div class="absolute right-0 -top-2 flex flex-col items-center">
+                            <div class="w-6 h-6 rounded-full text-white flex items-center justify-center font-size-xs font-weight-bold shadow-md"
+                                 style="background: var(--color-secondary)">JPR</div>
+                            <span class="font-size-xs font-weight-bold mt-xs">270 km</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-sm rounded-xl border mt-md flex flex-col sm:flex-row justify-between items-start sm:items-center font-size-xs gap-xs"
+                     style="background: var(--color-surface-sunken)">
+                    <div>
+                        <strong>Daily Schedule:</strong> Trucks depart daily between <strong>18:00 and 22:00</strong>. Handover ready by <strong>08:00 AM</strong> next morning.
+                    </div>
+                    <a href="#booking-engine"
+                       class="text-secondary font-weight-bold hover:underline flex items-center gap-xs">
+                        Lock spot on today's truck {{ icon("arrow_forward", size=14) }}
+                    </a>
+                </div>
+            </div>
+            <!-- Offline Fallback Map Simulation (Hidden by default) -->
+            <div class="card p-lg rounded-2xl border text-center shadow-sm"
+                 id="corridor-fallback-map"
+                 style="display: none;
+                        background: var(--color-surface-sunken)">
+                <div class="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-sm"
+                     style="background: var(--color-surface);
+                            color: var(--color-text-muted)">{{ icon("cloud_off", size=28) }}</div>
+                <h3 class="font-size-md font-weight-bold text-primary">Highway Telemetry Offline / 2G Network Mode</h3>
+                <p class="font-size-xs text-muted max-w-md mx-auto mt-xs">
+                    Active linehaul tracking operates independently via SMS and depot scanner nodes. Dispatch schedule remains strictly active regardless of mobile map sync.
+                </p>
+                <div class="mt-md font-mono font-size-xs p-xs border rounded-full inline-block"
+                     style="background: var(--color-surface)">
+                    MANUAL VERIFICATION DESK: +91 1800-419-7688 (PILOT DISPATCH)
+                </div>
+            </div>
+        </section>
+        <!-- ==================== WHOLESALE PRICING SECTION ==================== -->
+        <section class="py-xl mb-2xl border-t border-b"
+                 id="pricing"
+                 style="background: rgba(248, 249, 255, 0.7)">
+            <div class="text-center max-w-xl mx-auto mb-lg">
+                <span class="badge badge-secondary uppercase tracking-wider">Predictable Logistics Cost</span>
+                <h2 class="text-primary font-weight-bold mt-xs">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.rates_title }}"
+                          data-hi="{{ labels_hi.rates_title }}">{{ labels.rates_title }}</span>
+                </h2>
+                <p class="text-muted font-size-sm mt-xs">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.rates_subtitle }}"
+                          data-hi="{{ labels_hi.rates_subtitle }}">{{ labels.rates_subtitle }}</span>
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+                <!-- Tier 1 -->
+                <div class="card p-lg rounded-2xl border flex flex-col justify-between shadow-sm">
+                    <div>
+                        <span class="badge badge-surface font-size-xs font-weight-bold mb-sm">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.tier1_name }}"
+                                  data-hi="{{ labels_hi.tier1_name }}">{{ labels.tier1_name }}</span>
+                        </span>
+                        <h3 class="font-size-lg font-weight-bold text-primary">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.tier1_weight }}"
+                                  data-hi="{{ labels_hi.tier1_weight }}">{{ labels.tier1_weight }}</span>
+                        </h3>
+                        <p class="font-size-xs text-muted mt-xs">Ideal for carton samples, documents, and light trade stock.</p>
+                        <div class="mt-md pt-sm border-t">
+                            <div class="flex items-baseline gap-xs">
+                                <span class="font-size-2xl font-weight-bold text-primary font-mono">{{ labels.tier1_rate }}</span>
+                                <span class="font-size-xs text-muted">{{ labels.tier1_unit }}</span>
+                            </div>
+                            <div class="font-size-xs text-muted mt-xs">{{ labels.tier1_subtext }}</div>
+                        </div>
+                    </div>
+                    <a href="#booking-engine" class="btn btn-outline w-full mt-lg">Book Parcel Space</a>
+                </div>
+                <!-- Tier 2: Featured B2B -->
+                <div class="card p-lg rounded-2xl border-2 flex flex-col justify-between relative shadow-md"
+                     style="border-color: var(--color-secondary)">
+                    <div class="badge badge-secondary absolute -top-3 left-1/2 -translate-x-1/2 font-weight-bold uppercase tracking-wider">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.tier2_badge }}"
+                              data-hi="{{ labels_hi.tier2_badge }}">{{ labels.tier2_badge }}</span>
+                    </div>
+                    <div>
+                        <span class="badge badge-warning font-size-xs font-weight-bold mb-sm">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.tier2_name }}"
+                                  data-hi="{{ labels_hi.tier2_name }}">{{ labels.tier2_name }}</span>
+                        </span>
+                        <h3 class="font-size-lg font-weight-bold text-primary">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.tier2_weight }}"
+                                  data-hi="{{ labels_hi.tier2_weight }}">{{ labels.tier2_weight }}</span>
+                        </h3>
+                        <p class="font-size-xs text-muted mt-xs">Multi-box bulk goods, machinery parts, wholesale garments.</p>
+                        <div class="mt-md pt-sm border-t">
+                            <div class="flex items-baseline gap-xs">
+                                <span class="font-size-2xl font-weight-bold text-secondary font-mono">{{ labels.tier2_rate }}</span>
+                                <span class="font-size-xs text-muted">{{ labels.tier2_unit }}</span>
+                            </div>
+                            <div class="font-size-xs text-muted mt-xs">{{ labels.tier2_subtext }}</div>
+                        </div>
+                    </div>
+                    <a href="#booking-engine" class="btn btn-secondary w-full mt-lg">Book Commercial Batch</a>
+                </div>
+                <!-- Tier 3: Part-Load -->
+                <div class="card p-lg rounded-2xl border flex flex-col justify-between shadow-sm">
+                    <div>
+                        <span class="badge badge-surface font-size-xs font-weight-bold mb-sm">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.tier3_name }}"
+                                  data-hi="{{ labels_hi.tier3_name }}">{{ labels.tier3_name }}</span>
+                        </span>
+                        <h3 class="font-size-lg font-weight-bold text-primary">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.tier3_weight }}"
+                                  data-hi="{{ labels_hi.tier3_weight }}">{{ labels.tier3_weight }}</span>
+                        </h3>
+                        <p class="font-size-xs text-muted mt-xs">Industrial bulk freight and palleted distributor supplies.</p>
+                        <div class="mt-md pt-sm border-t">
+                            <div class="flex items-baseline gap-xs">
+                                <span class="font-size-2xl font-weight-bold text-primary font-mono">{{ labels.tier3_rate }}</span>
+                                <span class="font-size-xs text-muted">{{ labels.tier3_unit }}</span>
+                            </div>
+                            <div class="font-size-xs text-muted mt-xs">{{ labels.tier3_subtext }}</div>
+                        </div>
+                    </div>
+                    <a href="#booking-engine" class="btn btn-outline w-full mt-lg">Request LTL Allocation</a>
+                </div>
+            </div>
+            <div class="mt-lg p-md rounded-2xl border flex items-center gap-md shadow-sm"
+                 style="background: var(--color-surface)">
+                {{ icon("lock", size=22, extra_classes="text-secondary") }}
+                <div class="font-size-xs text-primary">
+                    <strong>Guaranteed locked price:</strong> Final freight fare is locked before truck confirmation. Zero hidden depot demurrage. Pay securely on delivery via <strong>UPI or Cash at drop</strong>.
+                </div>
+            </div>
+        </section>
+        <!-- ==================== TRUST PILLARS & CONCIERGE ==================== -->
+        <section class="mb-2xl">
+            <div class="text-center max-w-xl mx-auto mb-lg">
+                <span class="badge badge-secondary uppercase tracking-wider">Operational Integrity</span>
+                <h2 class="text-primary font-weight-bold mt-xs">Engineered for Safe Transit</h2>
+                <p class="text-muted font-size-sm">
+                    Physical handshake protocols that remove trust friction from inter-city shipments.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md mb-lg">
+                <div class="card p-md rounded-2xl border shadow-sm">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-primary mb-sm"
+                         style="background: var(--color-surface-container)">{{ icon("security", size=20) }}</div>
+                    <h4 class="font-size-sm font-weight-bold text-primary mb-xs">OTP at Pickup</h4>
+                    <p class="font-size-xs text-muted leading-relaxed">
+                        Driver cannot log departures or move parcel until sender confirms numeric code on physical handover.
+                    </p>
+                </div>
+                <div class="card p-md rounded-2xl border shadow-sm">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-primary mb-sm"
+                         style="background: var(--color-surface-container)">{{ icon("verified", size=20) }}</div>
+                    <h4 class="font-size-sm font-weight-bold text-primary mb-xs">OTP at Delivery</h4>
+                    <p class="font-size-xs text-muted leading-relaxed">
+                        Recipient inspects intact parcel condition before releasing delivery OTP. Proves final receipt.
+                    </p>
+                </div>
+                <div class="card p-md rounded-2xl border shadow-sm">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-primary mb-sm"
+                         style="background: var(--color-surface-container)">{{ icon("badge", size=20) }}</div>
+                    <h4 class="font-size-sm font-weight-bold text-primary mb-xs">Verified Fleet Drivers</h4>
+                    <p class="font-size-xs text-muted leading-relaxed">
+                        Pre-screened commercial operators with registered Aadhaar, vehicle permits, and corridor history.
+                    </p>
+                </div>
+                <div class="card p-md rounded-2xl border shadow-sm">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-primary mb-sm"
+                         style="background: var(--color-surface-container)">
+                        {{ icon("notifications_active", size=20) }}
+                    </div>
+                    <h4 class="font-size-sm font-weight-bold text-primary mb-xs">Live Checkpoint Alerts</h4>
+                    <p class="font-size-xs text-muted leading-relaxed">
+                        Automated milestone notifications sent directly to WhatsApp &amp; SMS for sender and consignee.
+                    </p>
+                </div>
+            </div>
+            <!-- Concierge Helpline Strip -->
+            <div class="p-lg rounded-2xl text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md shadow-md"
+                 style="background: var(--color-primary)">
+                <div class="flex items-center gap-md">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-warning"
+                         style="background: rgba(255, 255, 255, 0.1)">{{ icon("support_agent", size=28) }}</div>
+                    <div>
+                        <div class="font-size-base font-weight-bold">Pilot Concierge &amp; Operations Desk Active</div>
+                        <div class="font-size-xs text-muted mt-xs"
+                             style="color: var(--color-on-primary-container)">
+                            Dedicated corridor dispatch managers available <strong>7:00 AM – 11:00 PM</strong> daily.
+                        </div>
+                    </div>
+                </div>
+                <a href="tel:18004197688" class="btn btn-secondary font-weight-bold">Call 1800-419-7688</a>
+            </div>
+        </section>
+        <!-- ==================== INTERACTIVE OTP BOOKING ENGINE ==================== -->
+        <section class="py-xl mb-2xl border-t border-b"
+                 id="booking-engine"
+                 style="background: rgba(248, 249, 255, 0.6)">
+            <div class="max-w-xl mx-auto">
+                <div class="text-center mb-md">
+                    <span class="badge badge-secondary uppercase tracking-wider font-size-xs">Sender Dispatch Portal</span>
+                    <h2 class="text-primary font-weight-bold mt-xs">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.booking_title }}"
+                              data-hi="{{ labels_hi.booking_title }}">{{ labels.booking_title }}</span>
+                    </h2>
+                    <p class="text-muted font-size-sm">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.booking_subtitle }}"
+                              data-hi="{{ labels_hi.booking_subtitle }}">{{ labels.booking_subtitle }}</span>
+                    </p>
+                </div>
+                <div class="card p-lg rounded-3xl border shadow-lg"
+                     style="background: var(--color-surface)">
+                    <form id="express_booking_form"
+                          method="post"
+                          action="/api/users/v1/auth/otp/send/">
+                        {{ csrf_input }}
+                        <div class="form-group mb-md">
+                            <label class="form-label font-size-xs font-weight-bold" for="sender_name">
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.label_name }}"
+                                      data-hi="{{ labels_hi.label_name }}">{{ labels.label_name }}</span>
+                            </label>
+                            <input type="text"
+                                   id="sender_name"
+                                   name="sender_name"
+                                   class="form-control"
+                                   placeholder="e.g. Rajesh Aggarwal (Agarwal Hardware)"
+                                   required>
+                        </div>
+                        <div class="form-group mb-md">
+                            <label class="form-label font-size-xs font-weight-bold"
+                                   for="otp_login_identifier">
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.label_phone }}"
+                                      data-hi="{{ labels_hi.label_phone }}">{{ labels.label_phone }}</span>
+                            </label>
+                            <div class="input-action-group">
+                                <input type="tel"
+                                       id="otp_login_identifier"
+                                       name="identifier"
+                                       class="form-control"
+                                       placeholder="9876543210"
+                                       maxlength="10"
+                                       required>
+                                <button type="button"
+                                        id="btn_send_login_otp"
+                                        class="btn btn-secondary btn-md"
+                                        data-action-send-otp
+                                        data-target-input="#otp_login_identifier"
+                                        disabled>Send Code</button>
+                            </div>
+                        </div>
+                        <div class="form-group mb-md">
+                            <label class="form-label font-size-xs font-weight-bold" for="booking_route">
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.label_route }}"
+                                      data-hi="{{ labels_hi.label_route }}">{{ labels.label_route }}</span>
+                            </label>
+                            <select id="booking_route" name="route" class="form-control">
+                                <option selected>Delhi (Sanjay Gandhi Transport Nagar) ➔ Jaipur (VKI Depot)</option>
+                                <option>Jaipur (VKI Depot) ➔ Delhi (Sanjay Gandhi Transport Nagar)</option>
+                                <option>Delhi ➔ Manesar Drop (Industrial Area)</option>
+                                <option>Delhi ➔ Kotputli Highway Hub</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-md mb-md">
+                            <div class="form-group mb-0">
+                                <label class="form-label font-size-xs font-weight-bold" for="booking_weight">ESTIMATED WEIGHT</label>
+                                <select id="booking_weight" name="weight_slab" class="form-control">
+                                    <option>10 kg - 50 kg (Standard)</option>
+                                    <option selected>51 kg - 250 kg (Commercial)</option>
+                                    <option>250 kg+ (Part-Load LTL)</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label class="form-label font-size-xs font-weight-bold"
+                                       for="booking_dispatch">DISPATCH DATE</label>
+                                <select id="booking_dispatch" name="dispatch_date" class="form-control">
+                                    <option selected>Today (Evening 6 PM)</option>
+                                    <option>Tomorrow (Evening 6 PM)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- OTP Challenge Section (Appears after code dispatch) -->
+                        <div id="otp_challenge_wrapper"
+                             class="mb-md p-md rounded-xl border"
+                             style="display: none;
+                                    background: var(--color-surface-sunken)">
+                            <label class="form-label font-size-xs font-weight-bold mb-xs"
+                                   for="booking_otp_code">Enter 6-Digit SMS Verification Code</label>
+                            <div class="otp-input-group flex justify-center gap-xs"
+                                 data-otp-group="true">
+                                <input type="text"
+                                       class="form-control text-center font-mono font-size-lg"
+                                       style="width: 44px;
+                                              height: 50px"
+                                       maxlength="1"
+                                       data-otp-box="0">
+                                <input type="text"
+                                       class="form-control text-center font-mono font-size-lg"
+                                       style="width: 44px;
+                                              height: 50px"
+                                       maxlength="1"
+                                       data-otp-box="1">
+                                <input type="text"
+                                       class="form-control text-center font-mono font-size-lg"
+                                       style="width: 44px;
+                                              height: 50px"
+                                       maxlength="1"
+                                       data-otp-box="2">
+                                <input type="text"
+                                       class="form-control text-center font-mono font-size-lg"
+                                       style="width: 44px;
+                                              height: 50px"
+                                       maxlength="1"
+                                       data-otp-box="3">
+                                <input type="text"
+                                       class="form-control text-center font-mono font-size-lg"
+                                       style="width: 44px;
+                                              height: 50px"
+                                       maxlength="1"
+                                       data-otp-box="4">
+                                <input type="text"
+                                       class="form-control text-center font-mono font-size-lg"
+                                       style="width: 44px;
+                                              height: 50px"
+                                       maxlength="1"
+                                       data-otp-box="5">
+                            </div>
+                            <input type="hidden" name="otp_code" id="booking_otp_code">
+                        </div>
+                        <div class="pt-sm">
+                            <button type="submit"
+                                    id="btn_otp_submit"
+                                    class="btn btn-secondary btn-lg w-full"
+                                    disabled>
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.btn_request_otp }}"
+                                      data-hi="{{ labels_hi.btn_request_otp }}">{{ labels.btn_request_otp }}</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <!-- ==================== FAQ ACCORDION ==================== -->
+        <section class="max-w-3xl mx-auto mb-2xl">
+            <div class="text-center mb-lg">
+                <span class="badge badge-secondary uppercase tracking-wider">Logistics &amp; Compliance</span>
+                <h2 class="text-primary font-weight-bold mt-xs">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.faq_title }}"
+                          data-hi="{{ labels_hi.faq_title }}">{{ labels.faq_title }}</span>
+                </h2>
+                <p class="text-muted font-size-sm">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.faq_subtitle }}"
+                          data-hi="{{ labels_hi.faq_subtitle }}">{{ labels.faq_subtitle }}</span>
+                </p>
+            </div>
+            <div class="flex flex-col gap-sm">
+                <!-- FAQ 1 -->
+                <div class="card p-md rounded-2xl border shadow-sm">
+                    <button type="button"
+                            class="w-full text-left flex justify-between items-center font-size-sm font-weight-bold text-primary hover:text-secondary"
+                            onclick="toggleFaq(1)">
+                        <span>1. What items are strictly prohibited from shipment?</span>
+                        {{ icon("expand_more", size=20, extra_classes="faq-icon-1") }}
+                    </button>
+                    <div class="font-size-xs text-muted pt-sm border-t mt-sm leading-relaxed"
+                         id="faq-ans-1"
+                         style="display: none">
+                        <strong class="text-danger">STRICT ZERO-TOLERANCE POLICY:</strong> Hazardous chemicals, explosives, fireworks, flammable solids/gases, loose lithium batteries, unmanifested liquids, contraband, livestock, and untaxed bullion are strictly barred under Motor Vehicles Logistics Act.
+                    </div>
+                </div>
+                <!-- FAQ 2 -->
+                <div class="card p-md rounded-2xl border shadow-sm">
+                    <button type="button"
+                            class="w-full text-left flex justify-between items-center font-size-sm font-weight-bold text-primary hover:text-secondary"
+                            onclick="toggleFaq(2)">
+                        <span>2. When and how do I pay for the shipment?</span>
+                        {{ icon("expand_more", size=20, extra_classes="faq-icon-2") }}
+                    </button>
+                    <div class="font-size-xs text-muted pt-sm border-t mt-sm leading-relaxed"
+                         id="faq-ans-2"
+                         style="display: none">
+                        You pay strictly after delivery or at the destination depot. Payments can be completed seamlessly via all verified UPI applications (PhonePe, Google Pay, Paytm) or cash directly at the depot dispatch counter.
+                    </div>
+                </div>
+                <!-- FAQ 3 -->
+                <div class="card p-md rounded-2xl border shadow-sm">
+                    <button type="button"
+                            class="w-full text-left flex justify-between items-center font-size-sm font-weight-bold text-primary hover:text-secondary"
+                            onclick="toggleFaq(3)">
+                        <span>3. How is this cheaper than traditional express couriers?</span>
+                        {{ icon("expand_more", size=20, extra_classes="faq-icon-3") }}
+                    </button>
+                    <div class="font-size-xs text-muted pt-sm border-t mt-sm leading-relaxed"
+                         id="faq-ans-3"
+                         style="display: none">
+                        Traditional couriers pass parcels through 3 to 4 intermediate regional sorting centers, adding sorting labor and air express markups. LoadShare books under-utilized capacity on heavy commercial trucks already running scheduled linehauls along NH48, passing wholesale savings directly to you.
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ==================== PRE-FLIGHT AUDIT STRIP ==================== -->
+        <section class="mb-2xl p-md rounded-2xl border"
+                 style="border-style: dashed;
+                        border-color: rgba(0, 20, 40, 0.2);
+                        background: var(--color-surface)">
+            <div class="flex items-center gap-xs mb-sm text-primary font-weight-bold font-size-xs">
+                {{ icon("checklist", size=18, extra_classes="text-secondary") }}
+                <span>PILOT DEPLOYMENT PRE-FLIGHT CHECKLIST (POC AUDIT)</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-xs font-size-xs font-weight-medium">
+                <div class="p-xs rounded-lg border flex items-center gap-xs"
+                     style="background: var(--color-surface-sunken)">
+                    {{ icon("verified", size=16, extra_classes="text-secondary") }}
+                    <span>Brand: LOADSHARE (लोडशेयर)</span>
+                </div>
+                <div class="p-xs rounded-lg border flex items-center gap-xs"
+                     style="background: var(--color-surface-sunken)">
+                    {{ icon("verified", size=16, extra_classes="text-secondary") }}
+                    <span>Corridor: Delhi ➔ Jaipur (NH48)</span>
+                </div>
+                <div class="p-xs rounded-lg border flex items-center gap-xs"
+                     style="background: var(--color-surface-sunken)">
+                    {{ icon("verified", size=16, extra_classes="text-secondary") }}
+                    <span>Rates: ₹12 / ₹8.50 / ₹6.00</span>
+                </div>
+                <div class="p-xs rounded-lg border flex items-center gap-xs"
+                     style="background: var(--color-surface-sunken)">
+                    {{ icon("verified", size=16, extra_classes="text-secondary") }}
+                    <span>Concierge DID: 1800-419-7688</span>
+                </div>
+            </div>
+        </section>
+        <!-- ==================== MOBILE DOCKED NAVIGATION ==================== -->
+        <nav class="mobile-bottom-nav">
+            <a href="#pilot-route"
+               class="flex flex-col items-center justify-center text-muted font-size-xs">
+                {{ icon("alt_route", size=20) }}
+                <span style="font-size: 10px;">Corridor</span>
+            </a>
+            <a href="#pricing"
+               class="flex flex-col items-center justify-center text-muted font-size-xs">
+                {{ icon("payments", size=20) }}
+                <span style="font-size: 10px;">Rates</span>
+            </a>
+            <a href="#hero"
+               class="flex flex-col items-center justify-center text-secondary font-weight-bold">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white"
+                     style="background: var(--color-secondary)">{{ icon("local_shipping", size=18) }}</div>
+                <span style="font-size: 10px;">Home</span>
+            </a>
+            <a href="tel:18004197688"
+               class="flex flex-col items-center justify-center text-muted font-size-xs">
+                {{ icon("support_agent", size=20) }}
+                <span style="font-size: 10px;">Support</span>
+            </a>
+            <a href="/login/"
+               class="flex flex-col items-center justify-center text-muted font-size-xs">
+                {{ icon("account_circle", size=20) }}
+                <span style="font-size: 10px;">Profile</span>
+            </a>
+        </nav>
+    </div>
+    <!-- ==================== JAVASCRIPT: BILINGUAL & INTERACTIVE UTILITIES ==================== -->
+    <script>
+        // Layer 1 (DOM instant swap) & Layer 2 (State Persistence via Cookie + API)
+        let activeLang = "{{ current_lang|default('en') }}";
+
+        function toggleLanguage() {
+            setLanguage(activeLang === "en" ? "hi" : "en");
+        }
+
+        function setLanguage(lang) {
+            if (!["en", "hi"].includes(lang)) return;
+            activeLang = lang;
+
+            // 1. Layer 1: Update UI indicators
+            const enIndicator = document.getElementById("lang-en");
+            const hiIndicator = document.getElementById("lang-hi");
+            if (enIndicator && hiIndicator) {
+                enIndicator.className = (lang === "en") ? "lang-active" : "lang-inactive";
+                hiIndicator.className = (lang === "hi") ? "lang-active" : "lang-inactive";
+            }
+
+            // 2. Layer 1: Swap all .lang-text nodes immediately
+            document.querySelectorAll(".lang-text").forEach(function(el) {
+                const translated = el.getAttribute("data-" + lang);
+                if (translated) {
+                    el.textContent = translated;
+                }
+            });
+
+            // 3. Layer 2: State Persistence in Cookies (1 Year duration)
+            const cookieVal = lang + "; path=/; max-age=31536000; SameSite=Lax";
+            document.cookie = "loadshare_lang=" + cookieVal;
+            document.cookie = "django_language=" + cookieVal;
+
+            // 4. Layer 2: Background sync to set-language endpoint
+            if (window.fetch) {
+                fetch("/set-language/?lang=" + encodeURIComponent(lang), {
+                    method: "GET",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                }).catch(function(err) {
+                    console.debug("Language persistence sync error:", err);
+                });
+            }
+        }
+
+        // Telemetry Simulation Toggle
+        let isMapFallback = false;
+
+        function toggleMapState() {
+            isMapFallback = !isMapFallback;
+            const liveMap = document.getElementById("corridor-live-map");
+            const fallbackMap = document.getElementById("corridor-fallback-map");
+            const toggleText = document.getElementById("map-toggle-text");
+
+            if (isMapFallback) {
+                if (liveMap) liveMap.style.display = "none";
+                if (fallbackMap) fallbackMap.style.display = "block";
+                if (toggleText) toggleText.textContent = "Preview Live Telemetry Mode";
+            } else {
+                if (liveMap) liveMap.style.display = "block";
+                if (fallbackMap) fallbackMap.style.display = "none";
+                if (toggleText) toggleText.textContent = "Toggle Offline Fallback Simulation";
+            }
+        }
+
+        // FAQ Accordion Toggle
+        function toggleFaq(id) {
+            const ans = document.getElementById("faq-ans-" + id);
+            if (!ans) return;
+            const isHidden = (ans.style.display === "none");
+            ans.style.display = isHidden ? "block" : "none";
+        }
+    </script>
+{% endblock content %}

@@ -1,0 +1,169 @@
+{# otp_login_template.jinja: Gateway login template using OTP-only flow #}
+{% set labels = resolve_labels("users_template_label", labels) if resolve_labels is defined else (labels or {}) %}
+{% from "core/components/common/icons.jinja" import icon %}
+{% from "core/components/feedback/alerts.jinja" import message_list %}
+<div class="auth-shell">
+    <div class="auth-main">
+        <div class="auth-container"
+             id="otp_auth_container"
+             data-initial-tab="{{ initial_tab|default('login') }}">
+            <!-- Notice Bar: Pilot Phase Corridor & Language Switcher -->
+            <div class="bg-primary-container text-surface px-3 py-2 text-center font-size-xs flex items-center justify-between rounded-lg mb-md border border-primary">
+                <div class="flex items-center gap-xs">
+                    {{ icon("campaign", size=16, extra_classes="text-warning") }}
+                    <span class="lang-text font-weight-medium"
+                          data-en="{{ labels_en.pilot_notice|default('Delhi ⇄ Jaipur NH48 Pilot Corridor') }}"
+                          data-hi="{{ labels_hi.pilot_notice|default('दिल्ली ⇄ जयपुर NH48 पायलट कॉरिडोर') }}">
+                        {{ labels.pilot_notice|default("Delhi ⇄ Jaipur NH48 Pilot Corridor") }}
+                    </span>
+                </div>
+                <!-- Layer 2 Language Switcher Toggle -->
+                <a href="/set-language/?lang={{ 'hi' if current_lang == 'en' else 'en' }}&next={{ request.path|urlencode if request else '/login/' }}"
+                   class="lang-toggle-btn text-decoration-none"
+                   id="auth-lang-toggle"
+                   aria-label="Toggle language">
+                    <span class="{{ 'lang-active' if current_lang == 'en' else 'lang-inactive' }}">EN</span>
+                    <span class="text-muted mx-xs">/</span>
+                    <span class="{{ 'lang-active' if current_lang == 'hi' else 'lang-inactive' }}">हिंदी</span>
+                </a>
+            </div>
+            <!-- Brand Identity Header -->
+            <div class="auth-brand">
+                <div class="auth-brand-header">
+                    <div class="brand-icon-wrapper">{{ icon("local_shipping", size=24, extra_classes="text-secondary") }}</div>
+                    <div>
+                        <h1 class="auth-brand-title">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.brand_name|default('LoadShare') }}"
+                                  data-hi="{{ labels_hi.brand_name|default('लोडशेयर') }}">{{ labels.brand_name|default("LoadShare") }}</span>
+                            <span class="text-muted font-size-sm font-weight-normal"> / {{ labels_hi.brand_name|default("लोडशेयर") if current_lang == 'en' else labels_en.brand_name|default('LoadShare') }}</span>
+                        </h1>
+                    </div>
+                </div>
+                <p class="auth-brand-subtitle">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.brand_tagline|default('Direct Heavy Vehicle Corridor Logistics • NH48 Pilot') }}"
+                          data-hi="{{ labels_hi.brand_tagline|default('सीधा हेवी व्हीकल कॉरिडोर लॉजिस्टिक्स • NH48 पायलट') }}">
+                        {{ labels.brand_tagline|default("Direct Heavy Vehicle Corridor Logistics • NH48 Pilot") }}
+                    </span>
+                </p>
+            </div>
+            <!-- Master Authentication Card (OTP Only) -->
+            <div class="auth-card">
+                <!-- Schematic Barcode Waybill Accent -->
+                <div class="barcode-strip" style="height: 6px;"></div>
+                <!-- Flash Messages & Dynamic Snack Container -->
+                {% if messages %}{{ message_list(messages) }}{% endif %}
+                <div id="auth_toast_container"
+                     class="auth-toast-container"
+                     aria-live="polite"></div>
+                <!-- OTP Login & Signup Wrapper -->
+                <div id="auth_method_otp_wrapper" data-auth-method-content="otp">
+                    {% include "core/views/auth/otp_login.jinja" %}
+
+                </div>
+            </div>
+            <!-- Trust Verification Strip -->
+            <div class="mt-md p-sm bg-surface-container rounded-lg border text-center font-size-xs text-muted flex items-center justify-around">
+                <span class="flex items-center gap-xs">
+                    {{ icon("verified", size=14, extra_classes="text-secondary") }} OTP at Pickup
+                </span>
+                <span class="flex items-center gap-xs">
+                    {{ icon("lock", size=14, extra_classes="text-secondary") }} OTP at Delivery
+                </span>
+                <span class="flex items-center gap-xs">
+                    {{ icon("support_agent", size=14, extra_classes="text-secondary") }} 1800-419-7688
+                </span>
+            </div>
+            <!-- Navigation Return Link -->
+            <div class="text-center mt-md">
+                <a href="/"
+                   class="font-size-xs text-primary hover:text-secondary font-weight-semibold flex items-center justify-center gap-xs text-decoration-none">
+                    {{ icon("arrow_back", size=14) }} Return to Highway Corridor Dashboard
+                </a>
+            </div>
+            <!-- Footer Legal Links -->
+            <div class="auth-footer text-center mt-md">
+                <div class="flex items-center justify-center gap-md font-size-xs text-muted">
+                    <a href="{{ privacy_url|default('#privacy') }}"
+                       class="text-muted hover:text-primary">{{ labels.privacy_policy|default("Privacy Policy") }}</a>
+                    <a href="{{ terms_url|default('#terms') }}"
+                       class="text-muted hover:text-primary">{{ labels.terms_of_service|default("Terms of Service") }}</a>
+                    <a href="{{ status_url|default('#status') }}"
+                       class="text-muted hover:text-primary">{{ labels.platform_status|default("Platform Status") }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.getElementById("otp_auth_container");
+        const initialTab = container ? container.dataset.initialTab : "login";
+        if (initialTab === "signup" && window.Core && Core.auth && typeof Core.auth.switchOTPTab === "function") {
+            Core.auth.switchOTPTab("signup");
+        }
+
+        // Asynchronous OTP signup submission handler with cookie persistence & redirect
+        const signupForm = document.getElementById("form_otp_signup");
+        if (signupForm) {
+            signupForm.addEventListener("submit", async function(e) {
+                e.preventDefault();
+                const submitBtn = document.getElementById("btn_otp_signup_submit");
+                if (submitBtn) submitBtn.disabled = true;
+
+                const phoneInput = document.getElementById("otp_signup_phone");
+                const hiddenOtp = signupForm.querySelector('input[name="signup_otp_code"]') || signupForm.querySelector('input[name="otp_code"]');
+                const identifier = phoneInput ? phoneInput.value.trim() : "";
+                const code = hiddenOtp ? hiddenOtp.value.trim() : "";
+
+                if (!identifier || !code) {
+                    if (window.Core && Core.auth) {
+                        Core.auth.showToast("Please enter phone number and 6-digit verification code.");
+                    }
+                    if (submitBtn) submitBtn.disabled = false;
+                    return;
+                }
+
+                try {
+                    const res = await fetch("/api/users/v1/auth/otp/verify/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": (window.Core && Core.getCSRFToken) ? Core.getCSRFToken() : "",
+                        },
+                        body: JSON.stringify({
+                            identifier: identifier,
+                            code: code,
+                            channel: "phone"
+                        }),
+                    });
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        if (window.Core && Core.authSession) {
+                            if (data.access) {
+                                Core.authSession.setCookie("access_token", data.access, data.access_expires_in || 3600);
+                            }
+                            if (data.refresh) {
+                                Core.authSession.setCookie("refresh_token", data.refresh, 86400 * 7);
+                            }
+                        }
+                        const targetUrl = data.redirect_url || signupForm.dataset.redirectUrl || "/";
+                        window.location.href = targetUrl;
+                    } else {
+                        if (window.Core && Core.auth) {
+                            Core.auth.showToast(data.detail || data.code || "Verification failed.");
+                        }
+                        if (submitBtn) submitBtn.disabled = false;
+                    }
+                } catch (err) {
+                    if (window.Core && Core.auth) {
+                        Core.auth.showToast("Network error during verification. Please try again.");
+                    }
+                    if (submitBtn) submitBtn.disabled = false;
+                }
+            });
+        }
+    });
+</script>
