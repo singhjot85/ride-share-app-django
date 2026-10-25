@@ -11,7 +11,7 @@ echo "Running Worker now..."
 if [ "$ENABLE_DEBUGPY" = "1" ]; then
     echo "Starting Celery Worker with debugpy and watchmedo auto-reload..."
     exec watchmedo auto-restart \
-        --directory=core \
+        --directory=. \
         --pattern="*.py" \
         --recursive -- \
         python -m debugpy --listen 0.0.0.0:5678 -m \
@@ -19,7 +19,7 @@ if [ "$ENABLE_DEBUGPY" = "1" ]; then
 else
     echo "Starting Celery Worker with watchmedo auto-reload..."
     exec watchmedo auto-restart \
-        --directory=core \
+        --directory=. \
         --pattern="*.py" \
         --recursive -- \
         celery -A core.config.celery worker --loglevel=info --concurrency=4
