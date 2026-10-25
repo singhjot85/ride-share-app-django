@@ -6,13 +6,11 @@ and Layer 2 State Persistence for bilingual UI support.
 from datetime import timedelta
 
 import pytest
-from core.apps.users.api.views import OTPVerifyView
 from core.apps.users.services.otp.factory import OTPServiceFactory
 from core.utils.middleware import JWTCookieAuthenticationMiddleware
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpResponse
 from django.test import Client, RequestFactory
 from rest_framework.response import Response
@@ -226,8 +224,9 @@ class TestLoginView:
         content = response.render().content.decode("utf-8")
 
         assert "otp_login_identifier" in content
-        assert "switchOTPTab" in content
+        assert "data-initial-tab" in content
         assert "signup" in content
+        assert "otp_signup.js" in content
 
     def test_client_get_landing_page_and_login(self, client: Client):
         """Verify full HTTP request-response cycle for root and login URLs."""
@@ -266,13 +265,13 @@ class TestLoginView:
         assert response.url == "/"
 
     def test_jwt_cookie_authentication_middleware(self, rf: RequestFactory, user):
-        """Verify JWTCookieAuthenticationMiddleware populates request.user from core_access_token cookie."""
+        """Verify JWTCookieAuthenticationMiddleware populates request.user from access_token cookie."""
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
 
         request = rf.get("/")
         request.user = AnonymousUser()
-        request.COOKIES["core_access_token"] = access_token
+        request.COOKIES["access_token"] = access_token
 
         def get_response(req):
             return req.user
@@ -346,12 +345,10 @@ class TestLoginView:
         middleware = JWTCookieAuthenticationMiddleware(get_response)
         response = middleware(request)
 
-        assert "core_access_token" in response.cookies
         assert "access_token" in response.cookies
-        assert "core_refresh_token" in response.cookies
         assert response.cookies["access_token"].value == "test_access_jwt"
-        assert response.cookies["core_refresh_token"].value == "test_refresh_jwt"
-        assert response.cookies["core_refresh_token"]["httponly"] is True
+        assert response.cookies["refresh_token"].value == "test_refresh_jwt"
+        assert response.cookies["refresh_token"]["httponly"] is True
 
     def test_landing_page_with_jwt_cookie_renders_authenticated_dashboard(
         self, rf: RequestFactory, user
@@ -362,7 +359,7 @@ class TestLoginView:
 
         request = rf.get("/")
         request.user = AnonymousUser()
-        request.COOKIES["core_access_token"] = access_token
+        request.COOKIES["access_token"] = access_token
 
         # Process through middleware
         def get_response(req):
@@ -382,39 +379,72 @@ class TestLoginView:
         # Login form is hidden
         assert "form_otp_login" not in content
 
-    def test_otp_verify_view_attaches_cookies_and_redirects(
-        self, rf: RequestFactory, user
-    ):
-        """Verify core OTPVerifyView sets cookies and default redirect to root."""
+    def test_otp_verify_view_attaches_cookies_and_redirects(self, client: Client, user):
+        """Verify core OTP verify flow attaches auth cookies via middleware and redirects to root."""
         code = "654321"
         OTPServiceFactory.get_service("phone").set_otp_cache(
             user.phone_number, code, timeout=300
         )
 
-        request = rf.post(
+        response = client.post(
             "/api/users/v1/auth/otp/verify/",
             data={"identifier": user.phone_number, "code": code, "channel": "phone"},
             content_type="application/json",
         )
 
-        # Attach session to request
-        def dummy_get_response(req):
-            return None
-
-        session_middleware = SessionMiddleware(dummy_get_response)
-        session_middleware.process_request(request)
-
-        view = OTPVerifyView.as_view()
-        response = view(request)
-
         assert response.status_code == 200
-        assert response.data["redirect_url"] == "/"
-        assert "core_access_token" in response.cookies
+        data = response.json()
+        assert data["redirect_url"] == "/"
         assert "access_token" in response.cookies
-        assert "core_refresh_token" in response.cookies
-        assert response.cookies["core_access_token"].value == response.data["access"]
-        assert response.cookies["core_access_token"]["samesite"] == "Lax"
-        assert response.cookies["core_access_token"]["path"] == "/"
+        assert response.cookies["access_token"].value == data["access"]
+        assert response.cookies["access_token"]["samesite"] == "Lax"
+        assert response.cookies["access_token"]["path"] == "/"
+
+    def test_otp_signup_new_user_creates_account_with_name_and_cookies(
+        self, client: Client, db
+    ):
+        """Verify OTP signup with purpose='signup' creates new user with profile fields and sets cookies."""
+        new_phone = "+919999988888"
+        code = "123456"
+
+        # 1. Request OTP with purpose="signup"
+        send_res = client.post(
+            "/api/users/v1/auth/otp/send/",
+            data={"identifier": new_phone, "channel": "phone", "purpose": "signup"},
+            content_type="application/json",
+        )
+        assert send_res.status_code == 202
+
+        # Manually cache code for verification (since Celery is mocked/eager)
+        OTPServiceFactory.get_service("phone").set_otp_cache(
+            new_phone, code, timeout=300
+        )
+
+        # 2. Verify OTP with profile fields
+        verify_res = client.post(
+            "/api/users/v1/auth/otp/verify/",
+            data={
+                "identifier": new_phone,
+                "code": code,
+                "channel": "phone",
+                "first_name": "Rajesh",
+                "last_name": "Kumar",
+                "email": "rajesh@example.com",
+            },
+            content_type="application/json",
+        )
+        assert verify_res.status_code == 201
+        data = verify_res.json()
+        assert data["created"] is True
+        assert "access_token" in verify_res.cookies
+
+        # 3. Verify user created with correct profile data
+        User = get_user_model()
+        created_user = User.objects.get(phone_number=new_phone)
+        assert created_user.first_name == "Rajesh"
+        assert created_user.last_name == "Kumar"
+        assert created_user.email == "rajesh@example.com"
+        assert created_user.is_phone_verified is True
 
 
 class TestSetLanguageView:

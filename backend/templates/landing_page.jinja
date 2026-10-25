@@ -609,6 +609,7 @@
                                         id="btn_send_login_otp"
                                         class="btn btn-secondary btn-md"
                                         data-action-send-otp
+                                        data-purpose="login"
                                         data-target-input="#otp_login_identifier"
                                         disabled>Send Code</button>
                             </div>
@@ -829,78 +830,6 @@
         </nav>
     </div>
     <!-- ==================== JAVASCRIPT: BILINGUAL & INTERACTIVE UTILITIES ==================== -->
-    <script>
-        // Layer 1 (DOM instant swap) & Layer 2 (State Persistence via Cookie + API)
-        let activeLang = "{{ current_lang|default('en') }}";
-
-        function toggleLanguage() {
-            setLanguage(activeLang === "en" ? "hi" : "en");
-        }
-
-        function setLanguage(lang) {
-            if (!["en", "hi"].includes(lang)) return;
-            activeLang = lang;
-
-            // 1. Layer 1: Update UI indicators
-            const enIndicator = document.getElementById("lang-en");
-            const hiIndicator = document.getElementById("lang-hi");
-            if (enIndicator && hiIndicator) {
-                enIndicator.className = (lang === "en") ? "lang-active" : "lang-inactive";
-                hiIndicator.className = (lang === "hi") ? "lang-active" : "lang-inactive";
-            }
-
-            // 2. Layer 1: Swap all .lang-text nodes immediately
-            document.querySelectorAll(".lang-text").forEach(function(el) {
-                const translated = el.getAttribute("data-" + lang);
-                if (translated) {
-                    el.textContent = translated;
-                }
-            });
-
-            // 3. Layer 2: State Persistence in Cookies (1 Year duration)
-            const cookieVal = lang + "; path=/; max-age=31536000; SameSite=Lax";
-            document.cookie = "loadshare_lang=" + cookieVal;
-            document.cookie = "django_language=" + cookieVal;
-
-            // 4. Layer 2: Background sync to set-language endpoint
-            if (window.fetch) {
-                fetch("/set-language/?lang=" + encodeURIComponent(lang), {
-                    method: "GET",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest"
-                    }
-                }).catch(function(err) {
-                    console.debug("Language persistence sync error:", err);
-                });
-            }
-        }
-
-        // Telemetry Simulation Toggle
-        let isMapFallback = false;
-
-        function toggleMapState() {
-            isMapFallback = !isMapFallback;
-            const liveMap = document.getElementById("corridor-live-map");
-            const fallbackMap = document.getElementById("corridor-fallback-map");
-            const toggleText = document.getElementById("map-toggle-text");
-
-            if (isMapFallback) {
-                if (liveMap) liveMap.style.display = "none";
-                if (fallbackMap) fallbackMap.style.display = "block";
-                if (toggleText) toggleText.textContent = "Preview Live Telemetry Mode";
-            } else {
-                if (liveMap) liveMap.style.display = "block";
-                if (fallbackMap) fallbackMap.style.display = "none";
-                if (toggleText) toggleText.textContent = "Toggle Offline Fallback Simulation";
-            }
-        }
-
-        // FAQ Accordion Toggle
-        function toggleFaq(id) {
-            const ans = document.getElementById("faq-ans-" + id);
-            if (!ans) return;
-            const isHidden = (ans.style.display === "none");
-            ans.style.display = isHidden ? "block" : "none";
-        }
-    </script>
+    <script src="{{ static('js/language_toggle.js') }}"></script>
+    <script src="{{ static('js/landing_interactive.js') }}"></script>
 {% endblock content %}
