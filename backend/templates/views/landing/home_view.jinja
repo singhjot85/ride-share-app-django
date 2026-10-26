@@ -1,0 +1,43 @@
+{# Home View Shell #}
+{% from "core/components/common/icons.jinja" import icon %}
+<section id="view-home"
+         class="landing-tab-view active"
+         aria-labelledby="home-hero-title">
+    <div class="landing-view-container max-w-2xl mx-auto px-4 pt-6 pb-20 space-y-6 text-center sm:text-left">
+        <!-- Hero Section -->
+        <header class="space-y-3">
+            <div class="inline-flex items-center gap-2 bg-surface-container px-3 py-1 rounded-full text-xs font-medium text-secondary">
+                {{ icon("campaign", size=16, extra_classes="text-secondary") }}
+                <span class="lang-text"
+                      data-en="{{ labels_en.pilot_notice|default('PILOT PHASE: Commercial Senders Only on Delhi ⇄ Jaipur Corridor') }}"
+                      data-hi="{{ labels_hi.pilot_notice|default('पायलट चरण: केवल दिल्ली ⇄ जयपुर कॉरिडोर हेतु पार्सल सेवा') }}">{{ labels.pilot_notice|default("PILOT PHASE: Commercial Senders Only on Delhi ⇄ Jaipur Corridor") }}</span>
+            </div>
+            <h1 id="home-hero-title"
+                class="text-3xl sm:text-4xl font-extrabold text-primary tracking-tight">
+                <span class="lang-text"
+                      data-en="{{ labels_en.hero_headline|default('Direct Inter-City Highway Parcel Delivery') }}"
+                      data-hi="{{ labels_hi.hero_headline|default('उसी रूट पर जा रहे ट्रकों से किफायती पार्सल भेजें') }}">{{ labels.hero_headline|default("Direct Inter-City Highway Parcel Delivery") }}</span>
+            </h1>
+            <p class="text-sm sm:text-base text-on-surface-variant leading-relaxed">
+                <span class="lang-text"
+                      data-en="Send commercial parcels on trucks already traveling your route. Honest pilot on Delhi ⇄ Jaipur NH48 corridor."
+                      data-hi="अपने मार्ग पर पहले से यात्रा कर रहे ट्रकों पर व्यावसायिक पार्सल भेजें। दिल्ली ⇄ जयपुर NH48 गलियारे पर पायलट।">Send commercial parcels on trucks already traveling your route. Honest pilot on Delhi ⇄ Jaipur NH48 corridor.</span>
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button type="button"
+                        class="btn-cta-primary"
+                        onclick="LoadShareNav.switchTab('book-corridor')">
+                    <span class="lang-text"
+                          data-en="Book a delivery"
+                          data-hi="डिलीवरी बुक करें">Book a delivery</span>
+                    {{ icon("arrow_forward", size=18) }}
+                </button>
+                <button type="button"
+                        class="btn-cta-secondary"
+                        onclick="LoadShareNav.switchTab('rates')">
+                    <span class="lang-text" data-en="See rates" data-hi="दरें देखें">See rates</span>
+                </button>
+            </div>
+        </header>
+    </div>
+</section>

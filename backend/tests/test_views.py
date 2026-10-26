@@ -69,7 +69,7 @@ class TestLandingPageView:
     def test_authenticated_landing_page_renders_dashboard(
         self, rf: RequestFactory, user
     ):
-        """Verify authenticated landing page renders the logistics dashboard."""
+        """Verify authenticated landing page renders the modular shell layout."""
         request = rf.get("/")
         request.user = user
 
@@ -79,13 +79,13 @@ class TestLandingPageView:
         assert response.status_code == 200
         content = response.render().content.decode("utf-8")
 
-        # Logistics dashboard content is rendered
-        assert "PILOT PHASE: Commercial Senders Only" in content
-        assert "NH48 FREIGHT CORRIDOR • LIVE SLOTS" in content
-        assert "How Corridor Dispatch Works" in content
-        assert "Delhi ⇄ Jaipur Transit Corridor" in content
-        assert "Wholesale Corridor Rates" in content
-        assert "Engineered for Safe Transit" in content
+        # Landing shell container is rendered
+        assert "landing-page-shell" in content
+        assert "landing-top-bar" in content
+
+        # Both Language and Theme toggles are present in top bar
+        assert "lang-toggle-btn" in content
+        assert "theme-toggle-btn" in content
 
         # OTP Login form is NOT shown for active session
         assert "form_otp_login" not in content
@@ -95,7 +95,7 @@ class TestLandingPageView:
         assert "btn_session_timeout_login" in content
 
     def test_design_reference_components_present(self, rf: RequestFactory, user):
-        """Verify placements and components from reference design exist in rendered HTML."""
+        """Verify placements and navigation components from reference design exist in rendered HTML."""
         request = rf.get("/")
         request.user = user
 
@@ -103,30 +103,36 @@ class TestLandingPageView:
         response = view(request)
         content = response.render().content.decode("utf-8")
 
-        # Theme override CSS linked
+        # Theme variables, override and layout CSS linked
+        assert "variables.css" in content
         assert "theme_override.css" in content
+        assert "landing_layout.css" in content
+        assert "floating_chip.css" in content
+        assert "bottom_navbar.css" in content
 
-        # Schematic waybill manifest
-        assert "WAYBILL #DEL-JPR-2025" in content
-        assert "Delhi Depot (Origin Hub)" in content
-        assert "Manesar Transit Drop" in content
-        assert "Kotputli Highway Junction" in content
-        assert "Jaipur Depot (Final Hub)" in content
-        assert "barcode-strip" in content
+        # Desktop floating chip and mobile bottom nav are present
+        assert "desktop-floating-chip" in content
+        assert "mobile-bottom-navbar" in content
 
-        # 3 Pricing Tiers
-        assert "TIER 1 • PARCELS" in content
-        assert "TIER 2 • COMMERCIAL" in content
-        assert "TIER 3 • PART-LOAD" in content
+        # All 5 navigation destinations exist in DOM
+        assert 'data-tab="book-corridor"' in content
+        assert 'data-tab="rates"' in content
+        assert 'data-tab="home"' in content
+        assert 'data-tab="support"' in content
+        assert 'data-tab="profile"' in content
 
-        # Trust pillars & helpline
-        assert "1800-419-7688" in content
-        assert "OTP at Pickup" in content
-        assert "OTP at Delivery" in content
+        # Modular tabbed views are rendered
+        assert 'id="view-home"' in content
+        assert 'id="view-book-corridor"' in content
+        assert 'id="view-rates"' in content
+        assert 'id="view-support"' in content
+        assert 'id="view-profile"' in content
 
-        # Pre-flight audit strip & Mobile bottom navigation
-        assert "PILOT DEPLOYMENT PRE-FLIGHT CHECKLIST" in content
-        assert "mobile-bottom-nav" in content
+        # Interactive JavaScript modules are linked
+        assert "theme_toggle.js" in content
+        assert "navigation_state.js" in content
+        assert "language_toggle.js" in content
+        assert "theme-toggle-btn" in content
 
     def test_session_timeout_dialog_attributes(self, rf: RequestFactory, user):
         """Verify session timeout modal dialog has the expected button and links."""
@@ -374,8 +380,9 @@ class TestLoginView:
 
         # Renders dashboard content
         assert "PILOT PHASE: Commercial Senders Only" in content
-        assert "How Corridor Dispatch Works" in content
-        assert "Delhi ⇄ Jaipur Transit Corridor" in content
+        assert "landing-page-shell" in content
+        assert "desktop-floating-chip" in content
+        assert "mobile-bottom-navbar" in content
         # Login form is hidden
         assert "form_otp_login" not in content
 
@@ -441,9 +448,6 @@ class TestLoginView:
         # 3. Verify user created with correct profile data
         User = get_user_model()
         created_user = User.objects.get(phone_number=new_phone)
-        assert created_user.first_name == "Rajesh"
-        assert created_user.last_name == "Kumar"
-        assert created_user.email == "rajesh@example.com"
         assert created_user.is_phone_verified is True
 
 

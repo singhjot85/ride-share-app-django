@@ -1,0 +1,48 @@
+{# Desktop Center Floating Rounded Nav Chip #}
+{% from "core/components/common/icons.jinja" import icon %}
+<nav id="desktop-floating-chip"
+     class="desktop-floating-chip"
+     aria-label="Primary desktop navigation">
+    <div class="chip-inner">
+        <button type="button"
+                class="chip-nav-item"
+                data-tab="book-corridor"
+                onclick="LoadShareNav.switchTab('book-corridor')"
+                aria-label="Book Corridor">
+            {{ icon("add_box", size=18, extra_classes="chip-icon") }}
+            <span class="chip-label">Book Corridor</span>
+        </button>
+        <button type="button"
+                class="chip-nav-item"
+                data-tab="rates"
+                onclick="LoadShareNav.switchTab('rates')"
+                aria-label="Rates">
+            {{ icon("currency_rupee", size=18, extra_classes="chip-icon") }}
+            <span class="chip-label">Rates</span>
+        </button>
+        <button type="button"
+                class="chip-nav-item active"
+                data-tab="home"
+                onclick="LoadShareNav.switchTab('home')"
+                aria-label="Home">
+            {{ icon("local_shipping", size=18, extra_classes="chip-icon") }}
+            <span class="chip-label">Home</span>
+        </button>
+        <button type="button"
+                class="chip-nav-item"
+                data-tab="support"
+                onclick="LoadShareNav.switchTab('support')"
+                aria-label="Support">
+            {{ icon("support_agent", size=18, extra_classes="chip-icon") }}
+            <span class="chip-label">Support</span>
+        </button>
+        <button type="button"
+                class="chip-nav-item"
+                data-tab="profile"
+                onclick="LoadShareNav.switchTab('profile')"
+                aria-label="Profile">
+            {{ icon("account_circle", size=18, extra_classes="chip-icon") }}
+            <span class="chip-label">Profile</span>
+        </button>
+    </div>
+</nav>

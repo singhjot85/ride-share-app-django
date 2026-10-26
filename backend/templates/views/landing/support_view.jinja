@@ -1,0 +1,27 @@
+{# Support View Placeholder #}
+{% from "core/components/common/icons.jinja" import icon %}
+<section id="view-support"
+         class="landing-tab-view hidden"
+         aria-labelledby="support-view-title">
+    <div class="landing-view-container max-w-2xl mx-auto px-4 pt-12 pb-20 text-center">
+        <div class="coming-soon-card bg-surface-container-lowest border border-outline-variant/60 rounded-3xl p-10 shadow-sm space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-surface-container text-secondary flex items-center justify-center mx-auto shadow-inner">
+                {{ icon("support_agent", size=32) }}
+            </div>
+            <h1 id="support-view-title" class="text-2xl font-bold text-primary">24x7 Corridor Helpline &amp; Concierge</h1>
+            <p class="text-sm text-on-surface-variant max-w-md mx-auto leading-relaxed">
+                Direct phone support, WhatsApp dispatch tracking, and live depot concierge services for senders on the NH48 route.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+                <a href="tel:18004197688"
+                   class="btn-cta-primary flex items-center gap-2">
+                    {{ icon("call", size=18) }}
+                    <span>1800-419-7688 (Toll Free)</span>
+                </a>
+                <button type="button"
+                        class="btn-cta-secondary"
+                        onclick="LoadShareNav.switchTab('home')">Back to Overview</button>
+            </div>
+        </div>
+    </div>
+</section>

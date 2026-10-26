@@ -418,7 +418,7 @@ class LandingPageView(BaseLanguageTemplateView):
     - Provides bilingual support with Layer 2 state persistence.
     """
 
-    template_name = "landing_page.jinja"
+    template_name = "user_landing_page.jinja"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """
