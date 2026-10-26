@@ -1,10 +1,12 @@
 /**
- * landing_layout.css: Layout, header, view visibility and shimmer animations for LoadShare.
+ * landing_layout.css: Responsive layout, spacing, typography, and theme styling for LoadShare.
  *
  * HARD RULE: Uses CSS variables from variables.css exclusively.
  */
 
-/* Reset host container to allow edge-to-edge layout without core sidebar offset */
+/* =========================================================================
+   Host Container Resets
+   ========================================================================= */
 .app-main {
   margin-left: 0 !important;
   width: 100% !important;
@@ -67,7 +69,6 @@ body,
   transform: scale(0.97);
 }
 
-/* Logo Box: Brand Secondary Orange Background with white icon */
 .brand-logo-box {
   width: 36px;
   height: 36px;
@@ -95,12 +96,6 @@ body,
   transition: color 0.2s ease;
 }
 
-.brand-subtitle {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  transition: color 0.2s ease;
-}
-
 .header-action-group {
   display: flex;
   align-items: center;
@@ -108,7 +103,7 @@ body,
 }
 
 /* =========================================================================
-   Toggle Buttons (Language & Theme)
+   Header Action Toggles (Language & Theme)
    ========================================================================= */
 .lang-toggle-btn {
   display: inline-flex;
@@ -177,8 +172,27 @@ body,
 }
 
 /* =========================================================================
-   Tabbed Views Visibility
+   Main View Container & Centered Max-Width Constraints
    ========================================================================= */
+.landing-content-shell {
+  width: 100%;
+  position: relative;
+  min-height: calc(100vh - 56px);
+}
+
+.landing-view-container {
+  width: 100%;
+  max-width: 48rem; /* 768px matching max-w-2xl */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 5rem;
+  box-sizing: border-box;
+}
+
+/* Tabbed View State Toggling */
 .landing-tab-view {
   display: none;
 }
@@ -188,13 +202,323 @@ body,
   animation: fadeIn 0.2s ease-in-out;
 }
 
-.landing-tab-view.hidden {
+.landing-tab-view.hidden,
+.hidden {
   display: none !important;
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================================
+   Vertical Flow Spacing (space-y-*)
+   Ensures consistent, elegant spacing between sections and components.
+   ========================================================================= */
+.space-y-12 > * + * { margin-top: 3rem; }
+.space-y-8 > * + * { margin-top: 2rem; }
+.space-y-6 > * + * { margin-top: 1.5rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+.space-y-2\.5 > * + * { margin-top: 0.625rem; }
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-1\.5 > * + * { margin-top: 0.375rem; }
+.space-y-1 > * + * { margin-top: 0.25rem; }
+.space-y-0\.5 > * + * { margin-top: 0.125rem; }
+
+/* =========================================================================
+   Flexbox & Grid Alignment Utilities
+   ========================================================================= */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-shrink-0 { flex-shrink: 0; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+
+.gap-1 { gap: 0.25rem; }
+.gap-1\.5 { gap: 0.375rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-3\.5 { gap: 0.875rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+@media (min-width: 640px) {
+  .sm\:flex-row { flex-direction: row; }
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sm\:items-center { align-items: center; }
+  .sm\:text-left { text-align: left; }
+}
+
+/* =========================================================================
+   Paddings, Margins & Dimensions
+   ========================================================================= */
+.p-1 { padding: 0.25rem; }
+.p-3 { padding: 0.75rem; }
+.p-4 { padding: 1rem; }
+.p-5 { padding: 1.25rem; }
+.p-6 { padding: 1.5rem; }
+.p-10 { padding: 2.5rem; }
+
+.px-1 { padding-left: 0.25rem; padding-right: 0.25rem; }
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+
+.py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+
+.pt-1 { padding-top: 0.25rem; }
+.pt-2 { padding-top: 0.5rem; }
+.pt-3 { padding-top: 0.75rem; }
+.pt-4 { padding-top: 1rem; }
+.pt-6 { padding-top: 1.5rem; }
+.pt-12 { padding-top: 3rem; }
+
+.pb-1 { padding-bottom: 0.25rem; }
+.pb-2 { padding-bottom: 0.5rem; }
+.pb-4 { padding-bottom: 1rem; }
+.pb-20 { padding-bottom: 5rem; }
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.my-3 { margin-top: 0.75rem; margin-bottom: 0.75rem; }
+
+.w-full { width: 100%; }
+.w-2 { width: 0.5rem; }
+.h-2 { height: 0.5rem; }
+.w-6 { width: 1.5rem; }
+.h-6 { height: 1.5rem; }
+.w-8 { width: 2rem; }
+.h-8 { height: 2rem; }
+.w-10 { width: 2.5rem; }
+.h-10 { height: 2.5rem; }
+.w-14 { width: 3.5rem; }
+.h-14 { height: 3.5rem; }
+.w-16 { width: 4rem; }
+.h-16 { height: 4rem; }
+.w-20 { width: 5rem; }
+.w-24 { width: 6rem; }
+.w-28 { width: 7rem; }
+.w-36 { width: 9rem; }
+.w-2\/3 { width: 66.666667%; }
+
+.h-1\.5 { height: 0.375rem; }
+.h-3 { height: 0.75rem; }
+.h-3\.5 { height: 0.875rem; }
+.h-5 { height: 1.25rem; }
+
+.relative { position: relative; }
+.absolute { position: absolute; }
+.inset-y-0 { top: 0; bottom: 0; }
+.left-0 { left: 0; }
+.overflow-hidden { overflow: hidden; }
+
+.max-w-sm { max-width: 24rem; }
+.max-w-md { max-width: 28rem; }
+.max-w-2xl { max-width: 48rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+.block { display: block; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+
+/* =========================================================================
+   Borders & Corners
+   ========================================================================= */
+.rounded { border-radius: 0.25rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-xl { border-radius: 0.75rem; }
+.rounded-2xl { border-radius: 1rem; }
+.rounded-3xl { border-radius: 1.5rem; }
+.rounded-full { border-radius: 9999px; }
+
+.border { border: 1px solid var(--color-border); }
+.border-t { border-top: 1px solid var(--color-border); }
+.border-b { border-bottom: 1px solid var(--color-border); }
+.border-dashed { border-style: dashed !important; }
+
+/* =========================================================================
+   Typography
+   ========================================================================= */
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+.font-extrabold { font-weight: 800; }
+.tracking-wide { letter-spacing: 0.025em; }
+.tracking-wider { letter-spacing: 0.05em; }
+.tracking-tight { letter-spacing: -0.025em; }
+.uppercase { text-transform: uppercase; }
+.leading-relaxed { line-height: 1.625; }
+.leading-tight { line-height: 1.25; }
+
+.text-\[11px\] { font-size: 11px; line-height: 14px; }
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-base { font-size: 1rem; line-height: 1.5rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+.text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+
+@media (min-width: 640px) {
+  .sm\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .sm\:text-2xl { font-size: 1.5rem; line-height: 2rem; }
+  .sm\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+}
+
+/* =========================================================================
+   Theme Token Mappings for Backgrounds, Cards & Text
+   ========================================================================= */
+.bg-surface-container-lowest {
+  background-color: var(--color-surface-container-lowest) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+.bg-surface-container-low,
+.bg-surface-container-low\/80 {
+  background-color: var(--color-surface-container-low) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+.bg-surface-container {
+  background-color: var(--color-surface-container) !important;
+  color: var(--color-text) !important;
+}
+
+.bg-surface-container-high {
+  background-color: var(--color-surface-container-high) !important;
+  color: var(--color-text) !important;
+}
+
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.bg-primary-container {
+  background-color: var(--color-primary-container) !important;
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary) !important;
+}
+
+.bg-secondary-container {
+  background-color: var(--color-secondary-container) !important;
+}
+
+.bg-emerald-400 {
+  background-color: var(--color-live-pulse) !important;
+}
+
+.text-primary {
+  color: var(--color-text-title) !important;
+}
+
+.text-on-surface-variant {
+  color: var(--color-text-muted) !important;
+}
+
+.text-secondary {
+  color: var(--color-secondary) !important;
+}
+
+.text-secondary-fixed {
+  color: var(--color-secondary-fixed) !important;
+}
+
+.text-surface-variant {
+  color: var(--color-surface-variant) !important;
+}
+
+.text-surface-dim {
+  color: var(--color-surface-dim) !important;
+}
+
+.text-surface {
+  color: var(--color-surface) !important;
+}
+
+.text-on-primary {
+  color: var(--color-on-primary) !important;
+}
+
+.text-outline {
+  color: var(--color-outline) !important;
+}
+
+.text-outline-variant {
+  color: var(--color-outline-variant) !important;
+}
+
+/* =========================================================================
+   Tracker Preview Canvas & Cards
+   ========================================================================= */
+#state-active-dispatch,
+#state-skeleton-dispatch {
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-container) 100%) !important;
+  color: var(--color-primary-contrast) !important;
+  border-color: var(--color-border-subtle) !important;
+}
+
+#state-empty-dispatch {
+  background-color: var(--color-surface-container-lowest) !important;
+  color: var(--color-text) !important;
+}
+
+/* Pulse Animation */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+/* =========================================================================
+   Collapsible FAQs (details/summary Accordion)
+   ========================================================================= */
+details summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details summary .material-symbols-outlined {
+  transition: transform 0.2s ease;
+}
+
+details[open] summary .material-symbols-outlined {
+  transform: rotate(180deg);
 }
 
 /* =========================================================================
@@ -251,71 +575,11 @@ body,
   transform: scale(0.98);
 }
 
-/* =========================================================================
-   Skeleton Shimmer Loading Animations
-   ========================================================================= */
-.skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--shimmer-from) 0%,
-    var(--shimmer-mid) 50%,
-    var(--shimmer-to) 100%
-  );
-  background-size: 200% 100%;
-  animation: skeletonShimmer 1.5s infinite;
-}
-
-@keyframes skeletonShimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* =========================================================================
-   Card & Container Theme Variable Mappings
-   Guarantees that cards & elements react dynamically to dark/light theme switch.
-   ========================================================================= */
-.landing-card,
-.bg-surface-container-lowest {
-  background-color: var(--color-surface-container-lowest) !important;
-  color: var(--color-text) !important;
-  border-color: var(--color-border) !important;
-}
-
-.bg-surface-container-low {
-  background-color: var(--color-surface-container-low) !important;
-  color: var(--color-text) !important;
-  border-color: var(--color-border) !important;
-}
-
-.bg-surface-container {
-  background-color: var(--color-surface-container) !important;
-  color: var(--color-text) !important;
-}
-
-.bg-surface-container-high {
-  background-color: var(--color-surface-container-high) !important;
-  color: var(--color-text) !important;
-}
-
-.text-primary {
-  color: var(--color-text-title) !important;
-}
-
-.text-on-surface-variant {
-  color: var(--color-text-muted) !important;
-}
-
-.text-secondary {
-  color: var(--color-secondary) !important;
-}
-
-.border-outline-variant,
-.border-outline-variant\/60,
-.border-outline-variant\/50,
-.border-outline-variant\/40,
-.border-outline-variant\/30 {
-  border-color: var(--color-border) !important;
-}
+/* Shadows */
+.shadow-xs { box-shadow: var(--shadow-xs); }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-inner { box-shadow: var(--shadow-inner); }
 
 /* Coming Soon Cards */
 .coming-soon-card {

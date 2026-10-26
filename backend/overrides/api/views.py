@@ -14,6 +14,8 @@ from django.conf import settings
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.views.generic.base import View
 
+from overrides.labels import LANDING_PAGE_LABELS
+
 LOGGER = logging.getLogger(__name__)
 
 SUPPORTED_LANGUAGES = ("en", "hi")
@@ -21,147 +23,6 @@ DEFAULT_LANGUAGE = "en"
 LANGUAGE_COOKIE_NAME = "loadshare_lang"
 DJANGO_LANGUAGE_COOKIE_NAME = "django_language"
 COOKIE_MAX_AGE = 365 * 24 * 60 * 60  # 1 year
-
-# Built-in bilingual fallback dictionary for LoadShare landing page
-LANDING_PAGE_LABELS = {
-    "brand_name": {"en": "LoadShare", "hi": "लोडशेयर"},
-    "brand_tagline": {
-        "en": "Direct Corridor Freight & Parcel Delivery",
-        "hi": "डायरेक्ट कॉरिडोर फ्रेट और पार्सल डिलीवरी",
-    },
-    "pilot_notice": {
-        "en": "PILOT PHASE: Commercial Senders Only on Delhi ⇄ Jaipur Corridor",
-        "hi": "पायलट चरण: केवल दिल्ली ⇄ जयपुर कॉरिडोर हेतु पार्सल सेवा",
-    },
-    "hero_corridor_badge": {
-        "en": "NH48 FREIGHT CORRIDOR • LIVE SLOTS",
-        "hi": "NH48 फ्रेट कॉरिडोर • लाइव स्लॉट",
-    },
-    "hero_headline": {
-        "en": "Send parcels on trucks already traveling your route",
-        "hi": "उसी रूट पर जा रहे ट्रकों से किफायती पार्सल भेजें",
-    },
-    "hero_subtitle": {
-        "en": "Direct corridor delivery at wholesale freight rates. No multiple hub handling, straight point-to-point transit for small businesses & traders.",
-        "hi": "थोक भाड़े पर सीधे कॉरिडोर से पार्सल भेजें। बिना बार-बार हब बदले, सीधे एक बिंदु से दूसरे बिंदु तक त्वरित पार्सल डिस्पेच।",
-    },
-    "hero_cta_book": {
-        "en": "Book Pilot Corridor Delivery",
-        "hi": "पायलट कॉरिडोर पार्सल बुक करें",
-    },
-    "hero_cta_hubs": {
-        "en": "View NH48 Transit Hubs",
-        "hi": "NH48 ट्रांजिट हब देखें",
-    },
-    "trust_badge_otp": {
-        "en": "OTP-verified pickup & delivery • Direct intercity route • No middlemen markups",
-        "hi": "OTP-सत्यापित पिकअप व डिलीवरी • सीधा अंतर-शहर रूट • कोई बिचौलिया शुल्क नहीं",
-    },
-    "how_it_works_title": {
-        "en": "How Corridor Dispatch Works",
-        "hi": "पार्सल भेजने की 3 सरल प्रक्रियाएँ",
-    },
-    "how_it_works_subtitle": {
-        "en": "Direct freight integration without repetitive sorting centers.",
-        "hi": "बिना बार-बार छंटाई केंद्रों के सीधा फ्रेट ट्रांसपोर्ट एकीकरण।",
-    },
-    "how_it_works_step1_title": {
-        "en": "Request Pickup & Route",
-        "hi": "पिकअप व रूट चुनें",
-    },
-    "how_it_works_step1_desc": {
-        "en": "Specify parcel weight, dimensions, and drop hub. Get immediate locked pricing with zero weight discrepancies.",
-        "hi": "पार्सल वजन, आयाम और ड्रॉप हब चुनें। बिना किसी अतिरिक्त शुल्क के तुरंत निश्चित दर प्राप्त करें।",
-    },
-    "how_it_works_step2_title": {
-        "en": "Match with On-Route Truck",
-        "hi": "रूट पर चल रहे ट्रक से मिलान",
-    },
-    "how_it_works_step2_desc": {
-        "en": "Assigned directly to a verified commercial carrier already scheduled and fueled on NH48 corridor.",
-        "hi": "NH48 कॉरिडोर पर पहले से निर्धारित और सत्यापित कमर्शियल ट्रक से तुरंत सीधा जुड़ाव।",
-    },
-    "how_it_works_step3_title": {
-        "en": "Track & OTP Handover",
-        "hi": "ट्रैक व OTP से सुरक्षित डिलीवरी",
-    },
-    "how_it_works_step3_desc": {
-        "en": "Live automated milestone pings. Handover happens only upon physical numeric OTP verification by recipient.",
-        "hi": "लाइव ऑटोमेटेड माइलस्टोन अपडेट्स। डिलीवरी केवल प्राप्तकर्ता द्वारा भौतिक संख्यात्मक OTP सत्यापन पर ही संपन्न।",
-    },
-    "rates_title": {
-        "en": "Wholesale Corridor Rates",
-        "hi": "थोक कॉरिडोर दरें",
-    },
-    "rates_subtitle": {
-        "en": "Direct freight space pricing. No volume surcharge or dark fuel multipliers.",
-        "hi": "सीधा फ्रेट स्पेस मूल्य निर्धारण। कोई अप्रत्यक्ष शुल्क या अतिरिक्त ईंधन अधिभार नहीं।",
-    },
-    "tier1_name": {"en": "TIER 1 • PARCELS", "hi": "श्रेणी 1 • पार्सल"},
-    "tier1_weight": {"en": "10 kg – 50 kg", "hi": "10 किग्रा – 50 किग्रा"},
-    "tier1_rate": {"en": "₹12", "hi": "₹12"},
-    "tier1_unit": {"en": "/ kg", "hi": "/ किग्रा"},
-    "tier1_subtext": {
-        "en": "Minimum docket fee: ₹350",
-        "hi": "न्यूनतम डॉकेट शुल्क: ₹350",
-    },
-    "tier2_name": {"en": "TIER 2 • COMMERCIAL", "hi": "श्रेणी 2 • कमर्शियल"},
-    "tier2_weight": {"en": "51 kg – 250 kg", "hi": "51 किग्रा – 250 किग्रा"},
-    "tier2_rate": {"en": "₹8.50", "hi": "₹8.50"},
-    "tier2_unit": {"en": "/ kg", "hi": "/ किग्रा"},
-    "tier2_badge": {
-        "en": "Most Popular for Traders",
-        "hi": "व्यापारियों की पहली पसंद",
-    },
-    "tier2_subtext": {
-        "en": "No separate handling surcharge",
-        "hi": "कोई अलग हैंडलिंग चार्ज नहीं",
-    },
-    "tier3_name": {"en": "TIER 3 • PART-LOAD (LTL)", "hi": "श्रेणी 3 • पार्ट-लोड"},
-    "tier3_weight": {"en": "250 kg+", "hi": "250 किग्रा+"},
-    "tier3_rate": {"en": "₹6.00", "hi": "₹6.00"},
-    "tier3_unit": {"en": "/ kg", "hi": "/ किग्रा"},
-    "tier3_subtext": {
-        "en": "Priority bay loading included",
-        "hi": "प्राथमिकता बे-लोडिंग शामिल",
-    },
-    "faq_title": {
-        "en": "Frequently Asked Questions",
-        "hi": "अक्सर पूछे जाने वाले प्रश्न",
-    },
-    "faq_subtitle": {
-        "en": "Clear ground operational rules for commercial consignors.",
-        "hi": "कमर्शियल कंसाइनर्स हेतु स्पष्ट ऑन-ग्राउंड परिचालन नियम।",
-    },
-    "booking_title": {
-        "en": "Sender Express Booking",
-        "hi": "एक्सप्रेस पार्सल बुकिंग",
-    },
-    "booking_subtitle": {
-        "en": "No password needed. Verified via 4-digit SMS OTP.",
-        "hi": "पासवर्ड की आवश्यकता नहीं। 4-अंकीय SMS OTP से त्वरित सत्यापन।",
-    },
-    "label_phone": {
-        "en": "10-DIGIT MOBILE NUMBER",
-        "hi": "10-अंकीय मोबाइल नंबर",
-    },
-    "label_name": {
-        "en": "FULL NAME / BUSINESS NAME",
-        "hi": "पूरा नाम / व्यापार का नाम",
-    },
-    "label_route": {
-        "en": "ACTIVE CORRIDOR ROUTE",
-        "hi": "सक्रिय कॉरिडोर रूट",
-    },
-    "btn_request_otp": {
-        "en": "Request Corridor OTP & Rates",
-        "hi": "कॉरिडोर OTP व दरें प्राप्त करें",
-    },
-    "footer_copyright": {
-        "en": "© 2025 LoadShare Logistics India Ltd. All rights reserved. Registered inter-city parcel carrier under Motor Vehicles (MV) Carrier Framework.",
-        "hi": "© 2025 लोडशेयर लॉजिस्टिक्स इंडिया लिमिटेड। सर्वाधिकार सुरक्षित। मोटर वाहन (MV) फ्रेमवर्क के तहत पंजीकृत इंटर-सिटी पार्सल कैरियर।",
-    },
-}
 
 
 def get_request_language(request: HttpRequest) -> str:

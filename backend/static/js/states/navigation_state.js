@@ -112,6 +112,32 @@
         window.addEventListener("scroll", handleScroll, { passive: true });
     }
 
+    /**
+     * Switch state for the Tracker Preview canvas.
+     *
+     * @param {'active' | 'loading' | 'empty'} state
+     */
+    function setDispatchState(state) {
+        var active = document.getElementById("state-active-dispatch");
+        var skeleton = document.getElementById("state-skeleton-dispatch");
+        var empty = document.getElementById("state-empty-dispatch");
+
+        var btnActive = document.getElementById("btn-state-dispatch");
+        var btnLoading = document.getElementById("btn-state-loading");
+        var btnEmpty = document.getElementById("btn-state-empty");
+
+        if (active) active.classList.toggle("hidden", state !== "active");
+        if (skeleton) skeleton.classList.toggle("hidden", state !== "loading");
+        if (empty) empty.classList.toggle("hidden", state !== "empty");
+
+        var activeClass = "px-2.5 py-1 rounded bg-surface-container-lowest text-primary shadow-xs font-semibold";
+        var inactiveClass = "px-2.5 py-1 rounded text-on-surface-variant hover:text-primary transition-all font-semibold";
+
+        if (btnActive) btnActive.className = (state === "active") ? activeClass : inactiveClass;
+        if (btnLoading) btnLoading.className = (state === "loading") ? activeClass : inactiveClass;
+        if (btnEmpty) btnEmpty.className = (state === "empty") ? activeClass : inactiveClass;
+    }
+
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", init);
     } else {
@@ -121,6 +147,7 @@
     // Expose public API
     window.LoadShareNav = {
         switchTab: switchTab,
+        setDispatchState: setDispatchState,
         toggleTheme: function () {
             if (window.toggleTheme) window.toggleTheme();
         },
