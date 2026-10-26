@@ -286,6 +286,283 @@ LANDING_PAGE_LABELS = {
         "en": "Manage business GSTIN, saved pickup/drop hubs, and consignment history.",
         "hi": "व्यवसाय GSTIN, सहेजे गए पिकअप/ड्रॉप हब और कंसाइनमेंट विवरण प्रबंधित करें।",
     },
+    # Corridor Page / Booking View Labels
+    "corridor_back_home": {
+        "en": "Back to Home",
+        "hi": "होम पर वापस",
+    },
+    "corridor_route_facts": {
+        "en": "NH48 Corridor · Delhi ⇄ Jaipur · 270 km",
+        "hi": "NH48 कॉरिडोर · दिल्ली ⇄ जयपुर · 270 किमी",
+    },
+    "corridor_timing_badge": {
+        "en": "Departs daily 18:00–22:00",
+        "hi": "प्रतिदिन रवानगी 18:00–22:00",
+    },
+    "reviewer_state_label": {
+        "en": "Reviewer State Switcher:",
+        "hi": "रिव्यूअर स्टेट स्विचर:",
+    },
+    "btn_state_trucks": {
+        "en": "[Show 3 Trucks]",
+        "hi": "[3 ट्रक देखें]",
+    },
+    "btn_state_skeleton": {
+        "en": "[Loading Skeleton]",
+        "hi": "[लोडिंग स्केलेटन]",
+    },
+    "btn_state_empty_corridor": {
+        "en": "[0 Results Empty]",
+        "hi": "[0 परिणाम रिक्त]",
+    },
+    "btn_state_capacity": {
+        "en": "[Corridor at Capacity]",
+        "hi": "[कॉरिडोर फुल]",
+    },
+    "btn_state_error": {
+        "en": "[Error State]",
+        "hi": "[त्रुटि स्थिति]",
+    },
+    "wizard_title": {
+        "en": "Find Instant Truck Space",
+        "hi": "NH48 पर तुरंत ट्रक में स्थान खोजें",
+    },
+    "label_pickup_point": {
+        "en": "Pickup Point",
+        "hi": "पिकअप स्थान",
+    },
+    "corridor_name_tag": {
+        "en": "NH48 Corridor",
+        "hi": "NH48 कॉरिडोर",
+    },
+    "btn_use_location": {
+        "en": "Use my location for closest hub",
+        "hi": "निकटतम हब हेतु मेरी लोकेशन चुनें",
+    },
+    "pickup_detected_hint": {
+        "en": "Sanjay Gandhi Transport Nagar, Delhi (Auto-detected)",
+        "hi": "संजय गांधी ट्रांसपोर्ट नगर, दिल्ली (स्वतः पहचाना गया)",
+    },
+    "quick_hubs_label": {
+        "en": "Popular Pickup Hubs:",
+        "hi": "लोकप्रिय पिकअप हब:",
+    },
+    "hub_sgtn": {
+        "en": "Delhi (SGTN Bay 4)",
+        "hi": "दिल्ली (SGTN बे 4)",
+    },
+    "hub_gurugram": {
+        "en": "Gurugram (Hero Honda)",
+        "hi": "गुरुग्राम (हीरो होंडा)",
+    },
+    "hub_manesar": {
+        "en": "Manesar IMT Depot",
+        "hi": "मानेसर IMT डिपो",
+    },
+    "label_drop_destination": {
+        "en": "Drop Destination",
+        "hi": "ड्रॉप गंतव्य",
+    },
+    "drop_default_hub": {
+        "en": "Jaipur VKI Depot",
+        "hi": "जयपुर VKI डिपो",
+    },
+    "drop_default_address": {
+        "en": "Vishwakarma Road 14 (South Terminal Dock 8)",
+        "hi": "विश्वकर्मा रोड 14 (साउथ टर्मिनल डॉक 8)",
+    },
+    "btn_next_window": {
+        "en": "Next: Select Departure Window",
+        "hi": "आगे: रवानगी समय चुनें",
+    },
+    "label_departure_window": {
+        "en": "Departure Window",
+        "hi": "रवानगी समय",
+    },
+    "tonight_priority_badge": {
+        "en": "Tonight priority",
+        "hi": "आज रात प्राथमिकता",
+    },
+    "window_tonight": {
+        "en": "Tonight",
+        "hi": "आज रात",
+    },
+    "window_tonight_sub": {
+        "en": "18:00–22:00",
+        "hi": "18:00–22:00",
+    },
+    "window_tomorrow": {
+        "en": "Tomorrow",
+        "hi": "कल",
+    },
+    "window_tomorrow_sub": {
+        "en": "T+1 Regular",
+        "hi": "T+1 नियमित",
+    },
+    "window_custom": {
+        "en": "Custom Date",
+        "hi": "तारीख चुनें",
+    },
+    "window_custom_sub": {
+        "en": "Select Day",
+        "hi": "दिन चुनें",
+    },
+    "btn_wizard_back": {
+        "en": "Back",
+        "hi": "पीछे",
+    },
+    "btn_next_weight": {
+        "en": "Next: Select Consignment Weight",
+        "hi": "आगे: वजन चुनें",
+    },
+    "label_consignment_weight": {
+        "en": "Consignment Weight",
+        "hi": "पार्सल वजन",
+    },
+    "fair_tariff_badge": {
+        "en": "Per-KG Fair Tariff",
+        "hi": "प्रति-किग्रा उचित दर",
+    },
+    "weight_slab_sm_title": {
+        "en": "10–50 kg",
+        "hi": "10–50 किग्रा",
+    },
+    "weight_slab_sm_desc": {
+        "en": "Standard",
+        "hi": "मानक",
+    },
+    "weight_slab_md_title": {
+        "en": "51–250 kg",
+        "hi": "51–250 किग्रा",
+    },
+    "weight_slab_md_desc": {
+        "en": "Commercial ★",
+        "hi": "व्यावसायिक ★",
+    },
+    "weight_slab_lg_title": {
+        "en": "250 kg+",
+        "hi": "250+ किग्रा",
+    },
+    "weight_slab_lg_desc": {
+        "en": "Part-Load LTL",
+        "hi": "पार्ट-लोड LTL",
+    },
+    "btn_find_corridor_trucks": {
+        "en": "Find trucks on this corridor",
+        "hi": "इस कॉरिडोर पर ट्रक खोजें",
+    },
+    "results_count_live": {
+        "en": "3 trucks departing tonight · 18:00–22:00",
+        "hi": "3 ट्रक आज रात रवाना होंगे · 18:00–22:00",
+    },
+    "total_price_suffix": {
+        "en": "total",
+        "hi": "कुल",
+    },
+    "available_suffix": {
+        "en": "available",
+        "hi": "उपलब्ध",
+    },
+    "btn_request_reserve": {
+        "en": "Request Reserve",
+        "hi": "रिजर्वेशन अनुरोध",
+    },
+    "verified_carrier_tooltip": {
+        "en": "Verified Linehaul Carrier",
+        "hi": "सत्यापित लाइनहॉल कैरियर",
+    },
+    "empty_corridor_title": {
+        "en": "No trucks match — try a ±2 hour window",
+        "hi": "कोई ट्रक उपलब्ध नहीं — ±2 घंटे का समय बदलें",
+    },
+    "empty_corridor_desc": {
+        "en": "All immediate vehicles on this exact slot have closed manifests. Try broadening your departure filter or join priority dispatch.",
+        "hi": "इस समय के सभी वाहनों का घोषणापत्र भर चुका है। कृपया समय सीमा बढ़ाएं या प्रतीक्षा सूची में शामिल हों।",
+    },
+    "btn_reset_filters": {
+        "en": "Reset Filters",
+        "hi": "फ़िल्टर रीसेट करें",
+    },
+    "btn_join_standby": {
+        "en": "Join standby list",
+        "hi": "प्रतीक्षा सूची में शामिल हों",
+    },
+    "capacity_badge_text": {
+        "en": "High Demand",
+        "hi": "उच्च मांग",
+    },
+    "capacity_corridor_title": {
+        "en": "Tonight full · Next slot tomorrow 18:00",
+        "hi": "आज रात फुल · अगला स्लॉट कल 18:00 बजे",
+    },
+    "capacity_corridor_desc": {
+        "en": "All 5 linehauls departing tonight are at 100% volumetric payload.",
+        "hi": "आज रात के सभी 5 वाहन पूरी तरह से भर चुके हैं।",
+    },
+    "btn_request_standby": {
+        "en": "Request standby",
+        "hi": "स्टैंडबाय अनुरोध करें",
+    },
+    "error_corridor_title": {
+        "en": "Couldn't load trucks",
+        "hi": "ट्रक लोड नहीं हो सके",
+    },
+    "error_corridor_desc": {
+        "en": "Connection to NH48 Linehaul Telemetry timed out.",
+        "hi": "NH48 टेलीमेट्री कनेक्शन समय समाप्त।",
+    },
+    "btn_retry_search": {
+        "en": "Retry",
+        "hi": "पुनः प्रयास करें",
+    },
+    "guidelines_heading": {
+        "en": "Corridor Guidelines & Hub Details",
+        "hi": "कॉरिडोर दिशानिर्देश व हब विवरण",
+    },
+    "guidelines_count_badge": {
+        "en": "4 Essential Guides",
+        "hi": "4 आवश्यक गाइड",
+    },
+    "guide_1_q": {
+        "en": "Pickup points on this route",
+        "hi": "इस मार्ग पर पिकअप केंद्र",
+    },
+    "guide_1_a": {
+        "en": "Linehaul vehicles accept parcel handovers at Delhi Sanjay Gandhi Transport Nagar (Bay 4), Gurugram Hero Honda Chowk, and Manesar IMT Depot. Direct dock loading available up to 45 minutes prior to scheduled departure.",
+        "hi": "दिल्ली संजय गांधी ट्रांसपोर्ट नगर (बे 4), गुरुग्राम हीरो होंडा चौक और मानेसर IMT डिपो पर सीधे पार्सल हैंडओवर स्वीकार किए जाते हैं। निर्धारित रवानगी से 45 मिनट पहले तक डॉक लोडिंग उपलब्ध है।",
+    },
+    "guide_2_q": {
+        "en": "Linehaul schedule & cutoff times",
+        "hi": "लाइनहॉल शेड्यूल और कटऑफ समय",
+    },
+    "guide_2_a": {
+        "en": "Manifests close 45 minutes before departure. Direct transit on NH48 averages 7 to 8 hours with live driver GPS tracking. Consignments arrive at Jaipur VKI Depot by 05:30 AM for morning delivery.",
+        "hi": "रवानगी से 45 मिनट पहले घोषणापत्र बंद हो जाते हैं। NH48 पर औसत ट्रांजिट समय 7 से 8 घंटे है। जयपुर VKI डिपो पर सुबह 05:30 बजे तक खेप पहुंच जाती है।",
+    },
+    "guide_3_q": {
+        "en": "Cargo dimensions & prohibited goods",
+        "hi": "कार्गो आयाम और प्रतिबंधित सामान",
+    },
+    "guide_3_a": {
+        "en": "Standard boxed parcels up to 1.8m height accepted. Flammable liquids, unregistered chemicals, unpacked glass, contraband, and hazardous goods are strictly prohibited under Carriage by Road regulations.",
+        "hi": "1.8 मीटर ऊंचाई तक के मानक बॉक्स स्वीकार किए जाते हैं। ज्वलनशील तरल पदार्थ, रसायन, खुला कांच और अवैध सामान सड़क परिवहन नियमों के तहत सख्त वर्जित हैं।",
+    },
+    "guide_4_q": {
+        "en": "Proof of delivery & GPS tracking",
+        "hi": "डिलीवरी प्रमाण और GPS ट्रैकिंग",
+    },
+    "guide_4_a": {
+        "en": "All linehauls are equipped with telematics. Senders receive instant SMS updates upon hub departure, mid-way toll check, and destination arrival. Handover is released strictly against sender OTP verification.",
+        "hi": "सभी वाहन टेलीमैटिक्स से सुसज्जित हैं। हब रवानगी, टोल चेक और गंतव्य आगमन पर SMS अपडेट मिलते हैं। डिलीवरी केवल प्रेषक OTP सत्यापन के बाद ही की जाती है।",
+    },
+    "pinned_bar_change": {
+        "en": "Change selection",
+        "hi": "चयन बदलें",
+    },
+    "pinned_bar_confirm": {
+        "en": "Confirm & Reserve (OTP)",
+        "hi": "पुष्टि व आरक्षण (OTP)",
+    },
     # Navigation Items
     "nav_book": {"en": "Book", "hi": "बुक करें"},
     "nav_rates": {"en": "Rates", "hi": "दरें"},

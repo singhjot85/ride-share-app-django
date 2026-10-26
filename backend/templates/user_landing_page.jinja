@@ -15,11 +15,13 @@
     <!-- Theme Preference Initialization & Handler (Prevents FOUC) -->
     <script src="{{ static('js/theme_toggle.js') }}"></script>
 {% endblock extra_head %}
-{# Remove core app sidebar and navbar on landing page #}
+{# Remove core app sidebar, navbar and footer on landing page #}
 {% block sidebar %}
 {% endblock sidebar %}
 {% block header %}
 {% endblock header %}
+{% block footer %}
+{% endblock footer %}
 {% block content %}
     <div class="landing-page-shell" id="landing-page-shell">
         <!-- Top Title Bar -->
@@ -87,4 +89,5 @@
     <!-- Modular Interactive States -->
     <script src="{{ static('js/language_toggle.js') }}"></script>
     <script src="{{ static('js/states/navigation_state.js') }}"></script>
+    <script src="{{ static('js/states/corridor_state.js') }}"></script>
 {% endblock extra_scripts %}

@@ -131,8 +131,22 @@ class TestLandingPageView:
         # Interactive JavaScript modules are linked
         assert "theme_toggle.js" in content
         assert "navigation_state.js" in content
+        assert "corridor_state.js" in content
         assert "language_toggle.js" in content
         assert "theme-toggle-btn" in content
+
+        # Corridor booking subview components
+        assert 'id="search-engine"' in content
+        assert 'id="wizardStep1"' in content
+        assert 'id="wizardStep2"' in content
+        assert 'id="wizardStep3"' in content
+        assert 'id="results-container"' in content
+        assert 'id="stateCardsDefault"' in content
+        assert 'id="stateCardsSkeleton"' in content
+        assert 'id="stateCardsEmpty"' in content
+        assert 'id="stateCardsCapacity"' in content
+        assert 'id="stateCardsError"' in content
+        assert 'id="stickyBottomBar"' in content
 
     def test_session_timeout_dialog_attributes(self, rf: RequestFactory, user):
         """Verify session timeout modal dialog has the expected button and links."""

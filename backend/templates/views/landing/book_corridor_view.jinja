@@ -1,22 +1,858 @@
-{# Dedicated Corridor Search & Truck Booking View Shell #}
+{# Dedicated NH48 Delhi ⇄ Jaipur Corridor Search & Linehaul Booking View #}
 {% from "core/components/common/icons.jinja" import icon %}
 <section id="view-book-corridor"
          class="landing-tab-view hidden"
          aria-labelledby="corridor-view-title">
-    <div class="landing-view-container max-w-2xl mx-auto px-4 pt-12 pb-20 text-center">
-        <div class="coming-soon-card bg-surface-container-lowest border border-outline-variant/60 rounded-3xl p-10 shadow-sm space-y-4">
-            <div class="w-16 h-16 rounded-2xl bg-surface-container text-secondary flex items-center justify-center mx-auto shadow-inner">
-                {{ icon("add_box", size=32) }}
-            </div>
-            <h1 id="corridor-view-title" class="text-2xl font-bold text-primary">Book Corridor</h1>
-            <p class="text-sm text-on-surface-variant max-w-md mx-auto leading-relaxed">
-                Direct trucks matching your origin and destination hubs on the Delhi ⇄ Jaipur NH48 corridor.
-            </p>
-            <div class="pt-4">
-                <button type="button"
-                        class="btn-cta-secondary"
-                        onclick="LoadShareNav.switchTab('home')">Back to Overview</button>
+    <div class="landing-view-container max-w-2xl mx-auto px-4 md:px-8 py-5 space-y-6">
+        <!-- ========================================================================= -->
+        <!-- 1. CORRIDOR CONTEXT BAR (Breadcrumb + route facts + timing badge) -->
+        <!-- ========================================================================= -->
+        <div class="bg-surface-container-low border border-outline-variant/50 rounded-xl px-4 py-2.5 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between text-xs font-mono text-on-surface-variant gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button type="button"
+                            onclick="LoadShareNav.switchTab('home')"
+                            class="btn-back-link hover:text-primary transition-colors">
+                        {{ icon("arrow_back", size=14) }}
+                        <span class="lang-text"
+                              data-en="{{ labels_en.corridor_back_home|default('Back to Home') }}"
+                              data-hi="{{ labels_hi.corridor_back_home|default('होम पर वापस') }}">
+                            {{ labels.corridor_back_home|default("Back to Home") }}
+                        </span>
+                    </button>
+                    <span class="text-outline-variant">•</span>
+                    <span class="font-medium text-primary lang-text"
+                          data-en="{{ labels_en.corridor_route_facts|default('NH48 Corridor · Delhi ⇄ Jaipur · 270 km') }}"
+                          data-hi="{{ labels_hi.corridor_route_facts|default('NH48 कॉरिडोर · दिल्ली ⇄ जयपुर · 270 किमी') }}">
+                        {{ labels.corridor_route_facts|default("NH48 Corridor · Delhi ⇄ Jaipur · 270 km") }}
+                    </span>
+                </div>
+                <div class="inline-flex items-center gap-1.5 bg-surface-container px-2 py-0.5 rounded text-[11px] font-semibold text-secondary">
+                    {{ icon("schedule", size=12) }}
+                    <span class="lang-text"
+                          data-en="{{ labels_en.corridor_timing_badge|default('Departs daily 18:00–22:00') }}"
+                          data-hi="{{ labels_hi.corridor_timing_badge|default('प्रतिदिन रवानगी 18:00–22:00') }}">
+                        {{ labels.corridor_timing_badge|default("Departs daily 18:00–22:00") }}
+                    </span>
+                </div>
             </div>
         </div>
+        <!-- ========================================================================= -->
+        <!-- 2. REVIEWER PREVIEW TOOLBAR (Interactive State Switcher) -->
+        <!-- ========================================================================= -->
+        <div class="bg-surface-container-high/60 border border-outline-variant/40 rounded-xl px-4 py-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="flex items-center gap-1.5 font-mono text-on-surface-variant">
+                    {{ icon("science", size=16) }}
+                    <span class="font-bold lang-text"
+                          data-en="{{ labels_en.reviewer_state_label|default('Reviewer State Switcher:') }}"
+                          data-hi="{{ labels_hi.reviewer_state_label|default('रिव्यूअर स्टेट स्विचर:') }}">
+                        {{ labels.reviewer_state_label|default("Reviewer State Switcher:") }}
+                    </span>
+                </div>
+                <div class="flex flex-wrap items-center gap-1.5 font-mono">
+                    <button type="button"
+                            id="btnStateDefault"
+                            onclick="setCorridorState('default')"
+                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary text-on-primary transition-all">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_state_trucks|default('[Show 3 Trucks]') }}"
+                              data-hi="{{ labels_hi.btn_state_trucks|default('[3 ट्रक देखें]') }}">
+                            {{ labels.btn_state_trucks|default("[Show 3 Trucks]") }}
+                        </span>
+                    </button>
+                    <button type="button"
+                            id="btnStateSkeleton"
+                            onclick="setCorridorState('skeleton')"
+                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_state_skeleton|default('[Loading Skeleton]') }}"
+                              data-hi="{{ labels_hi.btn_state_skeleton|default('[लोडिंग स्केलेटन]') }}">
+                            {{ labels.btn_state_skeleton|default("[Loading Skeleton]") }}
+                        </span>
+                    </button>
+                    <button type="button"
+                            id="btnStateEmpty"
+                            onclick="setCorridorState('empty')"
+                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_state_empty_corridor|default('[0 Results Empty]') }}"
+                              data-hi="{{ labels_hi.btn_state_empty_corridor|default('[0 परिणाम रिक्त]') }}">
+                            {{ labels.btn_state_empty_corridor|default("[0 Results Empty]") }}
+                        </span>
+                    </button>
+                    <button type="button"
+                            id="btnStateCapacity"
+                            onclick="setCorridorState('capacity')"
+                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_state_capacity|default('[Corridor at Capacity]') }}"
+                              data-hi="{{ labels_hi.btn_state_capacity|default('[कॉरिडोर फुल]') }}">
+                            {{ labels.btn_state_capacity|default("[Corridor at Capacity]") }}
+                        </span>
+                    </button>
+                    <button type="button"
+                            id="btnStateError"
+                            onclick="setCorridorState('error')"
+                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_state_error|default('[Error State]') }}"
+                              data-hi="{{ labels_hi.btn_state_error|default('[त्रुटि स्थिति]') }}">
+                            {{ labels.btn_state_error|default("[Error State]") }}
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- ========================================================================= -->
+        <!-- 3. SEARCH BLOCK (3-STEP PROGRESSIVE WIZARD CAROUSEL) -->
+        <!-- ========================================================================= -->
+        <section class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-6 shadow-sm space-y-4"
+                 id="search-engine">
+            <!-- Header & Stepper Progress -->
+            <div class="space-y-3 border-b border-outline-variant/30 pb-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-secondary flex items-center">{{ icon("search", size=20) }}</span>
+                        <h1 id="corridor-view-title"
+                            class="text-base md:text-lg font-bold text-primary lang-text"
+                            data-en="{{ labels_en.wizard_title|default('Find Instant Truck Space') }}"
+                            data-hi="{{ labels_hi.wizard_title|default('NH48 पर तुरंत ट्रक में स्थान खोजें') }}">
+                            {{ labels.wizard_title|default("Find Instant Truck Space") }}
+                        </h1>
+                    </div>
+                    <!-- Minimal Step Indicator "1/3" -->
+                    <span class="text-xs font-mono font-bold text-secondary"
+                          id="stepCounterText">1/3</span>
+                </div>
+                <!-- Progress Bar Indicator -->
+                <div class="flex items-center gap-2 w-full">
+                    <div class="h-1.5 flex-1 rounded-full bg-secondary transition-all duration-300"
+                         id="stepProgress1"></div>
+                    <div class="h-1.5 flex-1 rounded-full bg-surface-container-high transition-all duration-300"
+                         id="stepProgress2"></div>
+                    <div class="h-1.5 flex-1 rounded-full bg-surface-container-high transition-all duration-300"
+                         id="stepProgress3"></div>
+                </div>
+            </div>
+            <!-- STEP 1: PICKUP & DROP HUB SELECTION -->
+            <div class="space-y-4" id="wizardStep1">
+                <div class="space-y-3">
+                    <!-- Pickup Hub Selection -->
+                    <div class="bg-surface-container-low/70 rounded-xl p-3 md:p-4 border border-outline-variant/40 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                                <span class="text-secondary flex items-center">{{ icon("trip_origin", size=14) }}</span>
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.label_pickup_point|default('Pickup Point') }}"
+                                      data-hi="{{ labels_hi.label_pickup_point|default('पिकअप स्थान') }}">
+                                    {{ labels.label_pickup_point|default("Pickup Point") }}
+                                </span>
+                            </label>
+                            <span class="text-[10px] font-mono text-secondary font-semibold lang-text"
+                                  data-en="{{ labels_en.corridor_name_tag|default('NH48 Corridor') }}"
+                                  data-hi="{{ labels_hi.corridor_name_tag|default('NH48 कॉरिडोर') }}">
+                                {{ labels.corridor_name_tag|default("NH48 Corridor") }}
+                            </span>
+                        </div>
+                        <button type="button"
+                                onclick="simulateLocationClick(this)"
+                                class="w-full bg-surface-container-lowest hover:bg-surface-container border border-outline-variant/80 rounded-lg p-3 text-left flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-semibold text-primary transition-colors">
+                            <span class="flex items-center gap-2">
+                                <span class="text-secondary flex items-center shrink-0">{{ icon("my_location", size=18) }}</span>
+                                <span class="leading-snug">
+                                    <span class="block lang-text"
+                                          data-en="{{ labels_en.btn_use_location|default('Use my location for closest hub') }}"
+                                          data-hi="{{ labels_hi.btn_use_location|default('निकटतम हब हेतु मेरी लोकेशन चुनें') }}">
+                                        {{ labels.btn_use_location|default("Use my location for closest hub") }}
+                                    </span>
+                                    <span class="block text-[11px] text-on-surface-variant font-normal lang-text"
+                                          data-en="{{ labels_en.pickup_detected_hint|default('Sanjay Gandhi Transport Nagar, Delhi (Auto-detected)') }}"
+                                          data-hi="{{ labels_hi.pickup_detected_hint|default('संजय गांधी ट्रांसपोर्ट नगर, दिल्ली (स्वतः पहचाना गया)') }}">
+                                        {{ labels.pickup_detected_hint|default("Sanjay Gandhi Transport Nagar, Delhi (Auto-detected)") }}
+                                    </span>
+                                </span>
+                            </span>
+                            <span class="text-[11px] font-mono text-secondary self-start sm:self-center shrink-0">0.8 km</span>
+                        </button>
+                        <!-- Quick Hub Selector Pills -->
+                        <div class="flex items-center gap-1.5 flex-wrap pt-1 text-[11px] font-mono">
+                            <span class="text-on-surface-variant mr-1 lang-text"
+                                  data-en="{{ labels_en.quick_hubs_label|default('Popular Pickup Hubs:') }}"
+                                  data-hi="{{ labels_hi.quick_hubs_label|default('लोकप्रिय पिकअप हब:') }}">
+                                {{ labels.quick_hubs_label|default("Popular Pickup Hubs:") }}
+                            </span>
+                            <button type="button"
+                                    onclick="quickSelectPickup('Delhi (SGTN Bay 4)', this)"
+                                    class="quick-hub-btn">
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.hub_sgtn|default('Delhi (SGTN Bay 4)') }}"
+                                      data-hi="{{ labels_hi.hub_sgtn|default('दिल्ली (SGTN बे 4)') }}">
+                                    {{ labels.hub_sgtn|default("Delhi (SGTN Bay 4)") }}
+                                </span>
+                            </button>
+                            <button type="button"
+                                    onclick="quickSelectPickup('Gurugram (Hero Honda)', this)"
+                                    class="quick-hub-btn">
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.hub_gurugram|default('Gurugram (Hero Honda)') }}"
+                                      data-hi="{{ labels_hi.hub_gurugram|default('गुरुग्राम (हीरो होंडा)') }}">
+                                    {{ labels.hub_gurugram|default("Gurugram (Hero Honda)") }}
+                                </span>
+                            </button>
+                            <button type="button"
+                                    onclick="quickSelectPickup('Manesar IMT Depot', this)"
+                                    class="quick-hub-btn">
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.hub_manesar|default('Manesar IMT Depot') }}"
+                                      data-hi="{{ labels_hi.hub_manesar|default('मानेसर IMT डिपो') }}">
+                                    {{ labels.hub_manesar|default("Manesar IMT Depot") }}
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Drop Hub Selection -->
+                    <div class="bg-surface-container-low/70 rounded-xl p-3 md:p-4 border border-outline-variant/40 space-y-2.5">
+                        <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                            <span class="text-primary flex items-center">{{ icon("location_on", size=14) }}</span>
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.label_drop_destination|default('Drop Destination') }}"
+                                  data-hi="{{ labels_hi.label_drop_destination|default('ड्रॉप गंतव्य') }}">
+                                {{ labels.label_drop_destination|default("Drop Destination") }}
+                            </span>
+                        </label>
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 bg-surface-container-lowest border border-outline-variant/80 rounded-lg p-3">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-primary flex items-center mt-0.5 shrink-0">{{ icon("domain", size=20) }}</span>
+                                <div>
+                                    <span class="text-xs font-bold text-primary font-mono block"
+                                          id="displayDropHub">{{ labels.drop_default_hub|default("Jaipur VKI Depot") }}</span>
+                                    <span class="text-[11px] text-on-surface-variant block leading-normal lang-text"
+                                          data-en="{{ labels_en.drop_default_address|default('Vishwakarma Road 14 (South Terminal Dock 8)') }}"
+                                          data-hi="{{ labels_hi.drop_default_address|default('विश्वकर्मा रोड 14 (साउथ टर्मिनल डॉक 8)') }}">
+                                        {{ labels.drop_default_address|default("Vishwakarma Road 14 (South Terminal Dock 8)") }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="sm:text-right shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-outline-variant/30">
+                                <select class="bg-surface-container sm:bg-transparent border border-outline-variant/40 sm:border-0 rounded sm:rounded-none px-2 py-1 sm:p-0 text-secondary text-xs font-mono font-bold focus:ring-0 cursor-pointer w-full sm:w-auto text-left sm:text-right"
+                                        id="dropHubSelect"
+                                        onchange="updateDropHub(this.value)">
+                                    <option selected>Jaipur VKI Depot</option>
+                                    <option>Kotputli Node (Drop)</option>
+                                    <option>Delhi Depot (Return)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 1 Nav CTA -->
+                <button type="button"
+                        onclick="goToWizardStep(2)"
+                        class="w-full bg-secondary hover:bg-secondary-container active:scale-[0.99] text-on-secondary py-3 px-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md flex items-center justify-center gap-2">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.btn_next_window|default('Next: Select Departure Window') }}"
+                          data-hi="{{ labels_hi.btn_next_window|default('आगे: रवानगी समय चुनें') }}">
+                        {{ labels.btn_next_window|default("Next: Select Departure Window") }}
+                    </span>
+                    {{ icon("arrow_forward", size=16) }}
+                </button>
+            </div>
+            <!-- STEP 2: DEPARTURE WINDOW -->
+            <div class="space-y-4 hidden" id="wizardStep2">
+                <div class="bg-surface-container-low/70 rounded-xl p-3 md:p-4 border border-outline-variant/40 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                            <span class="text-primary flex items-center">{{ icon("schedule", size=14) }}</span>
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.label_departure_window|default('Departure Window') }}"
+                                  data-hi="{{ labels_hi.label_departure_window|default('रवानगी समय') }}">
+                                {{ labels.label_departure_window|default("Departure Window") }}
+                            </span>
+                        </label>
+                        <span class="text-[10px] font-mono text-on-surface-variant lang-text"
+                              data-en="{{ labels_en.tonight_priority_badge|default('Tonight priority') }}"
+                              data-hi="{{ labels_hi.tonight_priority_badge|default('आज रात प्राथमिकता') }}">
+                            {{ labels.tonight_priority_badge|default("Tonight priority") }}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs">
+                        <button type="button"
+                                onclick="selectDateWindow(this)"
+                                class="date-pill active py-2.5 px-3 text-left sm:text-center font-bold rounded-lg border transition-all bg-primary text-on-primary border-primary shadow-xs flex flex-row sm:flex-col justify-between sm:justify-center items-center">
+                            <span class="text-xs leading-tight">
+                                <span class="block lang-text"
+                                      data-en="{{ labels_en.window_tonight|default('Tonight') }}"
+                                      data-hi="{{ labels_hi.window_tonight|default('आज रात') }}">
+                                    {{ labels.window_tonight|default("Tonight") }}
+                                </span>
+                            </span>
+                            <span class="text-[11px] opacity-80 font-normal">{{ labels.window_tonight_sub|default("18:00–22:00") }}</span>
+                        </button>
+                        <button type="button"
+                                onclick="selectDateWindow(this)"
+                                class="date-pill py-2.5 px-3 text-left sm:text-center font-semibold rounded-lg border border-outline-variant bg-surface-container-lowest text-primary hover:bg-surface-container transition-all flex flex-row sm:flex-col justify-between sm:justify-center items-center">
+                            <span class="text-xs leading-tight">
+                                <span class="block lang-text"
+                                      data-en="{{ labels_en.window_tomorrow|default('Tomorrow') }}"
+                                      data-hi="{{ labels_hi.window_tomorrow|default('कल') }}">
+                                    {{ labels.window_tomorrow|default("Tomorrow") }}
+                                </span>
+                            </span>
+                            <span class="text-[11px] text-on-surface-variant font-normal">{{ labels.window_tomorrow_sub|default("T+1 Regular") }}</span>
+                        </button>
+                        <button type="button"
+                                onclick="selectDateWindow(this)"
+                                class="date-pill py-2.5 px-3 text-left sm:text-center font-semibold rounded-lg border border-outline-variant bg-surface-container-lowest text-primary hover:bg-surface-container transition-all flex flex-row sm:flex-col justify-between sm:justify-center items-center">
+                            <span class="text-xs leading-tight">
+                                <span class="block lang-text"
+                                      data-en="{{ labels_en.window_custom|default('Custom Date') }}"
+                                      data-hi="{{ labels_hi.window_custom|default('तारीख चुनें') }}">
+                                    {{ labels.window_custom|default("Custom Date") }}
+                                </span>
+                            </span>
+                            <span class="text-[11px] text-on-surface-variant font-normal">{{ labels.window_custom_sub|default("Select Day") }}</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Step 2 Nav CTA Buttons -->
+                <div class="flex items-center gap-3">
+                    <button type="button"
+                            onclick="goToWizardStep(1)"
+                            class="w-1/3 bg-surface-container hover:bg-surface-container-high text-primary py-3 px-3 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5">
+                        {{ icon("arrow_back", size=14) }}
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_wizard_back|default('Back') }}"
+                              data-hi="{{ labels_hi.btn_wizard_back|default('पीछे') }}">
+                            {{ labels.btn_wizard_back|default("Back") }}
+                        </span>
+                    </button>
+                    <button type="button"
+                            onclick="goToWizardStep(3)"
+                            class="w-2/3 bg-secondary hover:bg-secondary-container active:scale-[0.99] text-on-secondary py-3 px-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md flex items-center justify-center gap-2">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_next_weight|default('Next: Select Consignment Weight') }}"
+                              data-hi="{{ labels_hi.btn_next_weight|default('आगे: वजन चुनें') }}">
+                            {{ labels.btn_next_weight|default("Next: Select Consignment Weight") }}
+                        </span>
+                        {{ icon("arrow_forward", size=16) }}
+                    </button>
+                </div>
+            </div>
+            <!-- STEP 3: CONSIGNMENT WEIGHT & SEARCH ACTION -->
+            <div class="space-y-4 hidden" id="wizardStep3">
+                <div class="bg-surface-container-low/70 rounded-xl p-3 md:p-4 border border-outline-variant/40 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                            <span class="text-primary flex items-center">{{ icon("scale", size=14) }}</span>
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.label_consignment_weight|default('Consignment Weight') }}"
+                                  data-hi="{{ labels_hi.label_consignment_weight|default('पार्सल वजन') }}">
+                                {{ labels.label_consignment_weight|default("Consignment Weight") }}
+                            </span>
+                        </label>
+                        <span class="text-[10px] font-mono text-secondary font-bold lang-text"
+                              data-en="{{ labels_en.fair_tariff_badge|default('Per-KG Fair Tariff') }}"
+                              data-hi="{{ labels_hi.fair_tariff_badge|default('प्रति-किग्रा उचित दर') }}">
+                            {{ labels.fair_tariff_badge|default("Per-KG Fair Tariff") }}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs">
+                        <button type="button"
+                                onclick="selectWeightSlab('sm', this)"
+                                class="weight-pill active py-2.5 px-2 text-center rounded-lg border border-secondary bg-secondary-fixed text-on-secondary-fixed font-bold shadow-xs transition-all">
+                            <span class="font-bold text-xs block">{{ labels.weight_slab_sm_title|default("10–50 kg") }}</span>
+                            <span class="text-[11px] text-on-surface-variant lang-text"
+                                  data-en="{{ labels_en.weight_slab_sm_desc|default('Standard') }}"
+                                  data-hi="{{ labels_hi.weight_slab_sm_desc|default('मानक') }}">
+                                {{ labels.weight_slab_sm_desc|default("Standard") }}
+                            </span>
+                        </button>
+                        <button type="button"
+                                onclick="selectWeightSlab('md', this)"
+                                class="weight-pill py-2.5 px-2 text-center rounded-lg border border-outline-variant bg-surface-container-lowest text-primary hover:bg-surface-container font-semibold transition-all">
+                            <span class="font-bold text-xs block">{{ labels.weight_slab_md_title|default("51–250 kg") }}</span>
+                            <span class="text-[11px] text-secondary lang-text"
+                                  data-en="{{ labels_en.weight_slab_md_desc|default('Commercial ★') }}"
+                                  data-hi="{{ labels_hi.weight_slab_md_desc|default('व्यावसायिक ★') }}">
+                                {{ labels.weight_slab_md_desc|default("Commercial ★") }}
+                            </span>
+                        </button>
+                        <button type="button"
+                                onclick="selectWeightSlab('lg', this)"
+                                class="weight-pill py-2.5 px-2 text-center rounded-lg border border-outline-variant bg-surface-container-lowest text-primary hover:bg-surface-container font-semibold transition-all">
+                            <span class="font-bold text-xs block">{{ labels.weight_slab_lg_title|default("250 kg+") }}</span>
+                            <span class="text-[11px] text-on-surface-variant lang-text"
+                                  data-en="{{ labels_en.weight_slab_lg_desc|default('Part-Load LTL') }}"
+                                  data-hi="{{ labels_hi.weight_slab_lg_desc|default('पार्ट-लोड LTL') }}">
+                                {{ labels.weight_slab_lg_desc|default("Part-Load LTL") }}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Back + Find Trucks CTA -->
+                <div class="flex items-center gap-3">
+                    <button type="button"
+                            onclick="goToWizardStep(2)"
+                            class="w-1/4 bg-surface-container hover:bg-surface-container-high text-primary py-3.5 px-3 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1">
+                        {{ icon("arrow_back", size=14) }}
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_wizard_back|default('Back') }}"
+                              data-hi="{{ labels_hi.btn_wizard_back|default('पीछे') }}">
+                            {{ labels.btn_wizard_back|default("Back") }}
+                        </span>
+                    </button>
+                    <button type="button"
+                            onclick="triggerSearch()"
+                            class="w-3/4 bg-secondary hover:bg-secondary-container active:scale-[0.99] text-on-secondary py-3.5 px-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md flex items-center justify-center gap-2">
+                        {{ icon("local_shipping", size=18) }}
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_find_corridor_trucks|default('Find trucks on this corridor') }}"
+                              data-hi="{{ labels_hi.btn_find_corridor_trucks|default('इस कॉरिडोर पर ट्रक खोजें') }}">
+                            {{ labels.btn_find_corridor_trucks|default("Find trucks on this corridor") }}
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- 4. RESULTS SECTION (LINEHAUL TRUCKS DISPATCH ENGINE) -->
+        <!-- ========================================================================= -->
+        <section class="space-y-3" id="results-container">
+            <!-- Results Header -->
+            <div class="flex items-center justify-between px-1" id="resultsHeader">
+                <div class="flex items-center gap-2">
+                    <span class="live-dot-pulse"></span>
+                    <h2 class="text-sm font-bold text-primary font-mono lang-text"
+                        data-en="{{ labels_en.results_count_live|default('3 trucks departing tonight · 18:00–22:00') }}"
+                        data-hi="{{ labels_hi.results_count_live|default('3 ट्रक आज रात रवाना होंगे · 18:00–22:00') }}">
+                        {{ labels.results_count_live|default("3 trucks departing tonight · 18:00–22:00") }}
+                    </h2>
+                </div>
+            </div>
+            <!-- STATE: 3 TRUCK RESULT CARDS (DEFAULT) -->
+            <div class="space-y-3" id="stateCardsDefault">
+                <!-- Result Card 1 -->
+                <article class="truck-card bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-5 shadow-sm space-y-3.5">
+                    <div class="flex items-center justify-between w-full">
+                        <span class="text-2xl font-bold font-mono text-primary tracking-tight">19:30</span>
+                        <span class="w-7 h-7 rounded-full badge-verified flex items-center justify-center shrink-0 shadow-xs"
+                              title="{{ labels.verified_carrier_tooltip|default('Verified Linehaul Carrier') }}">
+                            {{ icon("check", size=16) }}
+                        </span>
+                    </div>
+                    <!-- Price line -->
+                    <div class="flex items-center gap-2 -mt-1 font-mono text-xs">
+                        <span class="font-bold text-sm text-primary">₹850</span>
+                        <span class="text-on-surface-variant text-[11px] lang-text"
+                              data-en="{{ labels_en.total_price_suffix|default('total') }}"
+                              data-hi="{{ labels_hi.total_price_suffix|default('कुल') }}">
+                            {{ labels.total_price_suffix|default("total") }}
+                        </span>
+                        <span class="text-outline-variant">•</span>
+                        <span class="text-secondary font-semibold">₹8.50 / kg</span>
+                    </div>
+                    <!-- Route segment -->
+                    <div class="bg-surface-container-low/70 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono border border-outline-variant/30 gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-success font-bold shrink-0">●</span>
+                            <span class="text-primary font-medium leading-normal">Sanjay Gandhi Transport Nagar</span>
+                        </div>
+                        <div class="flex items-center gap-2 sm:self-center">
+                            <span class="hidden sm:inline-block text-outline">{{ icon("arrow_forward", size=14) }}</span>
+                            <span class="sm:hidden text-outline">{{ icon("arrow_downward", size=14) }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 sm:justify-end">
+                            <span class="text-danger font-bold shrink-0">●</span>
+                            <span class="text-primary font-medium leading-normal">Jaipur VKI Depot</span>
+                        </div>
+                    </div>
+                    <!-- Spec & Action CTA -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-outline-variant/30">
+                        <div class="flex items-center justify-between w-full text-xs font-mono py-0.5">
+                            <span class="text-primary font-medium">Eicher Pro 14ft</span>
+                            <span class="text-success font-bold">
+                                320 kg <span class="lang-text"
+       data-en="{{ labels_en.available_suffix|default('available') }}"
+       data-hi="{{ labels_hi.available_suffix|default('उपलब्ध') }}">{{ labels.available_suffix|default("available") }}</span>
+                            </span>
+                        </div>
+                        <button type="button"
+                                onclick="selectTruck('19:30', 'Eicher Pro 14ft', '₹850', this)"
+                                class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.btn_request_reserve|default('Request Reserve') }}"
+                                  data-hi="{{ labels_hi.btn_request_reserve|default('रिजर्वेशन अनुरोध') }}">
+                                {{ labels.btn_request_reserve|default("Request Reserve") }}
+                            </span>
+                        </button>
+                    </div>
+                </article>
+                <!-- Result Card 2 -->
+                <article class="truck-card bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-5 shadow-sm space-y-3.5">
+                    <div class="flex items-center justify-between w-full">
+                        <span class="text-2xl font-bold font-mono text-primary tracking-tight">20:45</span>
+                        <span class="w-7 h-7 rounded-full badge-verified flex items-center justify-center shrink-0 shadow-xs"
+                              title="{{ labels.verified_carrier_tooltip|default('Verified Linehaul Carrier') }}">
+                            {{ icon("check", size=16) }}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 -mt-1 font-mono text-xs">
+                        <span class="font-bold text-sm text-primary">₹2,125</span>
+                        <span class="text-on-surface-variant text-[11px] lang-text"
+                              data-en="{{ labels_en.total_price_suffix|default('total') }}"
+                              data-hi="{{ labels_hi.total_price_suffix|default('कुल') }}">
+                            {{ labels.total_price_suffix|default("total") }}
+                        </span>
+                        <span class="text-outline-variant">•</span>
+                        <span class="text-secondary font-semibold">₹8.50 / kg</span>
+                    </div>
+                    <div class="bg-surface-container-low/70 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono border border-outline-variant/30 gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-success font-bold shrink-0">●</span>
+                            <span class="text-primary font-medium leading-normal">Gurugram Hero Honda Chowk</span>
+                        </div>
+                        <div class="flex items-center gap-2 sm:self-center">
+                            <span class="hidden sm:inline-block text-outline">{{ icon("arrow_forward", size=14) }}</span>
+                            <span class="sm:hidden text-outline">{{ icon("arrow_downward", size=14) }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 sm:justify-end">
+                            <span class="text-danger font-bold shrink-0">●</span>
+                            <span class="text-primary font-medium leading-normal">Jaipur VKI Depot</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-outline-variant/30">
+                        <div class="flex items-center justify-between w-full text-xs font-mono py-0.5">
+                            <span class="text-primary font-medium">Eicher Pro 17ft</span>
+                            <span class="text-success font-bold">
+                                450 kg <span class="lang-text"
+       data-en="{{ labels_en.available_suffix|default('available') }}"
+       data-hi="{{ labels_hi.available_suffix|default('उपलब्ध') }}">{{ labels.available_suffix|default("available") }}</span>
+                            </span>
+                        </div>
+                        <button type="button"
+                                onclick="selectTruck('20:45', 'Eicher Pro 17ft', '₹2,125', this)"
+                                class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.btn_request_reserve|default('Request Reserve') }}"
+                                  data-hi="{{ labels_hi.btn_request_reserve|default('रिजर्वेशन अनुरोध') }}">
+                                {{ labels.btn_request_reserve|default("Request Reserve") }}
+                            </span>
+                        </button>
+                    </div>
+                </article>
+                <!-- Result Card 3 -->
+                <article class="truck-card bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-5 shadow-sm space-y-3.5">
+                    <div class="flex items-center justify-between w-full">
+                        <span class="text-2xl font-bold font-mono text-primary tracking-tight">21:40</span>
+                        <span class="w-7 h-7 rounded-full badge-verified flex items-center justify-center shrink-0 shadow-xs"
+                              title="{{ labels.verified_carrier_tooltip|default('Verified Linehaul Carrier') }}">
+                            {{ icon("check", size=16) }}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 -mt-1 font-mono text-xs">
+                        <span class="font-bold text-sm text-primary">₹1,275</span>
+                        <span class="text-on-surface-variant text-[11px] lang-text"
+                              data-en="{{ labels_en.total_price_suffix|default('total') }}"
+                              data-hi="{{ labels_hi.total_price_suffix|default('कुल') }}">
+                            {{ labels.total_price_suffix|default("total") }}
+                        </span>
+                        <span class="text-outline-variant">•</span>
+                        <span class="text-secondary font-semibold">₹8.50 / kg</span>
+                    </div>
+                    <div class="bg-surface-container-low/70 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono border border-outline-variant/30 gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-success font-bold shrink-0">●</span>
+                            <span class="text-primary font-medium leading-normal">Manesar IMT Toll Plaza</span>
+                        </div>
+                        <div class="flex items-center gap-2 sm:self-center">
+                            <span class="hidden sm:inline-block text-outline">{{ icon("arrow_forward", size=14) }}</span>
+                            <span class="sm:hidden text-outline">{{ icon("arrow_downward", size=14) }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 sm:justify-end">
+                            <span class="text-danger font-bold shrink-0">●</span>
+                            <span class="text-primary font-medium leading-normal">Kotputli Junction</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-outline-variant/30">
+                        <div class="flex items-center justify-between w-full text-xs font-mono py-0.5">
+                            <span class="text-primary font-medium">Tata 407</span>
+                            <span class="text-success font-bold">
+                                180 kg <span class="lang-text"
+       data-en="{{ labels_en.available_suffix|default('available') }}"
+       data-hi="{{ labels_hi.available_suffix|default('उपलब्ध') }}">{{ labels.available_suffix|default("available") }}</span>
+                            </span>
+                        </div>
+                        <button type="button"
+                                onclick="selectTruck('21:40', 'Tata 407', '₹1,275', this)"
+                                class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.btn_request_reserve|default('Request Reserve') }}"
+                                  data-hi="{{ labels_hi.btn_request_reserve|default('रिजर्वेशन अनुरोध') }}">
+                                {{ labels.btn_request_reserve|default("Request Reserve") }}
+                            </span>
+                        </button>
+                    </div>
+                </article>
+            </div>
+            <!-- STATE: LOADING SKELETON -->
+            <div class="space-y-3 hidden" id="stateCardsSkeleton">
+                <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-4 shadow-sm animate-pulse space-y-3">
+                    <div class="flex justify-between">
+                        <div class="h-6 w-32 bg-surface-container-high rounded"></div>
+                        <div class="h-6 w-24 bg-surface-container-high rounded"></div>
+                    </div>
+                    <div class="h-10 w-full bg-surface-container-low rounded-xl"></div>
+                    <div class="flex justify-between pt-1">
+                        <div class="h-5 w-40 bg-surface-container-high rounded"></div>
+                        <div class="h-7 w-28 bg-surface-container-high rounded-lg"></div>
+                    </div>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-4 shadow-sm animate-pulse space-y-3">
+                    <div class="flex justify-between">
+                        <div class="h-6 w-32 bg-surface-container-high rounded"></div>
+                        <div class="h-6 w-24 bg-surface-container-high rounded"></div>
+                    </div>
+                    <div class="h-10 w-full bg-surface-container-low rounded-xl"></div>
+                    <div class="flex justify-between pt-1">
+                        <div class="h-5 w-40 bg-surface-container-high rounded"></div>
+                        <div class="h-7 w-28 bg-surface-container-high rounded-lg"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- STATE: 0 RESULTS EMPTY STATE -->
+            <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 text-center shadow-sm flex flex-col items-center gap-3 hidden"
+                 id="stateCardsEmpty">
+                <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
+                    {{ icon("search_off", size=24) }}
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm text-primary font-mono lang-text"
+                        data-en="{{ labels_en.empty_corridor_title|default('No trucks match — try a ±2 hour window') }}"
+                        data-hi="{{ labels_hi.empty_corridor_title|default('कोई ट्रक उपलब्ध नहीं — ±2 घंटे का समय बदलें') }}">
+                        {{ labels.empty_corridor_title|default("No trucks match — try a ±2 hour window") }}
+                    </h3>
+                    <p class="text-xs text-on-surface-variant mt-1 max-w-sm mx-auto lang-text"
+                       data-en="{{ labels_en.empty_corridor_desc|default('All immediate vehicles on this exact slot have closed manifests. Try broadening your departure filter or join priority dispatch.') }}"
+                       data-hi="{{ labels_hi.empty_corridor_desc|default('इस समय के सभी वाहनों का घोषणापत्र भर चुका है। कृपया समय सीमा बढ़ाएं या प्रतीक्षा सूची में शामिल हों।') }}">
+                        {{ labels.empty_corridor_desc|default("All immediate vehicles on this exact slot have closed manifests. Try broadening your departure filter or join priority dispatch.") }}
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2 justify-center pt-1">
+                    <button type="button"
+                            onclick="setCorridorState('default')"
+                            class="bg-surface-container hover:bg-surface-container-high text-primary px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_reset_filters|default('Reset Filters') }}"
+                              data-hi="{{ labels_hi.btn_reset_filters|default('फ़िल्टर रीसेट करें') }}">
+                            {{ labels.btn_reset_filters|default("Reset Filters") }}
+                        </span>
+                    </button>
+                    <button type="button"
+                            onclick="window.alert('Standby registered. SMS alert will arrive if capacity opens.')"
+                            class="bg-secondary text-on-secondary px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-all shadow-xs">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.btn_join_standby|default('Join standby list') }}"
+                              data-hi="{{ labels_hi.btn_join_standby|default('प्रतीक्षा सूची में शामिल हों') }}">
+                            {{ labels.btn_join_standby|default("Join standby list") }}
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <!-- STATE: CORRIDOR AT CAPACITY CARD VARIANT -->
+            <div class="card-capacity-state rounded-2xl p-4 md:p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hidden"
+                 id="stateCardsCapacity">
+                <div class="flex items-start gap-3">
+                    <span class="text-warning flex items-center mt-0.5">{{ icon("warning", size=24) }}</span>
+                    <div>
+                        <span class="text-[11px] font-mono uppercase bg-warning text-on-warning font-bold px-1.5 py-0.5 rounded lang-text"
+                              data-en="{{ labels_en.capacity_badge_text|default('High Demand') }}"
+                              data-hi="{{ labels_hi.capacity_badge_text|default('उच्च मांग') }}">
+                            {{ labels.capacity_badge_text|default("High Demand") }}
+                        </span>
+                        <h3 class="font-bold text-sm text-primary font-mono mt-1 lang-text"
+                            data-en="{{ labels_en.capacity_corridor_title|default('Tonight full · Next slot tomorrow 18:00') }}"
+                            data-hi="{{ labels_hi.capacity_corridor_title|default('आज रात फुल · अगला स्लॉट कल 18:00 बजे') }}">
+                            {{ labels.capacity_corridor_title|default("Tonight full · Next slot tomorrow 18:00") }}
+                        </h3>
+                        <p class="text-xs text-on-surface-variant mt-0.5 lang-text"
+                           data-en="{{ labels_en.capacity_corridor_desc|default('All 5 linehauls departing tonight are at 100% volumetric payload.') }}"
+                           data-hi="{{ labels_hi.capacity_corridor_desc|default('आज रात के सभी 5 वाहन पूरी तरह से भर चुके हैं।') }}">
+                            {{ labels.capacity_corridor_desc|default("All 5 linehauls departing tonight are at 100% volumetric payload.") }}
+                        </p>
+                    </div>
+                </div>
+                <button type="button"
+                        onclick="window.alert('Standby waitlist confirmed. Next release at 17:30 IST.')"
+                        class="w-full sm:w-auto bg-primary hover:bg-primary-hover text-on-primary font-mono text-xs font-bold px-4 py-2 rounded-lg transition-colors whitespace-nowrap shadow-xs">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.btn_request_standby|default('Request standby') }}"
+                          data-hi="{{ labels_hi.btn_request_standby|default('स्टैंडबाय अनुरोध करें') }}">
+                        {{ labels.btn_request_standby|default("Request standby") }}
+                    </span>
+                </button>
+            </div>
+            <!-- STATE: ERROR STATE -->
+            <div class="card-error-state rounded-2xl p-5 text-center shadow-sm flex flex-col items-center gap-2 hidden"
+                 id="stateCardsError">
+                <span class="text-danger flex items-center">{{ icon("error", size=28) }}</span>
+                <h3 class="font-bold text-sm text-primary font-mono lang-text"
+                    data-en="{{ labels_en.error_corridor_title|default('Could not load trucks') }}"
+                    data-hi="{{ labels_hi.error_corridor_title|default('ट्रक लोड नहीं हो सके') }}">
+                    {{ labels.error_corridor_title|default("Could not load trucks") }}
+                </h3>
+                <p class="text-xs text-on-surface-variant lang-text"
+                   data-en="{{ labels_en.error_corridor_desc|default('Connection to NH48 Linehaul Telemetry timed out.') }}"
+                   data-hi="{{ labels_hi.error_corridor_desc|default('NH48 टेलीमेट्री कनेक्शन समय समाप्त।') }}">
+                    {{ labels.error_corridor_desc|default("Connection to NH48 Linehaul Telemetry timed out.") }}
+                </p>
+                <button type="button"
+                        onclick="setCorridorState('default')"
+                        class="bg-danger hover:bg-danger/90 text-on-error font-mono text-xs font-bold px-4 py-1.5 rounded-lg mt-1 transition-colors shadow-xs">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.btn_retry_search|default('Retry') }}"
+                          data-hi="{{ labels_hi.btn_retry_search|default('पुनः प्रयास करें') }}">
+                        {{ labels.btn_retry_search|default("Retry") }}
+                    </span>
+                </button>
+            </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- 5. CORRIDOR DETAILS & ACCORDIONS -->
+        <!-- ========================================================================= -->
+        <section class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-6 shadow-sm space-y-3">
+            <div class="border-b border-outline-variant/30 pb-3 mb-1 flex flex-wrap items-center justify-between gap-1">
+                <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-secondary lang-text"
+                    data-en="{{ labels_en.guidelines_heading|default('Corridor Guidelines & Hub Details') }}"
+                    data-hi="{{ labels_hi.guidelines_heading|default('कॉरिडोर दिशानिर्देश व हब विवरण') }}">
+                    {{ labels.guidelines_heading|default("Corridor Guidelines & Hub Details") }}
+                </h3>
+                <span class="text-[11px] font-mono text-on-surface-variant lang-text"
+                      data-en="{{ labels_en.guidelines_count_badge|default('4 Essential Guides') }}"
+                      data-hi="{{ labels_hi.guidelines_count_badge|default('4 आवश्यक गाइड') }}">
+                    {{ labels.guidelines_count_badge|default("4 Essential Guides") }}
+                </span>
+            </div>
+            <!-- Accordion 1: Pickup points -->
+            <details class="group border-b border-outline-variant/30 py-3">
+                <summary class="flex justify-between items-center font-bold text-xs md:text-sm text-primary cursor-pointer list-none select-none gap-2">
+                    <span class="flex items-center gap-2">
+                        <span class="text-secondary flex items-center shrink-0">{{ icon("pin_drop", size=16) }}</span>
+                        <span class="leading-snug lang-text"
+                              data-en="{{ labels_en.guide_1_q|default('Pickup points on this route') }}"
+                              data-hi="{{ labels_hi.guide_1_q|default('इस मार्ग पर पिकअप केंद्र') }}">
+                            {{ labels.guide_1_q|default("Pickup points on this route") }}
+                        </span>
+                    </span>
+                    <span class="text-on-surface-variant shrink-0">{{ icon("expand_more", size=16) }}</span>
+                </summary>
+                <div class="mt-3 pl-6 text-xs text-on-surface-variant leading-relaxed">
+                    <p class="lang-text"
+                       data-en="{{ labels_en.guide_1_a|default('Linehaul vehicles accept parcel handovers at Delhi Sanjay Gandhi Transport Nagar (Bay 4), Gurugram Hero Honda Chowk, and Manesar IMT Depot.') }}"
+                       data-hi="{{ labels_hi.guide_1_a|default('दिल्ली संजय गांधी ट्रांसपोर्ट नगर, गुरुग्राम और मानेसर में पार्सल हैंडओवर स्वीकार किए जाते हैं।') }}">
+                        {{ labels.guide_1_a|default("Linehaul vehicles accept parcel handovers at Delhi Sanjay Gandhi Transport Nagar (Bay 4), Gurugram Hero Honda Chowk, and Manesar IMT Depot.") }}
+                    </p>
+                </div>
+            </details>
+            <!-- Accordion 2: Linehaul schedule -->
+            <details class="group border-b border-outline-variant/30 py-3">
+                <summary class="flex justify-between items-center font-bold text-xs md:text-sm text-primary cursor-pointer list-none select-none gap-2">
+                    <span class="flex items-center gap-2">
+                        <span class="text-secondary flex items-center shrink-0">{{ icon("timelapse", size=16) }}</span>
+                        <span class="leading-snug lang-text"
+                              data-en="{{ labels_en.guide_2_q|default('Linehaul schedule & cutoff times') }}"
+                              data-hi="{{ labels_hi.guide_2_q|default('लाइनहॉल शेड्यूल और कटऑफ समय') }}">
+                            {{ labels.guide_2_q|default("Linehaul schedule & cutoff times") }}
+                        </span>
+                    </span>
+                    <span class="text-on-surface-variant shrink-0">{{ icon("expand_more", size=16) }}</span>
+                </summary>
+                <div class="mt-3 pl-6 text-xs text-on-surface-variant leading-relaxed">
+                    <p class="lang-text"
+                       data-en="{{ labels_en.guide_2_a|default('Manifests close 45 minutes before departure. Direct transit on NH48 averages 7 to 8 hours with live driver GPS tracking.') }}"
+                       data-hi="{{ labels_hi.guide_2_a|default('रवानगी से 45 मिनट पहले घोषणापत्र बंद हो जाते हैं। NH48 पर औसत ट्रांजिट समय 7 से 8 घंटे है।') }}">
+                        {{ labels.guide_2_a|default("Manifests close 45 minutes before departure. Direct transit on NH48 averages 7 to 8 hours with live driver GPS tracking.") }}
+                    </p>
+                </div>
+            </details>
+            <!-- Accordion 3: Cargo dimensions -->
+            <details class="group border-b border-outline-variant/30 py-3">
+                <summary class="flex justify-between items-center font-bold text-xs md:text-sm text-primary cursor-pointer list-none select-none gap-2">
+                    <span class="flex items-center gap-2">
+                        <span class="text-secondary flex items-center shrink-0">{{ icon("inventory_2", size=16) }}</span>
+                        <span class="leading-snug lang-text"
+                              data-en="{{ labels_en.guide_3_q|default('Cargo dimensions & prohibited goods') }}"
+                              data-hi="{{ labels_hi.guide_3_q|default('कार्गो आयाम और प्रतिबंधित सामान') }}">
+                            {{ labels.guide_3_q|default("Cargo dimensions & prohibited goods") }}
+                        </span>
+                    </span>
+                    <span class="text-on-surface-variant shrink-0">{{ icon("expand_more", size=16) }}</span>
+                </summary>
+                <div class="mt-3 pl-6 text-xs text-on-surface-variant leading-relaxed">
+                    <p class="lang-text"
+                       data-en="{{ labels_en.guide_3_a|default('Standard boxed parcels up to 1.8m height accepted. Flammable liquids, unregistered chemicals, unpacked glass, and hazardous goods are strictly prohibited.') }}"
+                       data-hi="{{ labels_hi.guide_3_a|default('1.8 मीटर ऊंचाई तक के मानक बॉक्स स्वीकार किए जाते हैं। ज्वलनशील पदार्थ व खतरनाक रसायन वर्जित हैं।') }}">
+                        {{ labels.guide_3_a|default("Standard boxed parcels up to 1.8m height accepted. Flammable liquids, unregistered chemicals, unpacked glass, and hazardous goods are strictly prohibited.") }}
+                    </p>
+                </div>
+            </details>
+            <!-- Accordion 4: Proof of delivery -->
+            <details class="group py-3">
+                <summary class="flex justify-between items-center font-bold text-xs md:text-sm text-primary cursor-pointer list-none select-none gap-2">
+                    <span class="flex items-center gap-2">
+                        <span class="text-secondary flex items-center shrink-0">{{ icon("verified", size=16) }}</span>
+                        <span class="leading-snug lang-text"
+                              data-en="{{ labels_en.guide_4_q|default('Proof of delivery & GPS tracking') }}"
+                              data-hi="{{ labels_hi.guide_4_q|default('डिलीवरी प्रमाण और GPS ट्रैकिंग') }}">
+                            {{ labels.guide_4_q|default("Proof of delivery & GPS tracking") }}
+                        </span>
+                    </span>
+                    <span class="text-on-surface-variant shrink-0">{{ icon("expand_more", size=16) }}</span>
+                </summary>
+                <div class="mt-3 pl-6 text-xs text-on-surface-variant leading-relaxed">
+                    <p class="lang-text"
+                       data-en="{{ labels_en.guide_4_a|default('All linehauls are equipped with telematics. Senders receive instant SMS updates upon hub departure and destination arrival.') }}"
+                       data-hi="{{ labels_hi.guide_4_a|default('सभी वाहन टेलीमैटिक्स से सुसज्जित हैं। हब रवानगी और गंतव्य आगमन पर तुरंत SMS अपडेट मिलते हैं।') }}">
+                        {{ labels.guide_4_a|default("All linehauls are equipped with telematics. Senders receive instant SMS updates upon hub departure and destination arrival.") }}
+                    </p>
+                </div>
+            </details>
+        </section>
     </div>
+    <!-- ========================================================================= -->
+    <!-- 6. PINNED STICKY BOTTOM BAR (Appears on truck selection) -->
+    <!-- ========================================================================= -->
+    <aside class="sticky-truck-bottom-bar translate-y-full" id="stickyBottomBar">
+        <div class="max-w-2xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="p-2 bg-primary-container text-secondary rounded-lg shrink-0 flex items-center justify-center">
+                    {{ icon("local_shipping", size=20) }}
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="text-xs sm:text-sm font-bold font-mono text-on-primary leading-tight"
+                         id="pinnedTruckSummary">20:45 departure · Eicher Pro 17ft · ₹2,125</div>
+                    <button type="button"
+                            onclick="dismissBottomBar()"
+                            class="text-[11px] font-mono text-primary-contrast hover:underline inline-flex items-center gap-0.5 mt-0.5 opacity-80 hover:opacity-100">
+                        {{ icon("close", size=12) }}
+                        <span class="lang-text"
+                              data-en="{{ labels_en.pinned_bar_change|default('Change selection') }}"
+                              data-hi="{{ labels_hi.pinned_bar_change|default('चयन बदलें') }}">
+                            {{ labels.pinned_bar_change|default("Change selection") }}
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <button type="button"
+                    onclick="confirmBooking()"
+                    class="w-full sm:w-auto bg-secondary hover:bg-secondary-container text-on-secondary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-mono font-bold tracking-wide transition-all shadow-md shrink-0 flex items-center justify-center gap-2 active:scale-95">
+                {{ icon("lock", size=14) }}
+                <span class="lang-text"
+                      data-en="{{ labels_en.pinned_bar_confirm|default('Confirm & Reserve (OTP)') }}"
+                      data-hi="{{ labels_hi.pinned_bar_confirm|default('पुष्टि व आरक्षण (OTP)') }}">
+                    {{ labels.pinned_bar_confirm|default("Confirm & Reserve (OTP)") }}
+                </span>
+            </button>
+        </div>
+    </aside>
 </section>
