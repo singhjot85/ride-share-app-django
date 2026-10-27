@@ -27,7 +27,8 @@ dependencies = [
     "core-common-django-apps @ git+https://github.com/singhjot85/core-common-django-apps.git@main",
     "djangorestframework-simplejwt (>=5.5.1,<6.0.0)",
     "google-auth (>=2.62.0,<3.0.0)",
-    "jinja2 (>=3.1.6,<4.0.0)"
+    "jinja2 (>=3.1.6,<4.0.0)",
+    "drf-spectacular (>=0.30.0,<0.31.0)"
 ]
 
 [build-system]
