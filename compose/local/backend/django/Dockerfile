@@ -60,7 +60,7 @@ RUN pip install --no-cache-dir \
 # Set a work-directory and copy backend code
 WORKDIR /backend
 
-COPY backend/ backend/
+COPY backend/ .
 
 COPY compose/local/backend/django/start.sh /scripts/django-start.sh
 COPY compose/local/backend/celery-worker/start.sh /scripts/worker-start.sh

@@ -1,0 +1,349 @@
+/**
+ * LoadShare Design System Theme Overrides
+ * Sourced from local_data/design/user-facing/landing_page.html
+ * Overrides core framework tokens with highway corridor logistics theme.
+ */
+
+@import url("variables.css");
+
+/* ==========================================================================
+   Highway Corridor Logistics Components
+   ========================================================================== */
+
+.corridor-line {
+  background-image: repeating-linear-gradient(to right, #0f2942 0, #0f2942 8px, transparent 8px, transparent 14px);
+}
+
+.barcode-strip {
+  background: repeating-linear-gradient(90deg, #0b1c30 0px, #0b1c30 2px, #ffffff 2px, #ffffff 4px, #0b1c30 4px, #0b1c30 7px, #ffffff 7px, #ffffff 8px, #0b1c30 8px, #0b1c30 11px);
+}
+
+/* Language Toggle Button */
+.lang-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(229, 238, 255, 0.7);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 20, 40, 0.1);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lang-toggle-btn:hover {
+  background: var(--color-surface-container);
+}
+
+.lang-toggle-btn .lang-active {
+  font-weight: 700;
+  color: var(--color-secondary);
+}
+
+.lang-toggle-btn .lang-inactive {
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* Mobile Bottom Navigation Bar */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0, 20, 40, 0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 768px) {
+  .mobile-bottom-nav {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Authentication & Login Page Theme Overrides
+   ========================================================================== */
+
+.auth-shell {
+  background-color: var(--color-bg) !important;
+  background-image: radial-gradient(rgba(0, 20, 40, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 490px;
+}
+
+/* Auth Brand Header */
+.auth-brand {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.auth-brand .brand-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: rgba(171, 54, 0, 0.12) !important;
+  border: 1px solid rgba(171, 54, 0, 0.25) !important;
+  box-shadow: 0 2px 6px rgba(171, 54, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-brand .brand-icon-wrapper .material-symbols-outlined {
+  color: var(--color-secondary) !important;
+}
+
+.auth-brand-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-primary) !important;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.auth-brand-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-muted) !important;
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
+/* Master Auth Card */
+.auth-card {
+  background-color: var(--color-surface) !important;
+  border: 1px solid rgba(0, 20, 40, 0.12) !important;
+  border-radius: 1.5rem !important; /* 24px */
+  box-shadow: 0 20px 40px -15px rgba(0, 20, 40, 0.08) !important;
+  overflow: hidden;
+}
+
+.auth-card-body {
+  padding: 1.75rem !important;
+}
+
+/* Auth Mode Tabs (Sign In / Sign Up) */
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: var(--color-surface-container) !important;
+  border-bottom: 1px solid rgba(0, 20, 40, 0.08) !important;
+  padding: 6px !important;
+  gap: 6px !important;
+}
+
+.auth-tab-btn {
+  height: 44px;
+  padding: 8px 16px;
+  border-radius: 12px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: var(--color-text-subtle) !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.auth-tab-btn:hover {
+  color: var(--color-primary) !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+.auth-tab-btn.active {
+  background-color: #ffffff !important;
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+  border-color: rgba(0, 20, 40, 0.08) !important;
+  box-shadow: 0 2px 8px rgba(0, 20, 40, 0.06) !important;
+  position: relative;
+}
+
+.auth-tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 3px;
+  background-color: var(--color-secondary);
+  border-radius: 2px;
+}
+
+/* Form Controls & Inputs */
+.auth-card .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.auth-card .form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text) !important;
+  margin-bottom: 0.4rem;
+}
+
+.auth-card .form-control {
+  border-radius: 10px !important;
+  border: 1px solid var(--color-border) !important;
+  background-color: rgba(248, 249, 255, 0.7) !important;
+  color: var(--color-text) !important;
+  font-size: 0.9375rem;
+  padding: 10px 14px;
+  min-height: 46px;
+  transition: all 0.15s ease;
+}
+
+.auth-card .form-control:focus {
+  border-color: var(--color-primary) !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(0, 20, 40, 0.08) !important;
+  outline: none;
+}
+
+/* Input Action Group (Phone + Send OTP) */
+.auth-card .input-action-group {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-card .input-action-group .form-control {
+  flex: 1;
+}
+
+/* Send OTP Buttons */
+#btn_send_login_otp,
+#btn_send_signup_otp {
+  border-radius: 10px !important;
+  padding: 0 16px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  min-height: 46px !important;
+  white-space: nowrap;
+  border: 1px solid var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+#btn_send_login_otp:not(:disabled):hover,
+#btn_send_signup_otp:not(:disabled):hover {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+}
+
+#btn_send_login_otp:disabled,
+#btn_send_signup_otp:disabled {
+  border-color: var(--color-border) !important;
+  color: var(--color-text-subtle) !important;
+  background-color: var(--color-surface-sunken) !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Main Verification / Submit Button (Primary Safety Amber CTA) */
+#btn_otp_submit,
+#btn_otp_signup_submit,
+.auth-card .btn-primary {
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  font-size: 0.9375rem !important;
+  font-weight: 700 !important;
+  min-height: 48px !important;
+  box-shadow: 0 4px 14px rgba(171, 54, 0, 0.25) !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+#btn_otp_submit:not(:disabled):hover,
+#btn_otp_signup_submit:not(:disabled):hover,
+.auth-card .btn-primary:not(:disabled):hover {
+  background-color: var(--color-secondary-hover) !important;
+  border-color: var(--color-secondary-hover) !important;
+  box-shadow: 0 6px 18px rgba(171, 54, 0, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+#btn_otp_submit:disabled,
+#btn_otp_signup_submit:disabled,
+.auth-card .btn-primary:disabled {
+  background-color: var(--color-surface-container) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text-subtle) !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* OTP 6-Digit Verification Challenge Grid */
+.otp-input-group {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.otp-digit-box {
+  width: 100%;
+  max-width: 48px;
+  height: 48px;
+  text-align: center;
+  font-family: var(--font-family-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 10px !important;
+  border: 1.5px solid var(--color-border) !important;
+  background-color: #ffffff !important;
+  color: var(--color-primary) !important;
+  transition: all 0.15s ease;
+}
+
+.otp-digit-box:focus {
+  border-color: var(--color-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(171, 54, 0, 0.15) !important;
+  outline: none;
+}
+
+/* Auth Footer */
+.auth-footer {
+  background: transparent !important;
+  border: none !important;
+  margin-top: 1.5rem !important;
+}

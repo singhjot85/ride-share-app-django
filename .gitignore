@@ -171,3 +171,5 @@ tempCodeRunnerFile.py
 local_data/*
 
 **/*.whl
+**/graphify-out/*
+docs/analysis/*

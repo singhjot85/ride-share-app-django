@@ -1,0 +1,48 @@
+{# Mobile Bottom Navigation Bar (5 Items) #}
+{% from "core/components/common/icons.jinja" import icon %}
+<nav id="mobile-bottom-navbar"
+     class="mobile-bottom-navbar"
+     aria-label="Mobile navigation bar">
+    <div class="bottom-nav-grid">
+        <button type="button"
+                class="bottom-nav-item"
+                data-tab="book-corridor"
+                onclick="LoadShareNav.switchTab('book-corridor')"
+                aria-label="Book Corridor">
+            <div class="nav-icon-container">{{ icon("add_box", size=20, extra_classes="nav-icon") }}</div>
+            <span class="nav-label">Book</span>
+        </button>
+        <button type="button"
+                class="bottom-nav-item"
+                data-tab="rates"
+                onclick="LoadShareNav.switchTab('rates')"
+                aria-label="Freight Rates">
+            <div class="nav-icon-container">{{ icon("currency_rupee", size=20, extra_classes="nav-icon") }}</div>
+            <span class="nav-label">Rates</span>
+        </button>
+        <button type="button"
+                class="bottom-nav-item active"
+                data-tab="home"
+                onclick="LoadShareNav.switchTab('home')"
+                aria-label="Home">
+            <div class="nav-icon-container">{{ icon("local_shipping", size=20, extra_classes="nav-icon") }}</div>
+            <span class="nav-label">Home</span>
+        </button>
+        <button type="button"
+                class="bottom-nav-item"
+                data-tab="support"
+                onclick="LoadShareNav.switchTab('support')"
+                aria-label="Helpline Support">
+            <div class="nav-icon-container">{{ icon("support_agent", size=20, extra_classes="nav-icon") }}</div>
+            <span class="nav-label">Support</span>
+        </button>
+        <button type="button"
+                class="bottom-nav-item"
+                data-tab="profile"
+                onclick="LoadShareNav.switchTab('profile')"
+                aria-label="Profile Account">
+            <div class="nav-icon-container">{{ icon("account_circle", size=20, extra_classes="nav-icon") }}</div>
+            <span class="nav-label">Profile</span>
+        </button>
+    </div>
+</nav>

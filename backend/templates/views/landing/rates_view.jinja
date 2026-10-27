@@ -1,0 +1,26 @@
+{# Rates View Placeholder #}
+{% from "core/components/common/icons.jinja" import icon %}
+<section id="view-rates"
+         class="landing-tab-view hidden"
+         aria-labelledby="rates-view-title">
+    <div class="landing-view-container max-w-2xl mx-auto px-4 pt-12 pb-20 text-center">
+        <div class="coming-soon-card bg-surface-container-lowest border border-outline-variant/60 rounded-3xl p-10 shadow-sm space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-surface-container text-secondary flex items-center justify-center mx-auto shadow-inner">
+                {{ icon("currency_rupee", size=32) }}
+            </div>
+            <h1 id="rates-view-title" class="text-2xl font-bold text-primary">
+                <span class="lang-text"
+                      data-en="{{ labels_en.rates_title|default('Wholesale Corridor Rates') }}"
+                      data-hi="{{ labels_hi.rates_title|default('थोक कॉरिडोर दरें') }}">{{ labels.rates_title|default("Wholesale Corridor Rates") }}</span>
+            </h1>
+            <p class="text-sm text-on-surface-variant max-w-md mx-auto leading-relaxed">
+                Wholesale per-kg corridor pricing calculator coming in the next update. Indicative pilot rates start at ₹6.00/kg for part-loads.
+            </p>
+            <div class="pt-4">
+                <button type="button"
+                        class="btn-cta-secondary"
+                        onclick="LoadShareNav.switchTab('home')">Back to Overview</button>
+            </div>
+        </div>
+    </div>
+</section>

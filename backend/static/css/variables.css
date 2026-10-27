@@ -1,0 +1,189 @@
+/**
+ * variables.css: Unified Design Tokens & Theme Variables for LoadShare.
+ *
+ * HARD RULE: Always use CSS variables across all component stylesheets.
+ * Never hardcode color hexes or rgb values directly in component CSS.
+ * This guarantees effortless sitewide palette switches and bulletproof dark mode.
+ */
+
+:root,
+[data-theme="light"] {
+  /* Brand Primary: Deep Industrial Logistics Navy */
+  --color-primary: #001428;
+  --color-primary-hover: #0f2942;
+  --color-primary-active: #000a14;
+  --color-primary-subtle: rgba(0, 20, 40, 0.08);
+  --color-primary-contrast: #ffffff;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #0f2942;
+  --color-on-primary-container: #7991af;
+
+  /* Brand Secondary: Commercial Safety Amber / Orange */
+  --color-secondary: #ab3600;
+  --color-secondary-hover: #822700;
+  --color-secondary-active: #611b00;
+  --color-secondary-subtle: rgba(171, 54, 0, 0.12);
+  --color-secondary-contrast: #ffffff;
+  --color-secondary-container: #ff6e38;
+  --color-secondary-fixed: #ffdbcf;
+  --color-on-secondary-fixed: #390c00;
+  --color-on-secondary: #ffffff;
+
+  /* Tertiary / Accent Palette */
+  --color-tertiary: #001711;
+  --color-tertiary-container: #002e24;
+  --color-on-tertiary-container: #3d9e86;
+  --color-tertiary-fixed: #96f4d9;
+  --color-on-tertiary: #ffffff;
+
+  /* Surfaces & Canvas */
+  --color-bg: #f8f9ff;
+  --color-surface: #ffffff;
+  --color-surface-dim: #cbdbf5;
+  --color-surface-bright: #f8f9ff;
+  --color-surface-sunken: #eff4ff;
+  --color-surface-raised: #ffffff;
+  --color-surface-container: #e5eeff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container-high: #dce9ff;
+  --color-surface-container-highest: #d3e4fe;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-variant: #d3e4fe;
+
+  /* Component Shell Backdrops */
+  --color-header-bg: rgba(255, 255, 255, 0.95);
+  --color-chip-bg: rgba(255, 255, 255, 0.92);
+  --color-nav-bg: rgba(255, 255, 255, 0.96);
+
+  /* Typography Colors */
+  --color-text: #0b1c30;
+  --color-text-title: #001428;
+  --color-text-muted: #43474d;
+  --color-text-subtle: #74777e;
+  --color-text-inverse: #ffffff;
+
+  /* Borders & Outlines */
+  --color-border: #c3c6ce;
+  --color-border-subtle: rgba(195, 198, 206, 0.5);
+  --color-outline: #74777e;
+  --color-outline-variant: #c3c6ce;
+  --color-divider: #e5eeff;
+
+  /* Feedback Colors */
+  --color-success: #005141;
+  --color-success-bg: #e6f4ea;
+  --color-warning: #ab3600;
+  --color-warning-bg: #fef3c7;
+  --color-danger: #ba1a1a;
+  --color-danger-bg: #ffe4e6;
+  --color-live-pulse: #34d399;
+
+  /* Shadow & Elevation */
+  --shadow-xs: 0 1px 2px rgba(0, 20, 40, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 20, 40, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 20, 40, 0.08);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 20, 40, 0.1);
+  --shadow-inner: inset 0 2px 4px rgba(0, 20, 40, 0.06);
+  --shadow-nav: 0 -4px 16px rgba(0, 20, 40, 0.06);
+  --shadow-chip: 0 10px 25px -5px rgba(0, 20, 40, 0.1), 0 8px 10px -6px rgba(0, 20, 40, 0.05);
+  --shadow-orange: 0 4px 14px rgba(171, 54, 0, 0.3);
+
+  /* Shimmer Gradients */
+  --shimmer-from: rgba(229, 238, 255, 0.8);
+  --shimmer-mid: rgba(211, 228, 254, 0.9);
+  --shimmer-to: rgba(229, 238, 255, 0.8);
+}
+
+/* ==========================================================================
+   Dark Theme Design Tokens
+   Triggered via [data-theme="dark"] attribute or .dark class on html/body
+   ========================================================================== */
+[data-theme="dark"],
+html.dark,
+body.dark,
+.dark {
+  /* Brand Primary */
+  --color-primary: #d1e4ff;
+  --color-primary-hover: #b0c9e8;
+  --color-primary-active: #8fb0d6;
+  --color-primary-subtle: rgba(209, 228, 255, 0.12);
+  --color-primary-contrast: #001428;
+  --color-on-primary: #001428;
+  --color-primary-container: #1b324d;
+  --color-on-primary-container: #d1e4ff;
+
+  /* Brand Secondary: Bright vibrant safety orange in dark mode */
+  --color-secondary: #ff6e38;
+  --color-secondary-hover: #ff8555;
+  --color-secondary-active: #e5531d;
+  --color-secondary-subtle: rgba(255, 110, 56, 0.18);
+  --color-secondary-contrast: #ffffff;
+  --color-secondary-container: #822700;
+  --color-secondary-fixed: #ffdbcf;
+  --color-on-secondary-fixed: #390c00;
+  --color-on-secondary: #ffffff;
+
+  /* Tertiary / Accent Palette */
+  --color-tertiary: #96f4d9;
+  --color-tertiary-container: #005141;
+  --color-on-tertiary-container: #7ad8bd;
+  --color-tertiary-fixed: #96f4d9;
+  --color-on-tertiary: #002019;
+
+  /* Surfaces & Canvas: Deep Industrial Navy Canvas */
+  --color-bg: #07121e;
+  --color-surface: #0e2035;
+  --color-surface-dim: #050e18;
+  --color-surface-bright: #172f4a;
+  --color-surface-sunken: #050e18;
+  --color-surface-raised: #13273e;
+  --color-surface-container: #13273e;
+  --color-surface-container-low: #0e2035;
+  --color-surface-container-high: #1b324d;
+  --color-surface-container-highest: #243e5e;
+  --color-surface-container-lowest: #091726;
+  --color-surface-variant: #243e5e;
+
+  /* Component Shell Backdrops in Dark Mode */
+  --color-header-bg: rgba(14, 32, 53, 0.95);
+  --color-chip-bg: rgba(19, 39, 62, 0.94);
+  --color-nav-bg: rgba(14, 32, 53, 0.96);
+
+  /* Typography Colors in Dark Mode */
+  --color-text: #e5eeff;
+  --color-text-title: #ffffff;
+  --color-text-muted: #9ab0cb;
+  --color-text-subtle: #7991af;
+  --color-text-inverse: #0b1c30;
+
+  /* Borders & Outlines in Dark Mode */
+  --color-border: rgba(195, 198, 206, 0.22);
+  --color-border-subtle: rgba(195, 198, 206, 0.12);
+  --color-outline: #5c708a;
+  --color-outline-variant: rgba(195, 198, 206, 0.25);
+  --color-divider: rgba(255, 255, 255, 0.08);
+
+  /* Feedback Colors */
+  --color-success: #7ad8bd;
+  --color-success-bg: rgba(0, 81, 65, 0.35);
+  --color-warning: #ffb59c;
+  --color-warning-bg: rgba(171, 54, 0, 0.35);
+  --color-danger: #ffb4ab;
+  --color-danger-bg: rgba(186, 26, 26, 0.35);
+  --color-live-pulse: #34d399;
+
+  /* Shadow & Elevation in Dark Mode */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.35);
+  --shadow-nav: 0 -4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-chip: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --shadow-orange: 0 4px 16px rgba(255, 110, 56, 0.4);
+
+  /* Shimmer Gradients in Dark Mode */
+  --shimmer-from: rgba(19, 39, 62, 0.8);
+  --shimmer-mid: rgba(36, 62, 94, 0.9);
+  --shimmer-to: rgba(19, 39, 62, 0.8);
+}

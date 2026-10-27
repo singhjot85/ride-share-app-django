@@ -1,0 +1,93 @@
+{% extends "views/authenticated_view.jinja" %}
+
+{% from "core/components/common/icons.jinja" import icon %}
+{% block title %}
+    {{ labels.brand_name|default("ROUTEWAY") }} / {{ labels_hi.brand_name|default("रूटवे") }} — {{ labels.brand_tagline|default("Direct Corridor Freight") }}
+{% endblock title %}
+{% block extra_head %}
+    {{ super() }}
+    <!-- LoadShare Unified Design Tokens & Theme Stylesheets -->
+    <link rel="stylesheet" href="{{ static('css/variables.css') }}">
+    <link rel="stylesheet" href="{{ static('css/theme_override.css') }}">
+    <link rel="stylesheet" href="{{ static('css/landing_layout.css') }}">
+    <link rel="stylesheet" href="{{ static('css/floating_chip.css') }}">
+    <link rel="stylesheet" href="{{ static('css/bottom_navbar.css') }}">
+    <!-- Theme Preference Initialization & Handler (Prevents FOUC) -->
+    <script src="{{ static('js/theme_toggle.js') }}"></script>
+{% endblock extra_head %}
+{# Remove core app sidebar, navbar and footer on landing page #}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block header %}
+{% endblock header %}
+{% block footer %}
+{% endblock footer %}
+{% block content %}
+    <div class="landing-page-shell" id="landing-page-shell">
+        <!-- Top Title Bar -->
+        <header class="landing-top-bar" id="landing-top-bar">
+            <div class="landing-top-bar-inner">
+                <!-- Leftmost: Brand Icon & Title -->
+                <a href="#home"
+                   class="brand-brand-group"
+                   onclick="LoadShareNav.switchTab('home')"
+                   aria-label="LoadShare Home">
+                    <div class="brand-logo-box">{{ icon("local_shipping", size=20, extra_classes="text-on-primary") }}</div>
+                    <div class="brand-text-stack">
+                        <span class="brand-title font-bold tracking-tight text-primary lang-text"
+                              data-en="{{ labels_en.brand_name|default('ROUTEWAY') }}"
+                              data-hi="{{ labels_hi.brand_name|default('लोडशेयर') }}">{{ labels.brand_name|default("ROUTEWAY") }}</span>
+                        {# <span class="brand-subtitle text-xs text-on-surface-variant font-medium">/ {{ labels_hi.brand_name|default("रूटवे") }}</span> #}
+                    </div>
+                </a>
+                <!-- Rightmost: Separate Language Toggle & Theme Toggle -->
+                <div class="header-action-group">
+                    <!-- 1. Language Toggle (EN / हिंदी) -->
+                    <button type="button"
+                            class="lang-toggle-btn"
+                            id="lang-toggle-btn"
+                            onclick="toggleLanguage()"
+                            aria-label="Toggle language between English and Hindi"
+                            title="Switch Language">
+                        <span id="lang-en"
+                              class="{{ 'lang-active' if current_lang == 'en' else 'lang-inactive' }}">EN</span>
+                        <span class="lang-divider">/</span>
+                        <span id="lang-hi"
+                              class="{{ 'lang-active' if current_lang == 'hi' else 'lang-inactive' }}">हिंदी</span>
+                    </button>
+                    <!-- 2. Appearance Theme Toggle -->
+                    <button type="button"
+                            class="theme-toggle-btn"
+                            id="theme-toggle-btn"
+                            onclick="toggleTheme()"
+                            aria-label="Toggle appearance theme (light/dark)"
+                            title="Toggle Theme">
+                        {{ icon("dark_mode", size=18, extra_classes="theme-toggle-icon") }}
+                    </button>
+                </div>
+            </div>
+        </header>
+        <!-- Desktop Floating Nav Chip (Centered, Hides on Scroll) -->
+        {% include "components/floating_chip.jinja" %}
+
+        <!-- Tabbed Subviews Container -->
+        <main class="landing-content-shell" id="landing-content-shell">
+            {% include "views/landing/home_view.jinja" %}
+            {% include "views/landing/book_corridor_view.jinja" %}
+            {% include "views/landing/rates_view.jinja" %}
+            {% include "views/landing/support_view.jinja" %}
+            {% include "views/landing/profile_view.jinja" %}
+
+        </main>
+        <!-- Mobile Bottom Navigation Bar (5 Items) -->
+        {% include "components/bottom_navbar.jinja" %}
+
+    </div>
+{% endblock content %}
+{% block extra_scripts %}
+    {{ super() }}
+    <!-- Modular Interactive States -->
+    <script src="{{ static('js/language_toggle.js') }}"></script>
+    <script src="{{ static('js/states/navigation_state.js') }}"></script>
+    <script src="{{ static('js/states/corridor_state.js') }}"></script>
+{% endblock extra_scripts %}

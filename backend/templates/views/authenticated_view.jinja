@@ -1,0 +1,47 @@
+{% extends "core/base.jinja" %}
+
+{% from "core/components/common/icons.jinja" import icon %}
+{% block title %}
+    {{ page_title or (PROJECT_LABEL or 'LoadShare') ~ ' - Protected Area' }}
+{% endblock title %}
+{% block extra_head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ static('css/theme_override.css') }}">
+{% endblock extra_head %}
+{# Override top-level app_shell: renders either the OTP login template or the authenticated view shell #}
+{% block app_shell %}
+    {% if is_login_view|default(true) and not (request.user and request.user.is_authenticated and not force_login_view|default(false)) %}
+        {# Render project-specific OTP-only login template #}
+        {% include "views/otp_login_template.jinja" %}
+
+    {% else %}
+        {# Standard authenticated dashboard app shell #}
+        {{ super() }}
+    {% endif %}
+    {# Global Session Expiration Blocking Overlay & Modal Dialog #}
+    {% set labels = resolve_labels("users_template_label", labels) if resolve_labels is defined else (labels or {}) %}
+    <div id="session_timeout_overlay"
+         class="session-timeout-overlay"
+         style="display: none"
+         role="alertdialog"
+         aria-modal="true"
+         aria-labelledby="session_timeout_title"
+         aria-describedby="session_timeout_desc">
+        <div class="session-timeout-modal">
+            <div class="session-timeout-icon">{{ icon("timer_off", size=48, extra_classes="text-warning") }}</div>
+            <h3 id="session_timeout_title" class="session-timeout-title">
+                {{ labels.session_expired|default("Session Expired") }}
+            </h3>
+            <p id="session_timeout_desc" class="session-timeout-message">
+                {{ labels.session_expired_message|default("Your session has expired. Please sign in again to continue.") }}
+            </p>
+            <div class="session-timeout-actions">
+                <a href="{{ login_url|default("/login/") }}?next={{ request.path|urlencode if request else '/' }}"
+                   id="btn_session_timeout_login"
+                   class="btn btn-primary w-full">{{ labels.return_to_login|default("Sign In Again") }}</a>
+            </div>
+        </div>
+    </div>
+    {# Client-side JWT auth detection: auto-reload if client cookie exists on unauthenticated SSR #}
+    <script src="{{ static('js/session_sync.js') }}"></script>
+{% endblock app_shell %}

@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Django Container",
+            "name": "Django Container",
             "type": "python",
             "request": "attach",
             "connect": {
@@ -14,35 +14,19 @@
             },
             "pathMappings": [
                 {
-                    "localRoot": "${workspaceFolder}/backend",
+                    "localRoot": "${workspaceFolder}/backend/core-common-django-apps/",
                     "remoteRoot": "/backend"
                 }
             ],
             "justMyCode": false
         },
         {
-            "name": "Python Debugger: Celery Container",
+            "name": "Celery Container",
             "type": "python",
             "request": "attach",
             "connect": {
                 "host": "localhost",
                 "port": 2254
-            },
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}/backend",
-                    "remoteRoot": "/backend"
-                }
-            ],
-            "justMyCode": false
-        },
-        {
-            "name": "Python Debugger: Django Tenant Shell",
-            "type": "python",
-            "request": "attach",
-            "connect": {
-                "host": "localhost",
-                "port": 2255
             },
             "pathMappings": [
                 {
