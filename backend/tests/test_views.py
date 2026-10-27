@@ -104,49 +104,78 @@ class TestLandingPageView:
         content = response.render().content.decode("utf-8")
 
         # Theme variables, override and layout CSS linked
-        assert "variables.css" in content
-        assert "theme_override.css" in content
-        assert "landing_layout.css" in content
-        assert "floating_chip.css" in content
-        assert "bottom_navbar.css" in content
+        for css_asset in [
+            "variables.css",
+            "theme_override.css",
+            "landing_layout.css",
+            "floating_chip.css",
+            "bottom_navbar.css",
+        ]:
+            assert css_asset in content
 
-        # Desktop floating chip and mobile bottom nav are present
+        # Floating chip, navbar, top-bar-title and tabs
         assert "desktop-floating-chip" in content
         assert "mobile-bottom-navbar" in content
+        assert 'id="top-bar-title"' in content
 
-        # All 5 navigation destinations exist in DOM
-        assert 'data-tab="book-corridor"' in content
-        assert 'data-tab="rates"' in content
-        assert 'data-tab="home"' in content
-        assert 'data-tab="support"' in content
-        assert 'data-tab="profile"' in content
+        for tab in ["book-corridor", "rates", "home", "support", "profile"]:
+            assert f'data-tab="{tab}"' in content
+            assert f'id="view-{tab}"' in content
 
-        # Modular tabbed views are rendered
-        assert 'id="view-home"' in content
-        assert 'id="view-book-corridor"' in content
-        assert 'id="view-rates"' in content
-        assert 'id="view-support"' in content
-        assert 'id="view-profile"' in content
+        for js_asset in [
+            "theme_toggle.js",
+            "navigation_state.js",
+            "corridor_state.js",
+            "profile_state.js",
+            "language_toggle.js",
+        ]:
+            assert js_asset in content
 
-        # Interactive JavaScript modules are linked
-        assert "theme_toggle.js" in content
-        assert "navigation_state.js" in content
-        assert "corridor_state.js" in content
-        assert "language_toggle.js" in content
-        assert "theme-toggle-btn" in content
+    def test_corridor_view_components_present(self, rf: RequestFactory, user):
+        """Verify corridor booking subview and wizard components are present."""
+        request = rf.get("/")
+        request.user = user
 
-        # Corridor booking subview components
-        assert 'id="search-engine"' in content
-        assert 'id="wizardStep1"' in content
-        assert 'id="wizardStep2"' in content
-        assert 'id="wizardStep3"' in content
-        assert 'id="results-container"' in content
-        assert 'id="stateCardsDefault"' in content
-        assert 'id="stateCardsSkeleton"' in content
-        assert 'id="stateCardsEmpty"' in content
-        assert 'id="stateCardsCapacity"' in content
-        assert 'id="stateCardsError"' in content
-        assert 'id="stickyBottomBar"' in content
+        response = LandingPageView.as_view()(request)
+        content = response.render().content.decode("utf-8")
+
+        expected_ids = [
+            "search-engine",
+            "wizardStep1",
+            "wizardStep2",
+            "wizardStep3",
+            "results-container",
+            "stateCardsDefault",
+            "stateCardsSkeleton",
+            "stateCardsEmpty",
+            "stateCardsCapacity",
+            "stateCardsError",
+            "stickyBottomBar",
+        ]
+        for element_id in expected_ids:
+            assert f'id="{element_id}"' in content
+
+    def test_profile_view_components_present(self, rf: RequestFactory, user):
+        """Verify profile subview and booking management components are present."""
+        request = rf.get("/")
+        request.user = user
+
+        response = LandingPageView.as_view()(request)
+        content = response.render().content.decode("utf-8")
+
+        expected_ids = [
+            "account-card",
+            "account-view-mode",
+            "account-edit-mode",
+            "bookings-section",
+            "booking-cards-list",
+            "booking-empty-state",
+            "filter-all",
+            "filter-active",
+            "filter-completed",
+        ]
+        for element_id in expected_ids:
+            assert f'id="{element_id}"' in content
 
     def test_session_timeout_dialog_attributes(self, rf: RequestFactory, user):
         """Verify session timeout modal dialog has the expected button and links."""

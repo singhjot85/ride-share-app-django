@@ -158,6 +158,10 @@ class BaseLanguageTemplateView(BaseTemplateView):
             db_labels.setdefault(key, val)
 
         context["labels"] = db_labels
+        context["user"] = getattr(self.request, "user", None)
+        context["phone"] = getattr(
+            getattr(self.request, "user", None), "phone_number", None
+        )
         return context
 
     def render_to_response(

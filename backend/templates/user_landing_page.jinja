@@ -35,9 +35,9 @@
                     <div class="brand-logo-box">{{ icon("local_shipping", size=20, extra_classes="text-on-primary") }}</div>
                     <div class="brand-text-stack">
                         <span class="brand-title font-bold tracking-tight text-primary lang-text"
+                              id="top-bar-title"
                               data-en="{{ labels_en.brand_name|default('ROUTEWAY') }}"
                               data-hi="{{ labels_hi.brand_name|default('लोडशेयर') }}">{{ labels.brand_name|default("ROUTEWAY") }}</span>
-                        {# <span class="brand-subtitle text-xs text-on-surface-variant font-medium">/ {{ labels_hi.brand_name|default("रूटवे") }}</span> #}
                     </div>
                 </a>
                 <!-- Rightmost: Separate Language Toggle & Theme Toggle -->
@@ -90,4 +90,5 @@
     <script src="{{ static('js/language_toggle.js') }}"></script>
     <script src="{{ static('js/states/navigation_state.js') }}"></script>
     <script src="{{ static('js/states/corridor_state.js') }}"></script>
+    <script src="{{ static('js/states/profile_state.js') }}"></script>
 {% endblock extra_scripts %}
