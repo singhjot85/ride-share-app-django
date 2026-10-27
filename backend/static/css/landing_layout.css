@@ -964,3 +964,94 @@ details[open] summary .material-symbols-outlined {
   .md\:text-lg { font-size: 1.125rem !important; line-height: 1.75rem !important; }
   .md\:text-sm { font-size: 0.875rem !important; line-height: 1.25rem !important; }
 }
+
+/* =========================================================================
+   Sender Profile View Utilities
+   ========================================================================= */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.divide-y > * + * {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.booking-filter-chip {
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.booking-item {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.booking-item:hover {
+  border-color: var(--color-primary) !important;
+}
+
+.badge-status-transit {
+  background-color: var(--color-primary-subtle);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+}
+
+.badge-status-requested {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+}
+
+.badge-status-delivered {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.profile-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  color: var(--color-text);
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.profile-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.justify-end { justify-content: flex-end; }
+.max-w-xs { max-width: 20rem; }
+.mb-0\.5 { margin-bottom: 0.125rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mt-2\.5 { margin-top: 0.625rem; }
+.my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+.p-8 { padding: 2rem; }
+.pl-9 { padding-left: 2.25rem; }
+.top-2\.5 { top: 0.625rem; }
+.left-2\.5 { left: 0.625rem; }
+.underline { text-decoration: underline; }
+.transition-transform { transition-property: transform; transition-duration: 150ms; }
+
+.hover\:border-primary:hover { border-color: var(--color-primary) !important; }
+.hover\:bg-surface-container-low:hover { background-color: var(--color-surface-container-low) !important; }
+.hover\:bg-secondary-fixed\/40:hover { background-color: var(--color-secondary-subtle) !important; }
+
+.group:hover .group-hover\:bg-primary { background-color: var(--color-primary) !important; }
+.group:hover .group-hover\:text-on-primary { color: var(--color-on-primary) !important; }
+.group:hover .group-hover\:translate-x-0\.5 { transform: translateX(0.125rem); }
+.divide-primary\/5 > * + * { border-top: 1px solid var(--color-border-subtle) !important; }

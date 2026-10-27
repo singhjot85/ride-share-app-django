@@ -66,6 +66,7 @@
     }
 
     // Expose functions globally for template event handlers
+    window.getActiveLanguage = getActiveLanguage;
     window.setLanguage = setLanguage;
     window.toggleLanguage = toggleLanguage;
 

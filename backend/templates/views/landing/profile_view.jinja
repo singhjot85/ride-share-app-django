@@ -1,22 +1,388 @@
-{# Profile View Placeholder #}
+{# Sender Profile & Consignment History View #}
 {% from "core/components/common/icons.jinja" import icon %}
+{% set current_user = user if user is defined and user else (request.user if request is defined and request.user is defined else None) %}
+{% set user_display_name = (current_user.get_full_name() if current_user and current_user.get_full_name is defined and current_user.get_full_name() else (current_user.username if current_user and current_user.username is defined else None)) or labels.profile_default_name|default("Rajesh Trading Co. (Rajesh Sharma)") %}
+{% set user_display_phone = (current_user.phone_number if current_user and current_user.phone_number is defined else None) or (phone if phone is defined and phone else None) or labels.profile_default_phone|default("+91 98201 44829") %}
 <section id="view-profile"
          class="landing-tab-view hidden"
-         aria-labelledby="profile-view-title">
-    <div class="landing-view-container max-w-2xl mx-auto px-4 pt-12 pb-20 text-center">
-        <div class="coming-soon-card bg-surface-container-lowest border border-outline-variant/60 rounded-3xl p-10 shadow-sm space-y-4">
-            <div class="w-16 h-16 rounded-2xl bg-surface-container text-secondary flex items-center justify-center mx-auto shadow-inner">
-                {{ icon("account_circle", size=32) }}
-            </div>
-            <h1 id="profile-view-title" class="text-2xl font-bold text-primary">Sender Business Profile</h1>
-            <p class="text-sm text-on-surface-variant max-w-md mx-auto leading-relaxed">
-                Manage business GSTIN, saved pickup/drop hubs, past consignments, and e-waybill generation history.
-            </p>
-            <div class="pt-4">
+         aria-label="Profile">
+    <div class="landing-view-container max-w-2xl mx-auto px-4 md:px-8 py-5 space-y-6">
+        <!-- ========================================================================= -->
+        <!-- 1. PROFILE CONTEXT BAR (Back link + Quick Action) -->
+        <!-- ========================================================================= -->
+        <div class="px-4 py-2.5 flex items-center justify-between">
+            <div class="flex items-center gap-2">
                 <button type="button"
-                        class="btn-cta-secondary"
-                        onclick="LoadShareNav.switchTab('home')">Back to Overview</button>
+                        onclick="LoadShareNav.switchTab('home')"
+                        class="btn-back-link hover:text-primary transition-colors">
+                    {{ icon("arrow_back", size=16) }}
+                    <span class="lang-text"
+                          data-en="{{ labels_en.corridor_back_home|default('Back to Home') }}"
+                          data-hi="{{ labels_hi.corridor_back_home|default('होम पर वापस') }}">
+                        {{ labels.corridor_back_home|default("Back to Home") }}
+                    </span>
+                </button>
             </div>
+            <button type="button"
+                    onclick="LoadShareNav.switchTab('book-corridor')"
+                    class="bg-secondary text-on-secondary px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 active:scale-95">
+                {{ icon("add_box", size=16) }}
+                <span class="lang-text"
+                      data-en="{{ labels_en.profile_book_delivery_btn|default('Book delivery') }}"
+                      data-hi="{{ labels_hi.profile_book_delivery_btn|default('डिलीवरी बुक करें') }}">
+                    {{ labels.profile_book_delivery_btn|default("Book delivery") }}
+                </span>
+            </button>
         </div>
+        <!-- ========================================================================= -->
+        <!-- 2. SENDER ACCOUNT CARD -->
+        <!-- ========================================================================= -->
+        <section class="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/60 shadow-sm"
+                 id="account-card">
+            <!-- Display View Mode -->
+            <div class="space-y-3" id="account-view-mode">
+                <div class="flex items-start justify-between gap-2">
+                    <div>
+                        <span class="text-[11px] font-mono uppercase text-on-surface-variant tracking-wider block mb-0.5 lang-text"
+                              data-en="{{ labels_en.profile_sender_account|default('Sender Account') }}"
+                              data-hi="{{ labels_hi.profile_sender_account|default('प्रेषक खाता') }}">
+                            {{ labels.profile_sender_account|default("Sender Account") }}
+                        </span>
+                        <h2 class="text-lg font-bold text-primary leading-tight"
+                            id="display-name">{{ user_display_name }}</h2>
+                    </div>
+                    <button type="button"
+                            onclick="toggleProfileEdit(true)"
+                            id="edit-profile-btn"
+                            class="text-secondary font-bold text-xs hover:underline py-1 px-2.5 rounded-lg hover:bg-secondary-fixed/40 transition-colors flex items-center gap-1">
+                        {{ icon("edit", size=14) }}
+                        <span class="lang-text"
+                              data-en="{{ labels_en.profile_edit_btn|default('Edit') }}"
+                              data-hi="{{ labels_hi.profile_edit_btn|default('संपादित करें') }}">
+                            {{ labels.profile_edit_btn|default("Edit") }}
+                        </span>
+                    </button>
+                </div>
+                <div class="flex items-center gap-2 text-primary">
+                    <span class="text-outline flex items-center">{{ icon("phone_iphone", size=18) }}</span>
+                    <span class="font-mono text-sm font-semibold tracking-tight"
+                          id="display-phone">{{ user_display_phone }}</span>
+                </div>
+                <div class="pt-3 border-t border-outline-variant/30 flex items-center gap-2 text-on-surface-variant text-xs">
+                    <span class="text-success flex items-center">{{ icon("verified", size=16) }}</span>
+                    <span class="lang-text"
+                          data-en="{{ labels_en.profile_member_since|default('Member since Oct 2025 · Pilot corridor: Delhi ⇄ Jaipur') }}"
+                          data-hi="{{ labels_hi.profile_member_since|default('सदस्य अक्टूबर 2025 से · पायलट कॉरिडोर: दिल्ली ⇄ जयपुर') }}">
+                        {{ labels.profile_member_since|default("Member since Oct 2025 · Pilot corridor: Delhi ⇄ Jaipur") }}
+                    </span>
+                </div>
+            </div>
+            <!-- Inline Interactive Edit Mode (Hidden initially) -->
+            <form class="hidden space-y-3.5 pt-1"
+                  id="account-edit-mode"
+                  onsubmit="saveProfile(event)">
+                <div class="flex items-center justify-between pb-2 border-b border-outline-variant/30">
+                    <h3 class="text-sm font-bold text-primary lang-text"
+                        data-en="{{ labels_en.profile_edit_title|default('Edit Account Details') }}"
+                        data-hi="{{ labels_hi.profile_edit_title|default('खाता विवरण संपादित करें') }}">
+                        {{ labels.profile_edit_title|default("Edit Account Details") }}
+                    </h3>
+                    <span class="text-xs font-mono text-on-surface-variant lang-text"
+                          data-en="{{ labels_en.profile_kyc_id|default('KYC ID: #4920') }}"
+                          data-hi="{{ labels_hi.profile_kyc_id|default('केवाईसी आईडी: #4920') }}">
+                        {{ labels.profile_kyc_id|default("KYC ID: #4920") }}
+                    </span>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
+                           for="input-name"
+                           data-en="{{ labels_en.profile_name_label|default('Business / Sender Name') }}"
+                           data-hi="{{ labels_hi.profile_name_label|default('व्यवसाय / प्रेषक का नाम') }}">
+                        {{ labels.profile_name_label|default("Business / Sender Name") }}
+                    </label>
+                    <input class="profile-input"
+                           id="input-name"
+                           required
+                           type="text"
+                           value="{{ user_display_name }}">
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
+                           for="input-phone"
+                           data-en="{{ labels_en.profile_phone_label|default('Mobile Contact (for dispatch OTPs)') }}"
+                           data-hi="{{ labels_hi.profile_phone_label|default('मोबाइल नंबर (डिस्पैच OTP हेतु)') }}">
+                        {{ labels.profile_phone_label|default("Mobile Contact (for dispatch OTPs)") }}
+                    </label>
+                    <div class="relative">
+                        <input class="profile-input pl-9 font-mono"
+                               id="input-phone"
+                               required
+                               type="text"
+                               value="{{ user_display_phone }}">
+                        <span class="text-outline absolute left-2.5 top-2.5 flex items-center">{{ icon("phone_iphone", size=16) }}</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button"
+                            onclick="toggleProfileEdit(false)"
+                            id="cancel-profile-btn"
+                            class="px-3.5 py-1.5 rounded-lg border border-outline-variant text-primary font-semibold text-xs hover:bg-surface-container transition-colors">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.profile_cancel_btn|default('Cancel') }}"
+                              data-hi="{{ labels_hi.profile_cancel_btn|default('रद्द करें') }}">
+                            {{ labels.profile_cancel_btn|default("Cancel") }}
+                        </span>
+                    </button>
+                    <button type="submit"
+                            class="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-bold text-xs hover:bg-primary-hover transition-colors shadow-xs">
+                        <span class="lang-text"
+                              data-en="{{ labels_en.profile_save_btn|default('Save Changes') }}"
+                              data-hi="{{ labels_hi.profile_save_btn|default('परिवर्तन सहेजें') }}">
+                            {{ labels.profile_save_btn|default("Save Changes") }}
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- 3. YOUR BOOKINGS LIST -->
+        <!-- ========================================================================= -->
+        <section class="space-y-3" id="bookings-section">
+            <!-- Section Heading Row -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <h2 class="text-base font-bold text-primary font-mono lang-text"
+                        data-en="{{ labels_en.profile_bookings_title|default('Your bookings') }}"
+                        data-hi="{{ labels_hi.profile_bookings_title|default('आपकी बुकिंग') }}">
+                        {{ labels.profile_bookings_title|default("Your bookings") }}
+                    </h2>
+                    <span class="text-xs font-mono bg-surface-container text-on-surface-variant px-2.5 py-0.5 rounded-full font-bold"
+                          id="booking-count-badge">3</span>
+                </div>
+                <button type="button"
+                        onclick="toggleEmptyState()"
+                        id="toggle-empty-state-btn"
+                        data-sim-text="{{ labels.profile_simulate_empty|default('Simulate empty') }}"
+                        data-restore-text="{{ labels.profile_restore_list|default('Restore list') }}"
+                        class="text-xs font-medium text-on-surface-variant hover:text-primary transition-colors underline cursor-pointer">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.profile_simulate_empty|default('Simulate empty') }}"
+                          data-hi="{{ labels_hi.profile_simulate_empty|default('खाली सूची देखें') }}">
+                        {{ labels.profile_simulate_empty|default("Simulate empty") }}
+                    </span>
+                </button>
+            </div>
+            <!-- Filter Chips Row -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+                <button type="button"
+                        id="filter-all"
+                        onclick="setFilter('all')"
+                        class="booking-filter-chip bg-primary text-on-primary font-bold text-xs px-3.5 py-1.5 rounded-full transition-all shrink-0 shadow-xs">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.profile_filter_all|default('All') }}"
+                          data-hi="{{ labels_hi.profile_filter_all|default('सभी') }}">
+                        {{ labels.profile_filter_all|default("All") }}
+                    </span>
+                </button>
+                <button type="button"
+                        id="filter-active"
+                        onclick="setFilter('active')"
+                        class="booking-filter-chip bg-surface-container-low text-on-surface-variant font-semibold text-xs px-3.5 py-1.5 rounded-full hover:bg-surface-container transition-all shrink-0">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.profile_filter_active|default('Active') }}"
+                          data-hi="{{ labels_hi.profile_filter_active|default('सक्रिय') }}">
+                        {{ labels.profile_filter_active|default("Active") }}
+                    </span>
+                </button>
+                <button type="button"
+                        id="filter-completed"
+                        onclick="setFilter('completed')"
+                        class="booking-filter-chip bg-surface-container-low text-on-surface-variant font-semibold text-xs px-3.5 py-1.5 rounded-full hover:bg-surface-container transition-all shrink-0">
+                    <span class="lang-text"
+                          data-en="{{ labels_en.profile_filter_completed|default('Completed') }}"
+                          data-hi="{{ labels_hi.profile_filter_completed|default('पूर्ण') }}">
+                        {{ labels.profile_filter_completed|default("Completed") }}
+                    </span>
+                </button>
+            </div>
+            <!-- Booking Cards Container -->
+            <div class="space-y-3 pt-1" id="booking-cards-list">
+                <!-- Card 1: Active / In Transit -->
+                <article class="booking-item bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-4 shadow-sm hover:border-primary transition-all cursor-pointer"
+                         data-status="active">
+                    <div class="flex items-center justify-between pb-2 mb-2 border-b border-outline-variant/30">
+                        <span class="font-mono font-bold text-sm text-primary tracking-wide flex items-center gap-2">
+                            <span class="live-dot-pulse"></span>
+                            RTW-7814-DEL
+                        </span>
+                        <span class="badge-status-transit text-[11px] font-mono px-2.5 py-0.5 rounded-full flex items-center gap-1 font-semibold">
+                            {{ icon("local_shipping", size=14) }}
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.profile_status_in_transit|default('In Transit') }}"
+                                  data-hi="{{ labels_hi.profile_status_in_transit|default('ट्रांजिट में') }}">
+                                {{ labels.profile_status_in_transit|default("In Transit") }}
+                            </span>
+                        </span>
+                    </div>
+                    <p class="text-xs font-semibold text-primary">Delhi (Sanjay Gandhi TN) → Jaipur (VKI)</p>
+                    <div class="mt-2.5 pt-2 flex items-center justify-between text-on-surface-variant text-xs">
+                        <div class="flex items-center gap-1">
+                            <span class="text-outline flex items-center">{{ icon("schedule", size=14) }}</span>
+                            <span class="font-mono lang-text"
+                                  data-en="{{ labels_en.profile_departure_today|default('Today, 19:30 departure') }}"
+                                  data-hi="{{ labels_hi.profile_departure_today|default('आज, 19:30 रवानगी') }}">
+                                {{ labels.profile_departure_today|default("Today, 19:30 departure") }}
+                            </span>
+                        </div>
+                        <span class="font-mono font-bold text-sm text-primary">₹2,125</span>
+                    </div>
+                </article>
+                <!-- Card 2: Requested -->
+                <article class="booking-item bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-4 shadow-sm hover:border-primary transition-all cursor-pointer"
+                         data-status="active">
+                    <div class="flex items-center justify-between pb-2 mb-2 border-b border-outline-variant/30">
+                        <span class="font-mono font-bold text-sm text-primary tracking-wide">RTW-7902-JPR</span>
+                        <span class="badge-status-requested text-[11px] font-mono px-2.5 py-0.5 rounded-full flex items-center gap-1 font-semibold">
+                            {{ icon("schedule", size=14) }}
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.profile_status_requested|default('Requested') }}"
+                                  data-hi="{{ labels_hi.profile_status_requested|default('अनुरोधित') }}">
+                                {{ labels.profile_status_requested|default("Requested") }}
+                            </span>
+                        </span>
+                    </div>
+                    <p class="text-xs font-semibold text-primary">Jaipur (VKI) → Delhi (Sanjay Gandhi TN)</p>
+                    <div class="mt-2.5 pt-2 flex items-center justify-between text-on-surface-variant text-xs">
+                        <div class="flex items-center gap-1">
+                            <span class="text-outline flex items-center">{{ icon("calendar_today", size=14) }}</span>
+                            <span class="font-mono lang-text"
+                                  data-en="{{ labels_en.profile_departure_tomorrow|default('Tomorrow, 20:00 departure') }}"
+                                  data-hi="{{ labels_hi.profile_departure_tomorrow|default('कल, 20:00 रवानगी') }}">
+                                {{ labels.profile_departure_tomorrow|default("Tomorrow, 20:00 departure") }}
+                            </span>
+                        </div>
+                        <span class="font-mono font-bold text-sm text-primary">₹850</span>
+                    </div>
+                </article>
+                <!-- Card 3: Completed / Delivered -->
+                <article class="booking-item bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-4 shadow-sm hover:border-primary transition-all cursor-pointer"
+                         data-status="completed">
+                    <div class="flex items-center justify-between pb-2 mb-2 border-b border-outline-variant/30">
+                        <span class="font-mono font-bold text-sm text-primary tracking-wide">RTW-6420-DEL</span>
+                        <span class="badge-status-delivered text-[11px] font-mono px-2.5 py-0.5 rounded-full flex items-center gap-1 font-semibold">
+                            {{ icon("check_circle", size=14) }}
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.profile_status_delivered|default('Delivered') }}"
+                                  data-hi="{{ labels_hi.profile_status_delivered|default('वितरित') }}">
+                                {{ labels.profile_status_delivered|default("Delivered") }}
+                            </span>
+                        </span>
+                    </div>
+                    <p class="text-xs font-semibold text-primary">Delhi (Sanjay Gandhi TN) → Jaipur (VKI)</p>
+                    <div class="mt-2.5 pt-2 flex items-center justify-between text-on-surface-variant text-xs">
+                        <div class="flex items-center gap-1">
+                            <span class="text-outline flex items-center">{{ icon("lock_clock", size=14) }}</span>
+                            <span class="font-mono lang-text"
+                                  data-en="{{ labels_en.profile_delivered_date|default('18 Oct 2025 · OTP verified') }}"
+                                  data-hi="{{ labels_hi.profile_delivered_date|default('18 अक्टूबर 2025 · OTP सत्यापित') }}">
+                                {{ labels.profile_delivered_date|default("18 Oct 2025 · OTP verified") }}
+                            </span>
+                        </div>
+                        <span class="font-mono font-bold text-sm text-primary">₹3,400</span>
+                    </div>
+                </article>
+            </div>
+            <!-- Empty State Container -->
+            <div class="hidden bg-surface-container-lowest border border-dashed border-outline-variant rounded-2xl p-8 text-center flex-col items-center justify-center my-2 space-y-3"
+                 id="booking-empty-state">
+                <div class="w-14 h-14 rounded-full bg-surface-container flex items-center justify-center mx-auto text-on-surface-variant">
+                    {{ icon("inventory_2", size=28) }}
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-primary font-mono lang-text"
+                        data-en="{{ labels_en.profile_no_bookings_title|default('No bookings yet') }}"
+                        data-hi="{{ labels_hi.profile_no_bookings_title|default('अभी कोई बुकिंग नहीं है') }}">
+                        {{ labels.profile_no_bookings_title|default("No bookings yet") }}
+                    </h3>
+                    <p class="text-xs text-on-surface-variant max-w-xs mx-auto mt-1 lang-text"
+                       data-en="{{ labels_en.profile_no_bookings_desc|default('Your route dispatches will appear here once booked.') }}"
+                       data-hi="{{ labels_hi.profile_no_bookings_desc|default('आपकी रूट बुकिंग यहां प्रदर्शित होगी।') }}">
+                        {{ labels.profile_no_bookings_desc|default("Your route dispatches will appear here once booked.") }}
+                    </p>
+                </div>
+                <button type="button"
+                        onclick="LoadShareNav.switchTab('book-corridor')"
+                        class="bg-secondary text-on-secondary px-4 py-2 rounded-xl inline-flex items-center gap-2 hover:bg-secondary-container transition-colors shadow-xs active:scale-95 text-xs font-bold font-mono">
+                    {{ icon("add_box", size=16) }}
+                    <span class="lang-text"
+                          data-en="{{ labels_en.btn_book_delivery|default('Book a delivery') }}"
+                          data-hi="{{ labels_hi.btn_book_delivery|default('डिलीवरी बुक करें') }}">
+                        {{ labels.btn_book_delivery|default("Book a delivery") }}
+                    </span>
+                </button>
+            </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- 4. SUPPORT & SIGN-OUT -->
+        <!-- ========================================================================= -->
+        <section class="space-y-3 pt-2">
+            <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/60 divide-y divide-primary/5 overflow-hidden shadow-sm">
+                <!-- Row 1: Concierge Phone -->
+                <a class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                   href="tel:18004197688">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                            {{ icon("support_agent", size=18) }}
+                        </div>
+                        <span class="text-xs text-primary font-medium">
+                            <span class="lang-text"
+                                  data-en="{{ labels_en.profile_call_concierge|default('Call concierge —') }}"
+                                  data-hi="{{ labels_hi.profile_call_concierge|default('कंसीयर्ज को कॉल करें —') }}">
+                                {{ labels.profile_call_concierge|default("Call concierge —") }}
+                            </span>
+                            <strong class="font-mono text-primary font-bold">1800-419-7688</strong>
+                        </span>
+                    </div>
+                    <span class="text-outline flex items-center group-hover:translate-x-0.5 transition-transform">{{ icon("chevron_right", size=18) }}</span>
+                </a>
+                <!-- Row 2: WhatsApp Desk -->
+                <a class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                   href="https://wa.me/919820144829"
+                   rel="noopener noreferrer"
+                   target="_blank">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                            {{ icon("chat", size=18) }}
+                        </div>
+                        <span class="text-xs text-primary font-medium lang-text"
+                              data-en="{{ labels_en.profile_whatsapp_desk|default('WhatsApp dispatch desk') }}"
+                              data-hi="{{ labels_hi.profile_whatsapp_desk|default('व्हाट्सएप डिस्पैच डेस्क') }}">
+                            {{ labels.profile_whatsapp_desk|default("WhatsApp dispatch desk") }}
+                        </span>
+                    </div>
+                    <span class="text-outline flex items-center group-hover:translate-x-0.5 transition-transform">{{ icon("chevron_right", size=18) }}</span>
+                </a>
+                <!-- Row 3: Sign Out Action -->
+                <div class="p-4 flex items-center justify-between bg-surface-container-lowest">
+                    <button type="button"
+                            onclick="confirmSignOut()"
+                            class="text-secondary font-bold text-xs hover:underline cursor-pointer flex items-center gap-1.5">
+                        {{ icon("logout", size=18) }}
+                        <span class="lang-text"
+                              data-en="{{ labels_en.profile_sign_out|default('Sign out') }}"
+                              data-hi="{{ labels_hi.profile_sign_out|default('साइन आउट') }}">
+                            {{ labels.profile_sign_out|default("Sign out") }}
+                        </span>
+                    </button>
+                    <span class="text-[11px] text-on-surface-variant font-mono">v1.8.4</span>
+                </div>
+            </div>
+            <!-- Subtle POC Notice -->
+            <p class="text-[11px] text-on-surface-variant text-center px-4 leading-relaxed lang-text"
+               data-en="{{ labels_en.profile_legal_notice|default('Pay on delivery via UPI or cash. Registered carrier under Carriage by Road Act.') }}"
+               data-hi="{{ labels_hi.profile_legal_notice|default('UPI या नकद द्वारा डिलीवरी पर भुगतान। सड़क परिवहन अधिनियम के तहत पंजीकृत कैरियर।') }}">
+                {{ labels.profile_legal_notice|default("Pay on delivery via UPI or cash. Registered carrier under Carriage by Road Act.") }}
+            </p>
+        </section>
     </div>
 </section>

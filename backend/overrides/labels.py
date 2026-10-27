@@ -286,6 +286,135 @@ LANDING_PAGE_LABELS = {
         "en": "Manage business GSTIN, saved pickup/drop hubs, and consignment history.",
         "hi": "व्यवसाय GSTIN, सहेजे गए पिकअप/ड्रॉप हब और कंसाइनमेंट विवरण प्रबंधित करें।",
     },
+    # Profile View Interactive Labels
+    "profile_heading": {
+        "en": "Profile",
+        "hi": "प्रोफ़ाइल",
+    },
+    "profile_sender_account": {
+        "en": "Sender Account",
+        "hi": "प्रेषक खाता",
+    },
+    "profile_default_name": {
+        "en": "Rajesh Trading Co. (Rajesh Sharma)",
+        "hi": "राजेश ट्रेडिंग कंपनी (राजेश शर्मा)",
+    },
+    "profile_default_phone": {
+        "en": "+91 98201 44829",
+        "hi": "+91 98201 44829",
+    },
+    "profile_edit_btn": {
+        "en": "Edit",
+        "hi": "संपादित करें",
+    },
+    "profile_member_since": {
+        "en": "Member since Oct 2025 · Pilot corridor: Delhi ⇄ Jaipur",
+        "hi": "सदस्य अक्टूबर 2025 से · पायलट कॉरिडोर: दिल्ली ⇄ जयपुर",
+    },
+    "profile_edit_title": {
+        "en": "Edit Account Details",
+        "hi": "खाता विवरण संपादित करें",
+    },
+    "profile_kyc_id": {
+        "en": "KYC ID: #4920",
+        "hi": "केवाईसी आईडी: #4920",
+    },
+    "profile_name_label": {
+        "en": "Business / Sender Name",
+        "hi": "व्यवसाय / प्रेषक का नाम",
+    },
+    "profile_phone_label": {
+        "en": "Mobile Contact (for dispatch OTPs)",
+        "hi": "मोबाइल नंबर (डिस्पैच OTP हेतु)",
+    },
+    "profile_cancel_btn": {
+        "en": "Cancel",
+        "hi": "रद्द करें",
+    },
+    "profile_save_btn": {
+        "en": "Save Changes",
+        "hi": "परिवर्तन सहेजें",
+    },
+    "profile_bookings_title": {
+        "en": "Your bookings",
+        "hi": "आपकी बुकिंग",
+    },
+    "profile_simulate_empty": {
+        "en": "Simulate empty",
+        "hi": "खाली सूची देखें",
+    },
+    "profile_restore_list": {
+        "en": "Restore list",
+        "hi": "सूची पुनर्स्थापित करें",
+    },
+    "profile_filter_all": {
+        "en": "All",
+        "hi": "सभी",
+    },
+    "profile_filter_active": {
+        "en": "Active",
+        "hi": "सक्रिय",
+    },
+    "profile_filter_completed": {
+        "en": "Completed",
+        "hi": "पूर्ण",
+    },
+    "profile_status_in_transit": {
+        "en": "In Transit",
+        "hi": "ट्रांजिट में",
+    },
+    "profile_status_requested": {
+        "en": "Requested",
+        "hi": "अनुरोधित",
+    },
+    "profile_status_delivered": {
+        "en": "Delivered",
+        "hi": "वितरित",
+    },
+    "profile_departure_today": {
+        "en": "Today, 19:30 departure",
+        "hi": "आज, 19:30 रवानगी",
+    },
+    "profile_departure_tomorrow": {
+        "en": "Tomorrow, 20:00 departure",
+        "hi": "कल, 20:00 रवानगी",
+    },
+    "profile_delivered_date": {
+        "en": "18 Oct 2025 · OTP verified",
+        "hi": "18 अक्टूबर 2025 · OTP सत्यापित",
+    },
+    "profile_no_bookings_title": {
+        "en": "No bookings yet",
+        "hi": "अभी कोई बुकिंग नहीं है",
+    },
+    "profile_no_bookings_desc": {
+        "en": "Your route dispatches will appear here once booked.",
+        "hi": "आपकी रूट बुकिंग यहां प्रदर्शित होगी।",
+    },
+    "profile_book_delivery_btn": {
+        "en": "Book a delivery",
+        "hi": "डिलीवरी बुक करें",
+    },
+    "profile_call_concierge": {
+        "en": "Call concierge —",
+        "hi": "कंसीयर्ज को कॉल करें —",
+    },
+    "profile_whatsapp_desk": {
+        "en": "WhatsApp dispatch desk",
+        "hi": "व्हाट्सएप डिस्पैच डेस्क",
+    },
+    "profile_sign_out": {
+        "en": "Sign out",
+        "hi": "साइन आउट",
+    },
+    "profile_sign_out_confirm": {
+        "en": "Are you sure you want to sign out of Routeway?",
+        "hi": "क्या आप वाकई साइन आउट करना चाहते हैं?",
+    },
+    "profile_legal_notice": {
+        "en": "Pay on delivery via UPI or cash. Registered carrier under Carriage by Road Act.",
+        "hi": "UPI या नकद द्वारा डिलीवरी पर भुगतान। सड़क परिवहन अधिनियम के तहत पंजीकृत कैरियर।",
+    },
     # Corridor Page / Booking View Labels
     "corridor_back_home": {
         "en": "Back to Home",

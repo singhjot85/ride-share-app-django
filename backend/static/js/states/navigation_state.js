@@ -9,8 +9,48 @@
     "use strict";
 
     var SUPPORTED_TABS = ["home", "book-corridor", "rates", "support", "profile"];
+    var TAB_TITLES = {
+        "home": { en: "ROUTEWAY", hi: "लोडशेयर" },
+        "book-corridor": { en: "Corridors", hi: "कॉरिडोर" },
+        "rates": { en: "Rates", hi: "दरें" },
+        "support": { en: "Support", hi: "सहायता" },
+        "profile": { en: "Profile", hi: "प्रोफ़ाइल" }
+    };
     var lastScrollY = window.pageYOffset || 0;
     var chipElement = null;
+
+    /**
+     * Get active UI language code.
+     *
+     * @returns {string}
+     */
+    function getCurrentLang() {
+        if (typeof window.getActiveLanguage === "function") {
+            return window.getActiveLanguage();
+        }
+        var match = document.cookie.match(/(^|;\s*)loadshare_lang=([^;]*)/);
+        if (match && (match[2] === "en" || match[2] === "hi")) {
+            return match[2];
+        }
+        return document.documentElement.lang === "hi" ? "hi" : "en";
+    }
+
+    /**
+     * Update top bar title alongside logo according to current active tab.
+     *
+     * @param {string} tabId - Target tab identifier.
+     */
+    function updateTopBarTitle(tabId) {
+        var titleEl = document.getElementById("top-bar-title");
+        if (!titleEl) return;
+
+        var titles = TAB_TITLES[tabId] || TAB_TITLES.home;
+        titleEl.setAttribute("data-en", titles.en);
+        titleEl.setAttribute("data-hi", titles.hi);
+
+        var currentLang = getCurrentLang();
+        titleEl.textContent = (currentLang === "hi") ? titles.hi : titles.en;
+    }
 
     /**
      * Switch active view tab.
@@ -60,12 +100,15 @@
             }
         });
 
-        // 4. Update browser URL hash
+        // 4. Update top bar title alongside logo
+        updateTopBarTitle(tabId);
+
+        // 5. Update browser URL hash
         if (updateHash && window.history && window.history.replaceState) {
             window.history.replaceState(null, "", "#" + tabId);
         }
 
-        // 5. Scroll smoothly to top
+        // 6. Scroll smoothly to top
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -147,6 +190,7 @@
     // Expose public API
     window.LoadShareNav = {
         switchTab: switchTab,
+        updateTopBarTitle: updateTopBarTitle,
         setDispatchState: setDispatchState,
         toggleTheme: function () {
             if (window.toggleTheme) window.toggleTheme();
