@@ -1,5 +1,6 @@
 {# Home View Shell: Sourced faithfully from local_data/design/user-facing/01_landing_page.html #}
 {% from "core/components/common/icons.jinja" import icon %}
+{% from "components/state_card.jinja" import state_container, state_panel %}
 <section id="view-home"
          class="landing-tab-view active"
          aria-labelledby="home-hero-title">
@@ -81,133 +82,132 @@
                         </button>
                     </div>
                 </div>
-                <!-- 1. State: Active Dispatch -->
-                <div id="state-active-dispatch"
-                     class="w-full bg-gradient-to-b from-primary via-primary to-primary-container rounded-2xl p-5 text-on-primary relative overflow-hidden shadow-md border border-outline-variant/20">
-                    <div class="flex justify-between items-center text-xs text-surface-variant mb-6">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span class="tracking-wide font-semibold lang-text"
-                                  data-en="{{ labels_en.dispatch_status }}"
-                                  data-hi="{{ labels_hi.dispatch_status }}">{{ labels.dispatch_status }}</span>
-                        </div>
-                        <span class="font-mono text-secondary-fixed bg-primary-container/80 px-2 py-0.5 rounded text-[11px] lang-text"
-                              data-en="{{ labels_en.dispatch_transit }}"
-                              data-hi="{{ labels_hi.dispatch_transit }}">{{ labels.dispatch_transit }}</span>
-                    </div>
-                    <div class="relative py-4">
-                        <div class="h-1.5 bg-primary-container rounded-full w-full relative overflow-hidden">
-                            <div class="absolute inset-y-0 left-0 w-2/3 bg-secondary-container rounded-full"></div>
-                        </div>
-                        {# <div class="border-b border-dashed border-outline/30 my-3"></div> #}
-                        <div class="flex justify-between items-end mt-4">
-                            <div class="text-left">
-                                <span class="text-[11px] text-surface-variant block uppercase lang-text"
-                                      data-en="{{ labels_en.origin_hub_title }}"
-                                      data-hi="{{ labels_hi.origin_hub_title }}">{{ labels.origin_hub_title }}</span>
-                                <p class="text-lg sm:text-xl font-bold text-on-primary lang-text"
-                                   data-en="{{ labels_en.origin_city }}"
-                                   data-hi="{{ labels_hi.origin_city }}">{{ labels.origin_city }}</p>
-                                <span class="text-xs text-surface-variant/80 lang-text"
-                                      data-en="{{ labels_en.origin_hub_name }}"
-                                      data-hi="{{ labels_hi.origin_hub_name }}">{{ labels.origin_hub_name }}</span>
+                {% call state_container(id="tracker-preview-container", active_state="active") %}
+                    <!-- 1. State: Active Dispatch -->
+                    {% call state_panel(id="state-active-dispatch", state="active", is_active=true, extra_classes="w-full bg-gradient-to-b from-primary via-primary to-primary-container rounded-2xl p-5 text-on-primary relative overflow-hidden shadow-md border border-outline-variant/20") %}
+                        <div class="flex justify-between items-center text-xs text-surface-variant mb-6">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span class="tracking-wide font-semibold lang-text"
+                                      data-en="{{ labels_en.dispatch_status }}"
+                                      data-hi="{{ labels_hi.dispatch_status }}">{{ labels.dispatch_status }}</span>
                             </div>
-                            <div class="flex flex-col items-center pb-1">
-                                <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-primary shadow-md">
-                                    {{ icon("local_shipping", size=24) }}
+                            <span class="font-mono text-secondary-fixed bg-primary-container/80 px-2 py-0.5 rounded text-[11px] lang-text"
+                                  data-en="{{ labels_en.dispatch_transit }}"
+                                  data-hi="{{ labels_hi.dispatch_transit }}">{{ labels.dispatch_transit }}</span>
+                        </div>
+                        <div class="relative py-4">
+                            <div class="h-1.5 bg-primary-container rounded-full w-full relative overflow-hidden">
+                                <div class="absolute inset-y-0 left-0 w-2/3 bg-secondary-container rounded-full"></div>
+                            </div>
+                            {# <div class="border-b border-dashed border-outline/30 my-3"></div> #}
+                            <div class="flex justify-between items-end mt-4">
+                                <div class="text-left">
+                                    <span class="text-[11px] text-surface-variant block uppercase lang-text"
+                                          data-en="{{ labels_en.origin_hub_title }}"
+                                          data-hi="{{ labels_hi.origin_hub_title }}">{{ labels.origin_hub_title }}</span>
+                                    <p class="text-lg sm:text-xl font-bold text-on-primary lang-text"
+                                       data-en="{{ labels_en.origin_city }}"
+                                       data-hi="{{ labels_hi.origin_city }}">{{ labels.origin_city }}</p>
+                                    <span class="text-xs text-surface-variant/80 lang-text"
+                                          data-en="{{ labels_en.origin_hub_name }}"
+                                          data-hi="{{ labels_hi.origin_hub_name }}">{{ labels.origin_hub_name }}</span>
                                 </div>
-                                <span class="font-mono text-[11px] text-secondary-fixed mt-1 lang-text"
-                                      data-en="{{ labels_en.corridor_badge }}"
-                                      data-hi="{{ labels_hi.corridor_badge }}">{{ labels.corridor_badge }}</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-[11px] text-surface-variant block uppercase lang-text"
-                                      data-en="{{ labels_en.destination_hub_title }}"
-                                      data-hi="{{ labels_hi.destination_hub_title }}">{{ labels.destination_hub_title }}</span>
-                                <p class="text-lg sm:text-xl font-bold text-on-primary lang-text"
-                                   data-en="{{ labels_en.destination_city }}"
-                                   data-hi="{{ labels_hi.destination_city }}">{{ labels.destination_city }}</p>
-                                <span class="text-xs text-surface-variant/80 lang-text"
-                                      data-en="{{ labels_en.destination_hub_name }}"
-                                      data-hi="{{ labels_hi.destination_hub_name }}">{{ labels.destination_hub_name }}</span>
+                                <div class="flex flex-col items-center pb-1">
+                                    <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-primary shadow-md">
+                                        {{ icon("local_shipping", size=24) }}
+                                    </div>
+                                    <span class="font-mono text-[11px] text-secondary-fixed mt-1 lang-text"
+                                          data-en="{{ labels_en.corridor_badge }}"
+                                          data-hi="{{ labels_hi.corridor_badge }}">{{ labels.corridor_badge }}</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[11px] text-surface-variant block uppercase lang-text"
+                                          data-en="{{ labels_en.destination_hub_title }}"
+                                          data-hi="{{ labels_hi.destination_hub_title }}">{{ labels.destination_hub_title }}</span>
+                                    <p class="text-lg sm:text-xl font-bold text-on-primary lang-text"
+                                       data-en="{{ labels_en.destination_city }}"
+                                       data-hi="{{ labels_hi.destination_city }}">{{ labels.destination_city }}</p>
+                                    <span class="text-xs text-surface-variant/80 lang-text"
+                                          data-en="{{ labels_en.destination_hub_name }}"
+                                          data-hi="{{ labels_hi.destination_hub_name }}">{{ labels.destination_hub_name }}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-xs text-surface-dim">
-                        <span>
-                            <span class="lang-text"
-                                  data-en="{{ labels_en.departs_label }}"
-                                  data-hi="{{ labels_hi.departs_label }}">{{ labels.departs_label }}</span>
-                            <strong class="font-mono text-on-primary">{{ labels.departure_time }}</strong>
-                        </span>
-                        <span>
-                            <span class="lang-text"
-                                  data-en="{{ labels_en.arrival_label }}"
-                                  data-hi="{{ labels_hi.arrival_label }}">{{ labels.arrival_label }}</span>
-                            <strong class="font-mono text-on-primary">{{ labels.arrival_time }}</strong>
-                        </span>
-                    </div>
-                </div>
-                <!-- 2. State: Loading Skeleton -->
-                <div id="state-skeleton-dispatch"
-                     class="w-full bg-gradient-to-b from-primary via-primary to-primary-container rounded-2xl p-5 text-on-primary relative overflow-hidden shadow-md border border-outline-variant/20 animate-pulse hidden">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-primary-container/80"></div>
+                        <div class="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-xs text-surface-dim">
+                            <span>
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.departs_label }}"
+                                      data-hi="{{ labels_hi.departs_label }}">{{ labels.departs_label }}</span>
+                                <strong class="font-mono text-on-primary">{{ labels.departure_time }}</strong>
+                            </span>
+                            <span>
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.arrival_label }}"
+                                      data-hi="{{ labels_hi.arrival_label }}">{{ labels.arrival_label }}</span>
+                                <strong class="font-mono text-on-primary">{{ labels.arrival_time }}</strong>
+                            </span>
+                        </div>
+                    {% endcall %}
+                    <!-- 2. State: Loading Skeleton -->
+                    {% call state_panel(id="state-skeleton-dispatch", state="loading", is_active=false, extra_classes="w-full bg-gradient-to-b from-primary via-primary to-primary-container rounded-2xl p-5 text-on-primary relative overflow-hidden shadow-md border border-outline-variant/20 animate-pulse") %}
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-primary-container/80"></div>
+                                <div class="h-3.5 w-36 bg-primary-container/80 rounded"></div>
+                            </div>
+                            <div class="h-5 w-20 bg-primary-container/80 rounded"></div>
+                        </div>
+                        <div class="relative py-4 space-y-4">
+                            <div class="h-1.5 bg-primary-container/80 rounded-full w-full"></div>
+                            {# <div class="border-b border-dashed border-outline/30 my-3"></div> #}
+                            <div class="flex justify-between items-end mt-4">
+                                <div class="space-y-1.5 text-left">
+                                    <div class="h-3 w-16 bg-primary-container/80 rounded"></div>
+                                    <div class="h-6 w-24 bg-primary-container/80 rounded"></div>
+                                    <div class="h-3 w-28 bg-primary-container/80 rounded"></div>
+                                </div>
+                                <div class="flex flex-col items-center pb-1 gap-1">
+                                    <div class="w-10 h-10 rounded-full bg-primary-container/80"></div>
+                                    <div class="h-3 w-16 bg-primary-container/80 rounded"></div>
+                                </div>
+                                <div class="space-y-1.5 text-right flex flex-col items-end">
+                                    <div class="h-3 w-16 bg-primary-container/80 rounded"></div>
+                                    <div class="h-6 w-24 bg-primary-container/80 rounded"></div>
+                                    <div class="h-3 w-28 bg-primary-container/80 rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between">
                             <div class="h-3.5 w-36 bg-primary-container/80 rounded"></div>
+                            <div class="h-3.5 w-28 bg-primary-container/80 rounded"></div>
                         </div>
-                        <div class="h-5 w-20 bg-primary-container/80 rounded"></div>
-                    </div>
-                    <div class="relative py-4 space-y-4">
-                        <div class="h-1.5 bg-primary-container/80 rounded-full w-full"></div>
-                        {# <div class="border-b border-dashed border-outline/30 my-3"></div> #}
-                        <div class="flex justify-between items-end mt-4">
-                            <div class="space-y-1.5 text-left">
-                                <div class="h-3 w-16 bg-primary-container/80 rounded"></div>
-                                <div class="h-6 w-24 bg-primary-container/80 rounded"></div>
-                                <div class="h-3 w-28 bg-primary-container/80 rounded"></div>
-                            </div>
-                            <div class="flex flex-col items-center pb-1 gap-1">
-                                <div class="w-10 h-10 rounded-full bg-primary-container/80"></div>
-                                <div class="h-3 w-16 bg-primary-container/80 rounded"></div>
-                            </div>
-                            <div class="space-y-1.5 text-right flex flex-col items-end">
-                                <div class="h-3 w-16 bg-primary-container/80 rounded"></div>
-                                <div class="h-6 w-24 bg-primary-container/80 rounded"></div>
-                                <div class="h-3 w-28 bg-primary-container/80 rounded"></div>
-                            </div>
+                    {% endcall %}
+                    <!-- 3. State: No item in dispatch (Empty State) -->
+                    {% call state_panel(id="state-empty-dispatch", state="empty", is_active=false, extra_classes="w-full bg-surface-container-lowest rounded-2xl p-6 text-on-surface text-center relative overflow-hidden shadow-xs border border-outline-variant/40 space-y-4") %}
+                        <div class="w-14 h-14 rounded-full bg-surface-container mx-auto flex items-center justify-center text-on-surface-variant">
+                            {{ icon("inventory_2", size=28) }}
                         </div>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between">
-                        <div class="h-3.5 w-36 bg-primary-container/80 rounded"></div>
-                        <div class="h-3.5 w-28 bg-primary-container/80 rounded"></div>
-                    </div>
-                </div>
-                <!-- 3. State: No item in dispatch (Empty State) -->
-                <div id="state-empty-dispatch"
-                     class="w-full bg-surface-container-lowest rounded-2xl p-6 text-on-surface text-center relative overflow-hidden shadow-xs border border-outline-variant/40 space-y-4 hidden">
-                    <div class="w-14 h-14 rounded-full bg-surface-container mx-auto flex items-center justify-center text-on-surface-variant">
-                        {{ icon("inventory_2", size=28) }}
-                    </div>
-                    <div class="space-y-1">
-                        <h4 class="text-lg font-bold text-primary lang-text"
-                            data-en="{{ labels_en.empty_dispatch_title }}"
-                            data-hi="{{ labels_hi.empty_dispatch_title }}">{{ labels.empty_dispatch_title }}</h4>
-                        <p class="text-xs text-on-surface-variant max-w-sm mx-auto leading-relaxed lang-text"
-                           data-en="{{ labels_en.empty_dispatch_desc }}"
-                           data-hi="{{ labels_hi.empty_dispatch_desc }}">{{ labels.empty_dispatch_desc }}</p>
-                    </div>
-                    <div class="pt-1">
-                        <button type="button"
-                                class="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary font-semibold text-xs shadow-xs transition-all active:scale-[0.98]"
-                                onclick="LoadShareNav.switchTab('book-corridor')">
-                            <span class="lang-text"
-                                  data-en="{{ labels_en.btn_book_parcel }}"
-                                  data-hi="{{ labels_hi.btn_book_parcel }}">{{ labels.btn_book_parcel }}</span>
-                            {{ icon("arrow_forward", size=16) }}
-                        </button>
-                    </div>
-                </div>
+                        <div class="space-y-1">
+                            <h4 class="text-lg font-bold text-primary lang-text"
+                                data-en="{{ labels_en.empty_dispatch_title }}"
+                                data-hi="{{ labels_hi.empty_dispatch_title }}">{{ labels.empty_dispatch_title }}</h4>
+                            <p class="text-xs text-on-surface-variant max-w-sm mx-auto leading-relaxed lang-text"
+                               data-en="{{ labels_en.empty_dispatch_desc }}"
+                               data-hi="{{ labels_hi.empty_dispatch_desc }}">{{ labels.empty_dispatch_desc }}</p>
+                        </div>
+                        <div class="pt-1">
+                            <button type="button"
+                                    class="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary font-semibold text-xs shadow-xs transition-all active:scale-[0.98]"
+                                    onclick="LoadShareNav.switchTab('book-corridor')">
+                                <span class="lang-text"
+                                      data-en="{{ labels_en.btn_book_parcel }}"
+                                      data-hi="{{ labels_hi.btn_book_parcel }}">{{ labels.btn_book_parcel }}</span>
+                                {{ icon("arrow_forward", size=16) }}
+                            </button>
+                        </div>
+                    {% endcall %}
+                {% endcall %}
             </div>
         </section>
         <!-- ========================================================================= -->
