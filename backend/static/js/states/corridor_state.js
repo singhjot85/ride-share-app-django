@@ -17,29 +17,8 @@
      */
     function goToWizardStep(step) {
         currentStep = step;
-        var s1 = document.getElementById("wizardStep1");
-        var s2 = document.getElementById("wizardStep2");
-        var s3 = document.getElementById("wizardStep3");
-
-        var p1 = document.getElementById("stepProgress1");
-        var p2 = document.getElementById("stepProgress2");
-        var p3 = document.getElementById("stepProgress3");
-        var counter = document.getElementById("stepCounterText");
-
-        var activeBarClass = "h-1.5 flex-1 rounded-full bg-secondary transition-all duration-300";
-        var inactiveBarClass = "h-1.5 flex-1 rounded-full bg-surface-container-high transition-all duration-300";
-
-        if (s1 && s2 && s3) {
-            s1.classList.toggle("hidden", step !== 1);
-            s2.classList.toggle("hidden", step !== 2);
-            s3.classList.toggle("hidden", step !== 3);
-        }
-
-        if (p1 && p2 && p3 && counter) {
-            p1.className = activeBarClass;
-            p2.className = (step >= 2) ? activeBarClass : inactiveBarClass;
-            p3.className = (step >= 3) ? activeBarClass : inactiveBarClass;
-            counter.textContent = step + "/3";
+        if (window.CarouselComponent && window.CarouselComponent.goToStep) {
+            window.CarouselComponent.goToStep("search-engine", step);
         }
     }
 

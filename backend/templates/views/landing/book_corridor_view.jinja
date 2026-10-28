@@ -1,5 +1,6 @@
 {# Dedicated NH48 Delhi ⇄ Jaipur Corridor Search & Linehaul Booking View #}
 {% from "core/components/common/icons.jinja" import icon %}
+{% from "components/carousel.jinja" import carousel, carousel_slide %}
 <section id="view-book-corridor"
          class="landing-tab-view hidden"
          aria-labelledby="corridor-view-title">
@@ -107,36 +108,18 @@
         <!-- ========================================================================= -->
         <!-- 3. SEARCH BLOCK (3-STEP PROGRESSIVE WIZARD CAROUSEL) -->
         <!-- ========================================================================= -->
-        <section class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-6 shadow-sm space-y-4"
-                 id="search-engine">
-            <!-- Header & Stepper Progress -->
-            <div class="space-y-3 border-b border-outline-variant/30 pb-3">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <span class="text-secondary flex items-center">{{ icon("search", size=20) }}</span>
-                        <h1 id="corridor-view-title"
-                            class="text-base md:text-lg font-bold text-primary lang-text"
-                            data-en="{{ labels_en.wizard_title|default('Find Instant Truck Space') }}"
-                            data-hi="{{ labels_hi.wizard_title|default('NH48 पर तुरंत ट्रक में स्थान खोजें') }}">
-                            {{ labels.wizard_title|default("Find Instant Truck Space") }}
-                        </h1>
-                    </div>
-                    <!-- Minimal Step Indicator "1/3" -->
-                    <span class="text-xs font-mono font-bold text-secondary"
-                          id="stepCounterText">1/3</span>
-                </div>
-                <!-- Progress Bar Indicator -->
-                <div class="flex items-center gap-2 w-full">
-                    <div class="h-1.5 flex-1 rounded-full bg-secondary transition-all duration-300"
-                         id="stepProgress1"></div>
-                    <div class="h-1.5 flex-1 rounded-full bg-surface-container-high transition-all duration-300"
-                         id="stepProgress2"></div>
-                    <div class="h-1.5 flex-1 rounded-full bg-surface-container-high transition-all duration-300"
-                         id="stepProgress3"></div>
-                </div>
-            </div>
+        {% call carousel(
+            id="search-engine",
+            title=labels.wizard_title|default("Find Instant Truck Space"),
+            title_icon="search",
+            total_steps=3,
+            initial_step=1,
+            variant="wizard",
+            title_en=labels_en.wizard_title|default("Find Instant Truck Space"),
+            title_hi=labels_hi.wizard_title|default("NH48 पर तुरंत ट्रक में स्थान खोजें")
+            ) %}
             <!-- STEP 1: PICKUP & DROP HUB SELECTION -->
-            <div class="space-y-4" id="wizardStep1">
+            {% call carousel_slide(id="wizardStep1", step_number=1, is_active=true) %}
                 <div class="space-y-3">
                     <!-- Pickup Hub Selection -->
                     <div class="bg-surface-container-low/70 rounded-xl p-3 md:p-4 border border-outline-variant/40 space-y-2.5">
@@ -257,9 +240,9 @@
                     </span>
                     {{ icon("arrow_forward", size=16) }}
                 </button>
-            </div>
+            {% endcall %}
             <!-- STEP 2: DEPARTURE WINDOW -->
-            <div class="space-y-4 hidden" id="wizardStep2">
+            {% call carousel_slide(id="wizardStep2", step_number=2, is_active=false) %}
                 <div class="bg-surface-container-low/70 rounded-xl p-3 md:p-4 border border-outline-variant/40 space-y-3">
                     <div class="flex items-center justify-between">
                         <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
@@ -338,9 +321,9 @@
                         {{ icon("arrow_forward", size=16) }}
                     </button>
                 </div>
-            </div>
+            {% endcall %}
             <!-- STEP 3: CONSIGNMENT WEIGHT & SEARCH ACTION -->
-            <div class="space-y-4 hidden" id="wizardStep3">
+            {% call carousel_slide(id="wizardStep3", step_number=3, is_active=false) %}
                 <div class="bg-surface-container-low/70 rounded-xl p-3 md:p-4 border border-outline-variant/40 space-y-3">
                     <div class="flex items-center justify-between">
                         <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
@@ -413,8 +396,8 @@
                         </span>
                     </button>
                 </div>
-            </div>
-        </section>
+            {% endcall %}
+        {% endcall %}
         <!-- ========================================================================= -->
         <!-- 4. RESULTS SECTION (LINEHAUL TRUCKS DISPATCH ENGINE) -->
         <!-- ========================================================================= -->

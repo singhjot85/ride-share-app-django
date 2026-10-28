@@ -103,13 +103,14 @@ class TestLandingPageView:
         response = view(request)
         content = response.render().content.decode("utf-8")
 
-        # Theme variables, override and layout CSS linked
+        # Theme variables, override, component and layout CSS linked
         for css_asset in [
             "variables.css",
             "theme_override.css",
             "landing_layout.css",
             "floating_chip.css",
             "bottom_navbar.css",
+            "carousel.css",
         ]:
             assert css_asset in content
 
@@ -128,6 +129,7 @@ class TestLandingPageView:
             "corridor_state.js",
             "profile_state.js",
             "language_toggle.js",
+            "carousel.js",
         ]:
             assert js_asset in content
 
