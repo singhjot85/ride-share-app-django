@@ -74,23 +74,38 @@
      * @param {string} state - 'default' | 'skeleton' | 'empty' | 'capacity' | 'error'
      */
     function setCorridorState(state) {
-        var def = document.getElementById("stateCardsDefault");
-        var skel = document.getElementById("stateCardsSkeleton");
-        var emp = document.getElementById("stateCardsEmpty");
-        var cap = document.getElementById("stateCardsCapacity");
-        var err = document.getElementById("stateCardsError");
+        if (window.StateCardComponent && window.StateCardComponent.setState) {
+            window.StateCardComponent.setState("results-container", state);
+        } else {
+            var def = document.getElementById("stateCardsDefault");
+            var skel = document.getElementById("stateCardsSkeleton");
+            var emp = document.getElementById("stateCardsEmpty");
+            var cap = document.getElementById("stateCardsCapacity");
+            var err = document.getElementById("stateCardsError");
+            var states = [def, skel, emp, cap, err];
+            states.forEach(function (el) {
+                if (el) el.classList.add("hidden");
+            });
+            var targetEl = {
+                "default": def,
+                "skeleton": skel,
+                "empty": emp,
+                "capacity": cap,
+                "error": err
+            }[state];
+            if (targetEl) targetEl.classList.remove("hidden");
+        }
+
         var head = document.getElementById("resultsHeader");
+        if (head) {
+            head.classList.toggle("hidden", state !== "default" && state !== "skeleton");
+        }
 
         var btnDef = document.getElementById("btnStateDefault");
         var btnSkel = document.getElementById("btnStateSkeleton");
         var btnEmp = document.getElementById("btnStateEmpty");
         var btnCap = document.getElementById("btnStateCapacity");
         var btnErr = document.getElementById("btnStateError");
-
-        var states = [def, skel, emp, cap, err];
-        states.forEach(function (el) {
-            if (el) el.classList.add("hidden");
-        });
 
         var buttons = [btnDef, btnSkel, btnEmp, btnCap, btnErr];
         buttons.forEach(function (b) {
@@ -100,28 +115,14 @@
         });
 
         var activeBtnClass = "px-2 py-0.5 rounded text-[11px] font-bold bg-primary text-on-primary transition-all";
-
-        if (state === "default") {
-            if (def) def.classList.remove("hidden");
-            if (head) head.classList.remove("hidden");
-            if (btnDef) btnDef.className = activeBtnClass;
-        } else if (state === "skeleton") {
-            if (skel) skel.classList.remove("hidden");
-            if (head) head.classList.remove("hidden");
-            if (btnSkel) btnSkel.className = activeBtnClass;
-        } else if (state === "empty") {
-            if (emp) emp.classList.remove("hidden");
-            if (head) head.classList.add("hidden");
-            if (btnEmp) btnEmp.className = activeBtnClass;
-        } else if (state === "capacity") {
-            if (cap) cap.classList.remove("hidden");
-            if (head) head.classList.add("hidden");
-            if (btnCap) btnCap.className = activeBtnClass;
-        } else if (state === "error") {
-            if (err) err.classList.remove("hidden");
-            if (head) head.classList.add("hidden");
-            if (btnErr) btnErr.className = activeBtnClass;
-        }
+        var activeBtn = {
+            "default": btnDef,
+            "skeleton": btnSkel,
+            "empty": btnEmp,
+            "capacity": btnCap,
+            "error": btnErr
+        }[state];
+        if (activeBtn) activeBtn.className = activeBtnClass;
     }
 
     /**

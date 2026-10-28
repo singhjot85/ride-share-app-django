@@ -1,6 +1,7 @@
 {# Dedicated NH48 Delhi ⇄ Jaipur Corridor Search & Linehaul Booking View #}
 {% from "core/components/common/icons.jinja" import icon %}
 {% from "components/carousel.jinja" import carousel, carousel_slide %}
+{% from "components/state_card.jinja" import state_container, state_panel %}
 <section id="view-book-corridor"
          class="landing-tab-view hidden"
          aria-labelledby="corridor-view-title">
@@ -401,7 +402,7 @@
         <!-- ========================================================================= -->
         <!-- 4. RESULTS SECTION (LINEHAUL TRUCKS DISPATCH ENGINE) -->
         <!-- ========================================================================= -->
-        <section class="space-y-3" id="results-container">
+        {% call state_container(id="results-container", active_state="default", extra_classes="space-y-3") %}
             <!-- Results Header -->
             <div class="flex items-center justify-between px-1" id="resultsHeader">
                 <div class="flex items-center gap-2">
@@ -414,7 +415,7 @@
                 </div>
             </div>
             <!-- STATE: 3 TRUCK RESULT CARDS (DEFAULT) -->
-            <div class="space-y-3" id="stateCardsDefault">
+            {% call state_panel(id="stateCardsDefault", state="default", is_active=true, extra_classes="space-y-3") %}
                 <!-- Result Card 1 -->
                 <article class="truck-card bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-5 shadow-sm space-y-3.5">
                     <div class="flex items-center justify-between w-full">
@@ -577,9 +578,9 @@
                         </button>
                     </div>
                 </article>
-            </div>
+            {% endcall %}
             <!-- STATE: LOADING SKELETON -->
-            <div class="space-y-3 hidden" id="stateCardsSkeleton">
+            {% call state_panel(id="stateCardsSkeleton", state="skeleton", is_active=false, extra_classes="space-y-3") %}
                 <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-4 shadow-sm animate-pulse space-y-3">
                     <div class="flex justify-between">
                         <div class="h-6 w-32 bg-surface-container-high rounded"></div>
@@ -602,10 +603,9 @@
                         <div class="h-7 w-28 bg-surface-container-high rounded-lg"></div>
                     </div>
                 </div>
-            </div>
+            {% endcall %}
             <!-- STATE: 0 RESULTS EMPTY STATE -->
-            <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 text-center shadow-sm flex flex-col items-center gap-3 hidden"
-                 id="stateCardsEmpty">
+            {% call state_panel(id="stateCardsEmpty", state="empty", is_active=false, extra_classes="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 text-center shadow-sm flex flex-col items-center gap-3") %}
                 <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
                     {{ icon("search_off", size=24) }}
                 </div>
@@ -641,10 +641,9 @@
                         </span>
                     </button>
                 </div>
-            </div>
+            {% endcall %}
             <!-- STATE: CORRIDOR AT CAPACITY CARD VARIANT -->
-            <div class="card-capacity-state rounded-2xl p-4 md:p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hidden"
-                 id="stateCardsCapacity">
+            {% call state_panel(id="stateCardsCapacity", state="capacity", is_active=false, extra_classes="card-capacity-state rounded-2xl p-4 md:p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4") %}
                 <div class="flex items-start gap-3">
                     <span class="text-warning flex items-center mt-0.5">{{ icon("warning", size=24) }}</span>
                     <div>
@@ -674,10 +673,9 @@
                         {{ labels.btn_request_standby|default("Request standby") }}
                     </span>
                 </button>
-            </div>
+            {% endcall %}
             <!-- STATE: ERROR STATE -->
-            <div class="card-error-state rounded-2xl p-5 text-center shadow-sm flex flex-col items-center gap-2 hidden"
-                 id="stateCardsError">
+            {% call state_panel(id="stateCardsError", state="error", is_active=false, extra_classes="card-error-state rounded-2xl p-5 text-center shadow-sm flex flex-col items-center gap-2") %}
                 <span class="text-danger flex items-center">{{ icon("error", size=28) }}</span>
                 <h3 class="font-bold text-sm text-primary font-mono lang-text"
                     data-en="{{ labels_en.error_corridor_title|default('Could not load trucks') }}"
@@ -698,8 +696,8 @@
                         {{ labels.btn_retry_search|default("Retry") }}
                     </span>
                 </button>
-            </div>
-        </section>
+            {% endcall %}
+        {% endcall %}
         <!-- ========================================================================= -->
         <!-- 5. CORRIDOR DETAILS & ACCORDIONS -->
         <!-- ========================================================================= -->

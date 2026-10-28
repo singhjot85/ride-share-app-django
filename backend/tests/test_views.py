@@ -111,6 +111,7 @@ class TestLandingPageView:
             "floating_chip.css",
             "bottom_navbar.css",
             "carousel.css",
+            "state_card.css",
         ]:
             assert css_asset in content
 
@@ -130,6 +131,7 @@ class TestLandingPageView:
             "profile_state.js",
             "language_toggle.js",
             "carousel.js",
+            "state_card.js",
         ]:
             assert js_asset in content
 

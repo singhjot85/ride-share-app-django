@@ -1,0 +1,13 @@
+{# Multi-State Card & Container Component #}
+{% from "core/components/common/icons.jinja" import icon %}
+{% macro state_container(id, active_state="default", extra_classes="") %}
+    <div class="state-container{% if extra_classes %} {{ extra_classes }}{% endif %}"
+         id="{{ id }}"
+         data-state-container-id="{{ id }}"
+         data-active-state="{{ active_state }}">{{ caller() }}</div>
+{% endmacro %}
+{% macro state_panel(id, state="default", is_active=false, extra_classes="") %}
+    <div class="state-panel state-{{ state }}{% if not is_active %} hidden{% endif %}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+         id="{{ id }}"
+         data-state="{{ state }}">{{ caller() }}</div>
+{% endmacro %}
