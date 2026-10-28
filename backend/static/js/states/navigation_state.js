@@ -1,9 +1,9 @@
 /**
- * navigation_state.js: Client-side navigation, tab switching, and scroll spy.
+ * navigation_state.js: Client-side navigation and tab switching.
  *
  * Provides:
  * - LoadShareNav.switchTab(tabId): switches views without page reloads.
- * - Desktop scroll spy: hides center floating chip on scroll down, restores on scroll up.
+ * - LoadShareNav.updateTopBarTitle(tabId): dynamic top bar title alongside logo.
  */
 (function (window, document) {
     "use strict";
@@ -16,8 +16,6 @@
         "support": { en: "Support", hi: "सहायता" },
         "profile": { en: "Profile", hi: "प्रोफ़ाइल" }
     };
-    var lastScrollY = window.pageYOffset || 0;
-    var chipElement = null;
 
     /**
      * Get active UI language code.
@@ -113,36 +111,9 @@
     }
 
     /**
-     * Desktop scroll spy: hide floating chip when scrolling down.
-     */
-    function handleScroll() {
-        if (!chipElement) {
-            chipElement = document.getElementById("desktop-floating-chip");
-            if (!chipElement) return;
-        }
-
-        var currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-
-        if (currentScrollY <= 80) {
-            // Near top of page: always show chip
-            chipElement.classList.remove("chip-hidden");
-        } else if (currentScrollY > lastScrollY + 5) {
-            // Scrolling down: hide chip
-            chipElement.classList.add("chip-hidden");
-        } else if (currentScrollY < lastScrollY - 5) {
-            // Scrolling up: show chip
-            chipElement.classList.remove("chip-hidden");
-        }
-
-        lastScrollY = currentScrollY;
-    }
-
-    /**
      * Initialize on DOM ready.
      */
     function init() {
-        chipElement = document.getElementById("desktop-floating-chip");
-
         // Hash routing on initial page load
         var initialHash = window.location.hash.replace("#", "");
         if (initialHash && SUPPORTED_TABS.includes(initialHash)) {
@@ -150,9 +121,6 @@
         } else {
             switchTab("home", false);
         }
-
-        // Attach scroll listener for desktop floating chip
-        window.addEventListener("scroll", handleScroll, { passive: true });
     }
 
     /**
