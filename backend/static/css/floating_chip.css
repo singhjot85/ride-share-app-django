@@ -1,6 +1,6 @@
 /**
  * floating_chip.css: Desktop centered floating navigation chip for LoadShare.
- * Hides smoothly on scroll down, reappears on scroll up.
+ * Hidden by default; reveals smoothly on hover over the header / chip or on keyboard focus.
  *
  * HARD RULE: Uses CSS variables from variables.css exclusively.
  */
@@ -13,20 +13,23 @@
   .desktop-floating-chip {
     display: block;
     position: fixed;
-    top: 72px; /* Positioned just below the sticky top title bar */
+    top: 56px;
+    padding-top: 10px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -8px);
     z-index: 45;
-    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
-    opacity: 1;
+    transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+    opacity: 0;
     pointer-events: auto;
   }
 
-  /* Scroll-hide state triggered by navigation_state.js */
-  .desktop-floating-chip.chip-hidden {
-    transform: translate(-50%, -120%);
-    opacity: 0;
-    pointer-events: none;
+  /* Reveal on header hover, chip hover, or keyboard focus */
+  .landing-top-bar:hover ~ .desktop-floating-chip,
+  .desktop-floating-chip:hover,
+  .desktop-floating-chip:focus-within {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .chip-inner {
