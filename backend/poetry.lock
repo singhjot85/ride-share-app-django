@@ -387,10 +387,16 @@ django-celery-beat = ">=2.9.0,<3.0.0"
 django-celery-results = ">=2.6.0,<3.0.0"
 django-constance = ">=4.3.5,<5.0.0"
 django-model-utils = ">=5.0.0,<6.0.0"
+django-phonenumber-field = ">=9.0.0,<10.0.0"
 django-redis = ">=7.0.0,<8.0.0"
 django-tenants = ">=3.10.2,<4.0.0"
 djangorestframework = ">=3.17.1,<4.0.0"
+djangorestframework-simplejwt = ">=5.5.1,<6.0.0"
+drf-spectacular = ">=0.30.0,<0.31.0"
 factory-boy = ">=3.3.3,<4.0.0"
+google-auth = ">=2.62.0,<3.0.0"
+jinja2 = ">=3.1.5,<4.0.0"
+phonenumbers = ">=9.0.42,<10.0.0"
 psycopg2-binary = ">=2.9.12,<3.0.0"
 pytest = ">=9.1.1,<10.0.0"
 pytest-django = ">=4.12.0,<5.0.0"
@@ -402,7 +408,7 @@ watchdog = ">=6.0.0,<7.0.0"
 type = "git"
 url = "https://github.com/singhjot85/core-common-django-apps.git"
 reference = "main"
-resolved_reference = "432ba8260913096632bb44c10007e2d92b165817"
+resolved_reference = "4398a52267cccff494c1ad454d9d35e05e7b6142"
 
 [[package]]
 name = "cron-descriptor"
@@ -651,6 +657,26 @@ files = [
 
 [package.dependencies]
 Django = ">=3.2"
+
+[[package]]
+name = "django-phonenumber-field"
+version = "9.0.0"
+description = "An international phone number field for django models."
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "django_phonenumber_field-9.0.0-py3-none-any.whl", hash = "sha256:53731bf139ba82004aff6087ccdd55f8ba5c4e11c623557cc1873eeed46eba2a"},
+    {file = "django_phonenumber_field-9.0.0.tar.gz", hash = "sha256:b4a641fc8ae3fdec7aeaf28e3af92bb8d36aefad085b955420807de7e8d37abe"},
+]
+
+[package.dependencies]
+Django = ">=5.2"
+
+[package.extras]
+babel = ["Babel"]
+phonenumbers = ["phonenumbers (>=7.0.2)"]
+phonenumberslite = ["phonenumberslite (>=7.0.2)"]
 
 [[package]]
 name = "django-redis"
@@ -1199,6 +1225,18 @@ files = [
 hyperscan = ["hyperscan (>=0.7)"]
 optional = ["typing-extensions (>=4)"]
 re2 = ["google-re2 (>=1.1)"]
+
+[[package]]
+name = "phonenumbers"
+version = "9.0.42"
+description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
+optional = false
+python-versions = ">=2.5"
+groups = ["main"]
+files = [
+    {file = "phonenumbers-9.0.42-py2.py3-none-any.whl", hash = "sha256:321c92d9734bfb4adc64575f940da26463f09fc79ac692b43a35f9306e4ecc7d"},
+    {file = "phonenumbers-9.0.42.tar.gz", hash = "sha256:83ddc20edea93814f5bb2ee8d365b3ef64fa274c8a4f6d06bd8b2c7996030564"},
+]
 
 [[package]]
 name = "platformdirs"
@@ -2020,4 +2058,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12, <4"
-content-hash = "73897ca244712d1c3d6513ae1547faf299ad508944ff76ca7d1efbff62164bb4"
+content-hash = "eaf01ee1c8577d873a220c86e338cc36b864aa91c130b723582d4a8070065ef2"
