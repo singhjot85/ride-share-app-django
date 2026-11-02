@@ -392,6 +392,7 @@ django-redis = ">=7.0.0,<8.0.0"
 django-tenants = ">=3.10.2,<4.0.0"
 djangorestframework = ">=3.17.1,<4.0.0"
 djangorestframework-simplejwt = ">=5.5.1,<6.0.0"
+drf-nested-routers = ">=0.95.3,<0.96.0"
 drf-spectacular = ">=0.30.0,<0.31.0"
 factory-boy = ">=3.3.3,<4.0.0"
 google-auth = ">=2.62.0,<3.0.0"
@@ -408,7 +409,7 @@ watchdog = ">=6.0.0,<7.0.0"
 type = "git"
 url = "https://github.com/singhjot85/core-common-django-apps.git"
 reference = "main"
-resolved_reference = "4398a52267cccff494c1ad454d9d35e05e7b6142"
+resolved_reference = "41c825abac25a57aad014f519036acd926caa24a"
 
 [[package]]
 name = "cron-descriptor"
@@ -773,6 +774,22 @@ doc = ["Sphinx", "sphinx_rtd_theme (>=0.1.9)"]
 lint = ["pre-commit", "pyupgrade", "ruff", "yesqa"]
 python-jose = ["python-jose (==3.3.0)"]
 test = ["cryptography", "freezegun", "pytest", "pytest-cov", "pytest-django", "pytest-xdist", "tox"]
+
+[[package]]
+name = "drf-nested-routers"
+version = "0.95.3"
+description = "Nested resources for the Django Rest Framework"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "drf_nested_routers-0.95.3-py3-none-any.whl", hash = "sha256:bb02f4fea712f7f0fc649fc1399718e458a06387fdb2fb161cc9aeaad314f4ef"},
+    {file = "drf_nested_routers-0.95.3.tar.gz", hash = "sha256:3d5ffad87b110c9d58ee0c688cf540a7fa4ccbf1080b2d318a5e2cf634322d96"},
+]
+
+[package.dependencies]
+Django = ">=4.2"
+djangorestframework = ">=3.15.0"
 
 [[package]]
 name = "drf-spectacular"

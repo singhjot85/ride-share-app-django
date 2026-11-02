@@ -403,13 +403,14 @@ class TestLoginView:
     def test_otp_verify_view_attaches_cookies_and_redirects(self, client: Client, user):
         """Verify core OTP verify flow attaches auth cookies via middleware and redirects to root."""
         code = "654321"
+        phone_number = str(user.phone_number)
         OTPServiceFactory.get_service("phone").set_otp_cache(
-            user.phone_number, code, timeout=300
+            phone_number, code, timeout=300
         )
 
         response = client.post(
-            "/api/users/v1/auth/otp/verify/",
-            data={"identifier": user.phone_number, "code": code, "channel": "phone"},
+            "/api/users/v1/auth/otp/sms/login/",
+            data={"phone_number": phone_number, "otp_code": code},
             content_type="application/json",
         )
 
@@ -430,8 +431,8 @@ class TestLoginView:
 
         # 1. Request OTP with purpose="signup"
         send_res = client.post(
-            "/api/users/v1/auth/otp/send/",
-            data={"identifier": new_phone, "channel": "phone", "purpose": "signup"},
+            "/api/users/v1/auth/otp/sms/send/",
+            data={"phone_number": new_phone, "purpose": "signup"},
             content_type="application/json",
         )
         assert send_res.status_code == 202
@@ -443,11 +444,10 @@ class TestLoginView:
 
         # 2. Verify OTP with profile fields
         verify_res = client.post(
-            "/api/users/v1/auth/otp/verify/",
+            "/api/users/v1/auth/otp/sms/signup/",
             data={
-                "identifier": new_phone,
-                "code": code,
-                "channel": "phone",
+                "phone_number": new_phone,
+                "otp_code": code,
                 "first_name": "Rajesh",
                 "last_name": "Kumar",
                 "email": "rajesh@example.com",
@@ -455,8 +455,7 @@ class TestLoginView:
             content_type="application/json",
         )
         assert verify_res.status_code == 201
-        data = verify_res.json()
-        assert data["created"] is True
+        assert "access" in verify_res.json()
         assert "access_token" in verify_res.cookies
 
         # 3. Verify user created with correct profile data

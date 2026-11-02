@@ -9,14 +9,9 @@ Routes:
     - Backend API: `/api/<app>/<version>/...`
 """
 
+from core.config.api_protected import core_tenant_url_mapping, resolve_and_build_paths
 from core.utils.admin import private_admin_site
-from core.utils.urls import build_app_urlpatterns
 from django.urls import path
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularRedocView,
-    SpectacularSwaggerView,
-)
 
 from overrides.api.views import (
     LandingPageView,
@@ -32,19 +27,8 @@ urlpatterns = [
     path("signup/", SignupView.as_view(), name="ui-signup"),
     path("register/", SignupView.as_view(), name="ui-register"),
     path("set-language/", SetLanguageView.as_view(), name="set-language"),
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path(
-        "api/schema/swagger-ui/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
-    ),
-    path(
-        "api/schema/redoc/",
-        SpectacularRedocView.as_view(url_name="schema"),
-        name="redoc",
-    ),
     # Django Admin
     path("admin/", private_admin_site.urls),
     # Backend API Endpoints
-    *build_app_urlpatterns(),
+    *resolve_and_build_paths(core_tenant_url_mapping),
 ]

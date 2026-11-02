@@ -1,12 +1,14 @@
 from pathlib import Path
 
-from core.config.settings.single_tenant import *  # noqa: F401
+from core.config.settings.base import *  # noqa: F401
 
 # -------------------------------------------------------
 # Host Project Specifics
 # -------------------------------------------------------
+PROJECT_LABEL = "Load Share"
+PROJECT_NAME = "load_share"
 ROOT_URLCONF = "config.urls"
-PROJECT_LABEL = "LoadShare"
+PUBLIC_SCHEMA_URLCONF = "config.public_urls"
 
 PROJECT_MIGRATION_PATH = "db_migrations"
 MIGRATION_MODULES = {
