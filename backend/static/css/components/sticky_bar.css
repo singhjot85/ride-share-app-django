@@ -15,7 +15,8 @@
   border-top: 2px solid var(--color-secondary);
   box-shadow: var(--shadow-lg);
   padding: 0.75rem 1rem;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Entrance: smooth, deliberate curve */
+  transition: transform 240ms var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1));
 }
 
 @media (min-width: 768px) {
@@ -28,6 +29,8 @@
 .sticky-action-bar.translate-y-full,
 .sticky-truck-bottom-bar.translate-y-full {
   transform: translateY(120%);
+  /* Exit: fast, snappy dismissal */
+  transition: transform 160ms var(--ease-exit, cubic-bezier(0.4, 0, 1, 1));
 }
 
 .sticky-action-bar-inner {

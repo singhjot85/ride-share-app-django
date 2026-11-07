@@ -54,7 +54,6 @@ body,
   color: var(--color-text) !important;
   position: relative;
   overflow-x: hidden;
-  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* =========================================================================
@@ -147,7 +146,7 @@ body,
   font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 
 .lang-toggle-btn:hover {
@@ -185,7 +184,7 @@ body,
   justify-content: center;
   cursor: pointer;
   pointer-events: auto;
-  transition: all 0.15s ease;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 
 .theme-toggle-btn * {
@@ -229,7 +228,7 @@ body,
 
 .landing-tab-view.active {
   display: block;
-  animation: fadeIn 0.2s ease-in-out;
+  animation: tabFadeIn 160ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) forwards;
 }
 
 .landing-tab-view.hidden,
@@ -237,9 +236,15 @@ body,
   display: none !important;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* =========================================================================
@@ -570,7 +575,7 @@ details[open] summary .material-symbols-outlined {
   border: none;
   cursor: pointer;
   box-shadow: var(--shadow-orange);
-  transition: all 0.2s ease;
+  transition: background-color 150ms var(--ease-out), box-shadow 150ms var(--ease-out);
 }
 
 .btn-cta-primary:hover {
@@ -595,7 +600,7 @@ details[open] summary .material-symbols-outlined {
   font-weight: 700;
   font-size: 0.9375rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
 }
 
 .btn-cta-secondary:hover {
@@ -628,7 +633,7 @@ details[open] summary .material-symbols-outlined {
 .date-pill,
 .weight-pill {
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
 }
 
 .date-pill:hover,
@@ -648,7 +653,7 @@ details[open] summary .material-symbols-outlined {
   border: none !important;
   outline: none !important;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 
 .select-truck-btn:hover {
@@ -683,7 +688,7 @@ details[open] summary .material-symbols-outlined {
   font-family: 'JetBrains Mono', monospace !important;
   font-weight: 600 !important;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: border-color 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 
 .quick-hub-btn:hover {
@@ -839,7 +844,7 @@ details[open] summary .material-symbols-outlined {
 .active\:scale-\[0\.98\]:active { transform: scale(0.98); }
 .active\:scale-\[0\.99\]:active { transform: scale(0.99); }
 
-.transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+.transition-all { transition-property: color, background-color, border-color, box-shadow, transform, opacity; transition-timing-function: var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)); transition-duration: 150ms; }
 .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 .duration-150 { transition-duration: 150ms; }
 .duration-200 { transition-duration: 200ms; }
@@ -964,7 +969,7 @@ details[open] summary .material-symbols-outlined {
 .booking-filter-chip {
   cursor: pointer;
   border: none;
-  transition: all 0.15s ease;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 
 .booking-item {
@@ -1030,5 +1035,27 @@ details[open] summary .material-symbols-outlined {
 
 .group:hover .group-hover\:bg-primary { background-color: var(--color-primary) !important; }
 .group:hover .group-hover\:text-on-primary { color: var(--color-on-primary) !important; }
-.group:hover .group-hover\:translate-x-0\.5 { transform: translateX(0.125rem); }
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .group-hover\:translate-x-0\.5 { transform: translateX(0.125rem); }
+}
 .divide-primary\/5 > * + * { border-top: 1px solid var(--color-border-subtle) !important; }
+
+/* =========================================================================
+   Accessibility: Prefers-Reduced-Motion
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-pulse {
+    animation: none !important;
+    opacity: 0.75 !important;
+  }
+}

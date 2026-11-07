@@ -29,7 +29,7 @@
   border: 1px solid var(--color-border);
   font-size: var(--font-size-xs);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 150ms var(--ease-out), border-color 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 
 .lang-toggle-btn:hover {
@@ -56,7 +56,7 @@
   border-radius: var(--radius-full);
   padding: 5px 8px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 
 .theme-toggle-btn:hover {
@@ -200,7 +200,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.15s ease;
+  transition: color 150ms var(--ease-out), background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
 }
 
 .auth-tab-btn:hover {
@@ -252,7 +252,7 @@
   font-size: 0.9375rem;
   padding: 10px 14px;
   min-height: 46px;
-  transition: all 0.15s ease;
+  transition: color 150ms var(--ease-out), background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
 }
 
 .auth-card .form-control:focus {
@@ -286,7 +286,7 @@
   color: var(--color-secondary) !important;
   background: transparent !important;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: color 150ms var(--ease-out), background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
 }
 
 #btn_send_login_otp:not(:disabled):hover,
@@ -317,7 +317,7 @@
   min-height: 48px !important;
   box-shadow: var(--shadow-orange) !important;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: color 150ms var(--ease-out), background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
 }
 
 #btn_otp_submit:not(:disabled):hover,
@@ -326,7 +326,14 @@
   background-color: var(--color-secondary-hover) !important;
   border-color: var(--color-secondary-hover) !important;
   box-shadow: var(--shadow-orange) !important;
-  transform: translateY(-1px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #btn_otp_submit:not(:disabled):hover,
+  #btn_otp_signup_submit:not(:disabled):hover,
+  .auth-card .btn-primary:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
 }
 
 #btn_otp_submit:disabled,
@@ -359,7 +366,7 @@
   border: 1.5px solid var(--color-border) !important;
   background-color: var(--color-surface-sunken) !important;
   color: var(--color-text-title) !important;
-  transition: all 0.15s ease;
+  transition: color 150ms var(--ease-out), background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
 }
 
 .otp-digit-box:focus {
