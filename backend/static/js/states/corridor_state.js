@@ -149,10 +149,10 @@
 
         var buttons = document.querySelectorAll(".select-truck-btn");
         buttons.forEach(function (b) {
-            b.className = "select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all";
+            b.className = "select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all inline-flex items-center justify-center gap-1.5 shadow-xs";
         });
         if (btn) {
-            btn.className = "select-truck-btn bg-secondary text-on-secondary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all shadow-xs";
+            btn.className = "select-truck-btn bg-secondary text-on-secondary px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all inline-flex items-center justify-center gap-1.5 shadow-xs";
         }
     }
 

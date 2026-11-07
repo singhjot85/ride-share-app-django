@@ -642,11 +642,73 @@ details[open] summary .material-symbols-outlined {
 }
 
 .truck-card {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  transition: transform 150ms var(--ease-out), border-color 150ms var(--ease-out), box-shadow 150ms var(--ease-out);
 }
 
-.truck-card:hover {
-  border-color: var(--color-secondary);
+@media (hover: hover) and (pointer: fine) {
+  .truck-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-secondary);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.capacity-meter-bar {
+  height: 5px;
+  border-radius: 9999px;
+  background-color: var(--color-surface-container-high);
+  overflow: hidden;
+  position: relative;
+}
+
+.capacity-meter-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background-color: var(--color-secondary);
+  transition: width 300ms var(--ease-out);
+}
+
+.badge-kyc-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.badge-fastag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  background-color: var(--color-surface-container);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+}
+
+.badge-telemetry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--color-surface-variant);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .select-truck-btn {
@@ -945,6 +1007,31 @@ details[open] summary .material-symbols-outlined {
   .md\:px-8 { padding-left: 2rem !important; padding-right: 2rem !important; }
   .md\:text-lg { font-size: 1.125rem !important; line-height: 1.75rem !important; }
   .md\:text-sm { font-size: 0.875rem !important; line-height: 1.25rem !important; }
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .md\:gap-3\.5 { gap: 0.875rem !important; }
+  .md\:gap-4 { gap: 1rem !important; }
+}
+
+.hero-screen-section {
+  min-height: auto;
+}
+
+/* Responsive lg: (1024px) Media Queries */
+@media (min-width: 1024px) {
+  .landing-top-bar-inner,
+  .landing-view-container {
+    max-width: 64rem !important; /* 1024px matching max-w-5xl */
+  }
+  .hero-screen-section {
+    min-height: calc(100vh - 7.5rem);
+    align-content: center;
+  }
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .lg\:max-w-5xl { max-width: 64rem !important; }
+  .lg\:gap-10 { gap: 2.5rem !important; }
+  .lg\:gap-12 { gap: 3rem !important; }
+  .lg\:text-5xl { font-size: 3rem !important; line-height: 1.15 !important; }
 }
 
 /* =========================================================================

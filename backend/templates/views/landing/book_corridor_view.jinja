@@ -323,19 +323,39 @@
             {% call state_panel(id="stateCardsDefault", state="default", is_active=true, extra_classes="space-y-3") %}
                 <!-- Result Card 1 -->
                 <article class="truck-card bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-5 shadow-sm space-y-3.5">
+                    <!-- Top Departure & Carrier Trust Header -->
                     <div class="flex items-center justify-between w-full">
-                        <span class="text-2xl font-bold font-mono text-primary tracking-tight">19:30</span>
-                        <span class="w-7 h-7 rounded-full badge-verified flex items-center justify-center shrink-0 shadow-xs"
-                              title="{{ labels.verified_carrier_tooltip }}">{{ icon("check", size=16) }}</span>
+                        <div class="flex items-baseline gap-2.5">
+                            <span class="text-2xl font-bold font-mono text-primary tracking-tight">19:30</span>
+                            <span class="text-[11px] font-mono text-on-surface-variant font-medium">Departs SGTN Bay 4</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="badge-kyc-verified shadow-xs">
+                                {{ icon("verified", size=13) }}
+                                <span>Sharma Transways</span>
+                            </span>
+                        </div>
                     </div>
-                    <!-- Price line -->
-                    <div class="flex items-center gap-2 -mt-1 font-mono text-xs">
-                        <span class="font-bold text-sm text-primary">₹850</span>
-                        <span class="text-on-surface-variant text-[11px] lang-text"
-                              data-en="{{ labels_en.total_price_suffix }}"
-                              data-hi="{{ labels_hi.total_price_suffix }}">{{ labels.total_price_suffix }}</span>
-                        <span class="text-outline-variant">•</span>
-                        <span class="text-secondary font-semibold">₹8.50 / kg</span>
+                    <!-- Price line & Corridor Tags -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm text-primary">₹850</span>
+                            <span class="text-on-surface-variant text-[11px] lang-text"
+                                  data-en="{{ labels_en.total_price_suffix }}"
+                                  data-hi="{{ labels_hi.total_price_suffix }}">{{ labels.total_price_suffix }}</span>
+                            <span class="text-outline-variant">•</span>
+                            <span class="text-secondary font-semibold">₹8.50 / kg</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="badge-fastag text-[10px]">
+                                {{ icon("speed", size=12) }}
+                                <span>FASTag NH48</span>
+                            </span>
+                            <span class="badge-fastag text-[10px]">
+                                {{ icon("schedule", size=12) }}
+                                <span>Cut-off 18:45</span>
+                            </span>
+                        </div>
                     </div>
                     <!-- Route segment -->
                     <div class="bg-surface-container-low/70 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono border border-outline-variant/30 gap-2">
@@ -343,125 +363,213 @@
                             <span class="text-success font-bold shrink-0">●</span>
                             <span class="text-primary font-medium leading-normal">Sanjay Gandhi Transport Nagar</span>
                         </div>
-                        <div class="flex items-center gap-2 sm:self-center">
+                        <div class="flex items-center gap-2 sm:self-center text-on-surface-variant text-[11px]">
                             <span class="hidden sm:inline-block text-outline">{{ icon("arrow_forward", size=14) }}</span>
                             <span class="sm:hidden text-outline">{{ icon("arrow_downward", size=14) }}</span>
+                            <span class="text-[10px] text-surface-variant font-mono">268 km</span>
                         </div>
                         <div class="flex items-center gap-2 sm:justify-end">
                             <span class="text-danger font-bold shrink-0">●</span>
                             <span class="text-primary font-medium leading-normal">Jaipur VKI Depot</span>
                         </div>
                     </div>
-                    <!-- Spec & Action CTA -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-outline-variant/30">
-                        <div class="flex items-center justify-between w-full text-xs font-mono py-0.5">
-                            <span class="text-primary font-medium">Eicher Pro 14ft</span>
+                    <!-- Visual Capacity Gauge -->
+                    <div class="space-y-1 pt-0.5">
+                        <div class="flex items-center justify-between text-[11px] font-mono">
+                            <span class="text-on-surface-variant font-medium">Eicher Pro 14ft • Bay Capacity</span>
                             <span class="text-success font-bold">
                                 320 kg <span class="lang-text"
        data-en="{{ labels_en.available_suffix }}"
        data-hi="{{ labels_hi.available_suffix }}">{{ labels.available_suffix }}</span>
+                                <span class="text-on-surface-variant font-normal">(68% booked)</span>
                             </span>
+                        </div>
+                        <div class="capacity-meter-bar">
+                            <div class="capacity-meter-fill" style="width: 68%;"></div>
+                        </div>
+                    </div>
+                    <!-- Spec & Action CTA -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-outline-variant/30">
+                        <div class="flex items-center gap-2 text-[11px] font-mono text-on-surface-variant">
+                            <span class="inline-flex items-center gap-1">{{ icon("shield", size=14, extra_classes="text-secondary") }} Transit Insured</span>
+                            <span>•</span>
+                            <span>Direct Linehaul</span>
                         </div>
                         <button type="button"
                                 onclick="selectTruck('19:30', 'Eicher Pro 14ft', '₹850', this)"
-                                class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all">
+                                class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all inline-flex items-center justify-center gap-1.5 shadow-xs">
                             <span class="lang-text"
                                   data-en="{{ labels_en.btn_request_reserve }}"
                                   data-hi="{{ labels_hi.btn_request_reserve }}">{{ labels.btn_request_reserve }}</span>
+                            {{ icon("arrow_forward", size=14) }}
                         </button>
                     </div>
                 </article>
                 <!-- Result Card 2 -->
                 <article class="truck-card bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-5 shadow-sm space-y-3.5">
+                    <!-- Top Departure & Carrier Trust Header -->
                     <div class="flex items-center justify-between w-full">
-                        <span class="text-2xl font-bold font-mono text-primary tracking-tight">20:45</span>
-                        <span class="w-7 h-7 rounded-full badge-verified flex items-center justify-center shrink-0 shadow-xs"
-                              title="{{ labels.verified_carrier_tooltip }}">{{ icon("check", size=16) }}</span>
+                        <div class="flex items-baseline gap-2.5">
+                            <span class="text-2xl font-bold font-mono text-primary tracking-tight">20:45</span>
+                            <span class="text-[11px] font-mono text-on-surface-variant font-medium">Departs Hero Honda Chowk</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="badge-kyc-verified shadow-xs">
+                                {{ icon("verified", size=13) }}
+                                <span>Rao Roadlines</span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2 -mt-1 font-mono text-xs">
-                        <span class="font-bold text-sm text-primary">₹2,125</span>
-                        <span class="text-on-surface-variant text-[11px] lang-text"
-                              data-en="{{ labels_en.total_price_suffix }}"
-                              data-hi="{{ labels_hi.total_price_suffix }}">{{ labels.total_price_suffix }}</span>
-                        <span class="text-outline-variant">•</span>
-                        <span class="text-secondary font-semibold">₹8.50 / kg</span>
+                    <!-- Price line & Corridor Tags -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm text-primary">₹2,125</span>
+                            <span class="text-on-surface-variant text-[11px] lang-text"
+                                  data-en="{{ labels_en.total_price_suffix }}"
+                                  data-hi="{{ labels_hi.total_price_suffix }}">{{ labels.total_price_suffix }}</span>
+                            <span class="text-outline-variant">•</span>
+                            <span class="text-secondary font-semibold">₹8.50 / kg</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="badge-fastag text-[10px]">
+                                {{ icon("speed", size=12) }}
+                                <span>FASTag NH48</span>
+                            </span>
+                            <span class="badge-fastag text-[10px]">
+                                {{ icon("schedule", size=12) }}
+                                <span>Cut-off 20:00</span>
+                            </span>
+                        </div>
                     </div>
+                    <!-- Route segment -->
                     <div class="bg-surface-container-low/70 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono border border-outline-variant/30 gap-2">
                         <div class="flex items-center gap-2">
                             <span class="text-success font-bold shrink-0">●</span>
                             <span class="text-primary font-medium leading-normal">Gurugram Hero Honda Chowk</span>
                         </div>
-                        <div class="flex items-center gap-2 sm:self-center">
+                        <div class="flex items-center gap-2 sm:self-center text-on-surface-variant text-[11px]">
                             <span class="hidden sm:inline-block text-outline">{{ icon("arrow_forward", size=14) }}</span>
                             <span class="sm:hidden text-outline">{{ icon("arrow_downward", size=14) }}</span>
+                            <span class="text-[10px] text-surface-variant font-mono">232 km</span>
                         </div>
                         <div class="flex items-center gap-2 sm:justify-end">
                             <span class="text-danger font-bold shrink-0">●</span>
                             <span class="text-primary font-medium leading-normal">Jaipur VKI Depot</span>
                         </div>
                     </div>
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-outline-variant/30">
-                        <div class="flex items-center justify-between w-full text-xs font-mono py-0.5">
-                            <span class="text-primary font-medium">Eicher Pro 17ft</span>
+                    <!-- Visual Capacity Gauge -->
+                    <div class="space-y-1 pt-0.5">
+                        <div class="flex items-center justify-between text-[11px] font-mono">
+                            <span class="text-on-surface-variant font-medium">Eicher Pro 17ft • Bay Capacity</span>
                             <span class="text-success font-bold">
                                 450 kg <span class="lang-text"
        data-en="{{ labels_en.available_suffix }}"
        data-hi="{{ labels_hi.available_suffix }}">{{ labels.available_suffix }}</span>
+                                <span class="text-on-surface-variant font-normal">(55% booked)</span>
                             </span>
+                        </div>
+                        <div class="capacity-meter-bar">
+                            <div class="capacity-meter-fill" style="width: 55%;"></div>
+                        </div>
+                    </div>
+                    <!-- Spec & Action CTA -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-outline-variant/30">
+                        <div class="flex items-center gap-2 text-[11px] font-mono text-on-surface-variant">
+                            <span class="inline-flex items-center gap-1">{{ icon("shield", size=14, extra_classes="text-secondary") }} Transit Insured</span>
+                            <span>•</span>
+                            <span>GPS Monitored</span>
                         </div>
                         <button type="button"
                                 onclick="selectTruck('20:45', 'Eicher Pro 17ft', '₹2,125', this)"
-                                class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all">
+                                class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all inline-flex items-center justify-center gap-1.5 shadow-xs">
                             <span class="lang-text"
                                   data-en="{{ labels_en.btn_request_reserve }}"
                                   data-hi="{{ labels_hi.btn_request_reserve }}">{{ labels.btn_request_reserve }}</span>
+                            {{ icon("arrow_forward", size=14) }}
                         </button>
                     </div>
                 </article>
                 <!-- Result Card 3 -->
                 <article class="truck-card bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-5 shadow-sm space-y-3.5">
+                    <!-- Top Departure & Carrier Trust Header -->
                     <div class="flex items-center justify-between w-full">
-                        <span class="text-2xl font-bold font-mono text-primary tracking-tight">21:40</span>
-                        <span class="w-7 h-7 rounded-full badge-verified flex items-center justify-center shrink-0 shadow-xs"
-                              title="{{ labels.verified_carrier_tooltip }}">{{ icon("check", size=16) }}</span>
+                        <div class="flex items-baseline gap-2.5">
+                            <span class="text-2xl font-bold font-mono text-primary tracking-tight">21:40</span>
+                            <span class="text-[11px] font-mono text-on-surface-variant font-medium">Departs Manesar IMT</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="badge-kyc-verified shadow-xs">
+                                {{ icon("verified", size=13) }}
+                                <span>Yadav Express</span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2 -mt-1 font-mono text-xs">
-                        <span class="font-bold text-sm text-primary">₹1,275</span>
-                        <span class="text-on-surface-variant text-[11px] lang-text"
-                              data-en="{{ labels_en.total_price_suffix }}"
-                              data-hi="{{ labels_hi.total_price_suffix }}">{{ labels.total_price_suffix }}</span>
-                        <span class="text-outline-variant">•</span>
-                        <span class="text-secondary font-semibold">₹8.50 / kg</span>
+                    <!-- Price line & Corridor Tags -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm text-primary">₹1,275</span>
+                            <span class="text-on-surface-variant text-[11px] lang-text"
+                                  data-en="{{ labels_en.total_price_suffix }}"
+                                  data-hi="{{ labels_hi.total_price_suffix }}">{{ labels.total_price_suffix }}</span>
+                            <span class="text-outline-variant">•</span>
+                            <span class="text-secondary font-semibold">₹8.50 / kg</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="badge-fastag text-[10px]">
+                                {{ icon("speed", size=12) }}
+                                <span>FASTag NH48</span>
+                            </span>
+                            <span class="badge-fastag text-[10px]">
+                                {{ icon("schedule", size=12) }}
+                                <span>Cut-off 21:00</span>
+                            </span>
+                        </div>
                     </div>
+                    <!-- Route segment -->
                     <div class="bg-surface-container-low/70 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono border border-outline-variant/30 gap-2">
                         <div class="flex items-center gap-2">
                             <span class="text-success font-bold shrink-0">●</span>
                             <span class="text-primary font-medium leading-normal">Manesar IMT Toll Plaza</span>
                         </div>
-                        <div class="flex items-center gap-2 sm:self-center">
+                        <div class="flex items-center gap-2 sm:self-center text-on-surface-variant text-[11px]">
                             <span class="hidden sm:inline-block text-outline">{{ icon("arrow_forward", size=14) }}</span>
                             <span class="sm:hidden text-outline">{{ icon("arrow_downward", size=14) }}</span>
+                            <span class="text-[10px] text-surface-variant font-mono">195 km</span>
                         </div>
                         <div class="flex items-center gap-2 sm:justify-end">
                             <span class="text-danger font-bold shrink-0">●</span>
                             <span class="text-primary font-medium leading-normal">Kotputli Junction</span>
                         </div>
                     </div>
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-outline-variant/30">
-                        <div class="flex items-center justify-between w-full text-xs font-mono py-0.5">
-                            <span class="text-primary font-medium">Tata 407</span>
+                    <!-- Visual Capacity Gauge -->
+                    <div class="space-y-1 pt-0.5">
+                        <div class="flex items-center justify-between text-[11px] font-mono">
+                            <span class="text-on-surface-variant font-medium">Tata 407 (10ft) • Bay Capacity</span>
                             <span class="text-success font-bold">
                                 180 kg <span class="lang-text"
        data-en="{{ labels_en.available_suffix }}"
        data-hi="{{ labels_hi.available_suffix }}">{{ labels.available_suffix }}</span>
+                                <span class="text-on-surface-variant font-normal">(72% booked)</span>
                             </span>
+                        </div>
+                        <div class="capacity-meter-bar">
+                            <div class="capacity-meter-fill" style="width: 72%;"></div>
+                        </div>
+                    </div>
+                    <!-- Spec & Action CTA -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-outline-variant/30">
+                        <div class="flex items-center gap-2 text-[11px] font-mono text-on-surface-variant">
+                            <span class="inline-flex items-center gap-1">{{ icon("shield", size=14, extra_classes="text-secondary") }} Transit Insured</span>
+                            <span>•</span>
+                            <span>Direct Linehaul</span>
                         </div>
                         <button type="button"
                                 onclick="selectTruck('21:40', 'Tata 407', '₹1,275', this)"
-                                class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all">
+                                class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all inline-flex items-center justify-center gap-1.5 shadow-xs">
                             <span class="lang-text"
                                   data-en="{{ labels_en.btn_request_reserve }}"
                                   data-hi="{{ labels_hi.btn_request_reserve }}">{{ labels.btn_request_reserve }}</span>
+                            {{ icon("arrow_forward", size=14) }}
                         </button>
                     </div>
                 </article>
