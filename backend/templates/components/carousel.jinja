@@ -1,0 +1,48 @@
+{# Carousel & Step-Wizard Component #}
+{% from "core/components/common/icons.jinja" import icon %}
+{% macro carousel(id, title=None, title_icon="search", total_steps=3, initial_step=1, variant="wizard", title_en=None, title_hi=None, extra_classes="") %}
+    <section class="carousel-container carousel-{{ variant }} bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-6 shadow-sm space-y-4{% if extra_classes %} {{ extra_classes }}{% endif %}"
+             id="{{ id }}"
+             data-carousel-id="{{ id }}"
+             data-current-step="{{ initial_step }}"
+             data-total-steps="{{ total_steps }}"
+             data-variant="{{ variant }}">
+        {% if title or total_steps %}
+            <div class="carousel-header space-y-3 border-b border-outline-variant/30 pb-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        {% if title_icon %}
+                            <span class="carousel-header-icon text-secondary flex items-center">{{ icon(title_icon, size=20) }}</span>
+                        {% endif %}
+                        <h2 class="carousel-header-title text-base md:text-lg font-bold text-primary lang-text"
+                            id="corridor-view-title"
+                            {% if title_en %}data-en="{{ title_en }}"{% endif %}
+                            {% if title_hi %}data-hi="{{ title_hi }}"{% endif %}>{{ title }}</h2>
+                    </div>
+                    {% if variant == "wizard" %}
+                        <span class="carousel-step-counter text-xs font-mono font-bold text-secondary"
+                              id="stepCounterText">{{ initial_step }}/{{ total_steps }}</span>
+                    {% endif %}
+                </div>
+                {% if variant == "wizard" %}
+                    <div class="carousel-progress-track flex items-center gap-2 w-full"
+                         id="{{ id }}-progress">
+                        {% for step_idx in range(1, total_steps + 1) %}
+                            <div class="carousel-progress-bar h-1.5 flex-1 rounded-full transition-all duration-300 {% if step_idx <= initial_step %}bg-secondary{% else %}bg-surface-container-high{% endif %}"
+                                 data-step="{{ step_idx }}"
+                                 id="stepProgress{{ step_idx }}"></div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="carousel-viewport">
+            <div class="carousel-track space-y-4" id="{{ id }}-track">{{ caller() }}</div>
+        </div>
+    </section>
+{% endmacro %}
+{% macro carousel_slide(id, step_number=1, is_active=false, extra_classes="") %}
+    <div class="carousel-slide space-y-4{% if not is_active %} hidden{% endif %}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+         id="{{ id }}"
+         data-slide-step="{{ step_number }}">{{ caller() }}</div>
+{% endmacro %}

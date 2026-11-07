@@ -174,3 +174,5 @@ local_data/*
 **/graphify-out/*
 docs/analysis/*
 **/media
+plans/
+**/agy-design-taste/

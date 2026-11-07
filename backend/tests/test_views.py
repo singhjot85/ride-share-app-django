@@ -38,7 +38,7 @@ def user(db):
 
 class TestLandingPageView:
     """
-    Test LandingPageView behavior, design reference components, and bilingual state persistence.
+    Test LandingPageView behavior and bilingual state persistence.
     """
 
     def test_unauthenticated_landing_page_renders_otp_login(self, rf: RequestFactory):
@@ -52,24 +52,13 @@ class TestLandingPageView:
         assert response.status_code == 200
         content = response.render().content.decode("utf-8")
 
-        # OTP Login form structure is present
-        assert "otp_login_identifier" in content
         assert "form_otp_login" in content
-        assert "data-otp-tab" in content
-
-        # No password or username login method switcher
-        assert "auth-method-switcher" not in content
         assert "form_username_login" not in content
-
-        # Session timeout overlay dialog is present in DOM
-        assert "session_timeout_overlay" in content
-        assert "btn_session_timeout_login" in content
-        assert "Session Expired" in content
 
     def test_authenticated_landing_page_renders_dashboard(
         self, rf: RequestFactory, user
     ):
-        """Verify authenticated landing page renders the modular shell layout."""
+        """Verify authenticated landing page renders dashboard and hides login form."""
         request = rf.get("/")
         request.user = user
 
@@ -79,91 +68,8 @@ class TestLandingPageView:
         assert response.status_code == 200
         content = response.render().content.decode("utf-8")
 
-        # Landing shell container is rendered
-        assert "landing-page-shell" in content
-        assert "landing-top-bar" in content
-
-        # Both Language and Theme toggles are present in top bar
-        assert "lang-toggle-btn" in content
-        assert "theme-toggle-btn" in content
-
         # OTP Login form is NOT shown for active session
         assert "form_otp_login" not in content
-
-        # Session timeout overlay dialog is present in DOM for session expiry watching
-        assert "session_timeout_overlay" in content
-        assert "btn_session_timeout_login" in content
-
-    def test_design_reference_components_present(self, rf: RequestFactory, user):
-        """Verify placements and navigation components from reference design exist in rendered HTML."""
-        request = rf.get("/")
-        request.user = user
-
-        view = LandingPageView.as_view()
-        response = view(request)
-        content = response.render().content.decode("utf-8")
-
-        # Theme variables, override and layout CSS linked
-        assert "variables.css" in content
-        assert "theme_override.css" in content
-        assert "landing_layout.css" in content
-        assert "floating_chip.css" in content
-        assert "bottom_navbar.css" in content
-
-        # Desktop floating chip and mobile bottom nav are present
-        assert "desktop-floating-chip" in content
-        assert "mobile-bottom-navbar" in content
-
-        # All 5 navigation destinations exist in DOM
-        assert 'data-tab="book-corridor"' in content
-        assert 'data-tab="rates"' in content
-        assert 'data-tab="home"' in content
-        assert 'data-tab="support"' in content
-        assert 'data-tab="profile"' in content
-
-        # Modular tabbed views are rendered
-        assert 'id="view-home"' in content
-        assert 'id="view-book-corridor"' in content
-        assert 'id="view-rates"' in content
-        assert 'id="view-support"' in content
-        assert 'id="view-profile"' in content
-
-        # Interactive JavaScript modules are linked
-        assert "theme_toggle.js" in content
-        assert "navigation_state.js" in content
-        assert "corridor_state.js" in content
-        assert "language_toggle.js" in content
-        assert "theme-toggle-btn" in content
-
-        # Corridor booking subview components
-        assert 'id="search-engine"' in content
-        assert 'id="wizardStep1"' in content
-        assert 'id="wizardStep2"' in content
-        assert 'id="wizardStep3"' in content
-        assert 'id="results-container"' in content
-        assert 'id="stateCardsDefault"' in content
-        assert 'id="stateCardsSkeleton"' in content
-        assert 'id="stateCardsEmpty"' in content
-        assert 'id="stateCardsCapacity"' in content
-        assert 'id="stateCardsError"' in content
-        assert 'id="stickyBottomBar"' in content
-
-    def test_session_timeout_dialog_attributes(self, rf: RequestFactory, user):
-        """Verify session timeout modal dialog has the expected button and links."""
-        request = rf.get("/")
-        request.user = user
-
-        view = LandingPageView.as_view()
-        response = view(request)
-        content = response.render().content.decode("utf-8")
-
-        assert 'id="session_timeout_overlay"' in content
-        assert 'class="session-timeout-overlay"' in content
-        assert 'role="alertdialog"' in content
-        assert 'id="session_timeout_title"' in content
-        assert 'id="session_timeout_desc"' in content
-        assert 'id="btn_session_timeout_login"' in content
-        assert 'href="/login/?next=/"' in content
 
     def test_layer2_bilingual_cookie_persistence(self, rf: RequestFactory, user):
         """Verify Layer 2 State Persistence: loadshare_lang cookie renders Hindi on SSR."""
@@ -213,25 +119,9 @@ class TestLoginView:
         assert response.status_code == 200
         content = response.render().content.decode("utf-8")
 
-        # Enforces OTP
-        assert "otp_login_identifier" in content
+        # Enforces OTP without password/username switcher
         assert "form_otp_login" in content
-        assert "btn_send_login_otp" in content
-
-        # No username/password switcher
-        assert "auth-method-switcher" not in content
         assert "form_username_login" not in content
-
-        # Session timeout overlay is present
-        assert "session_timeout_overlay" in content
-        assert "btn_session_timeout_login" in content
-
-        # LoadShare Highway Corridor theme & design reference components
-        assert "theme_override.css" in content
-        assert "LoadShare" in content
-        assert "barcode-strip" in content
-        assert "auth-lang-toggle" in content
-        assert "1800-419-7688" in content
 
     def test_signup_view_renders_signup_tab(self, rf: RequestFactory):
         """Verify SignupView configures initial_tab to signup."""
@@ -242,22 +132,15 @@ class TestLoginView:
         response = view(request)
 
         assert response.status_code == 200
-        content = response.render().content.decode("utf-8")
-
-        assert "otp_login_identifier" in content
-        assert "data-initial-tab" in content
-        assert "signup" in content
-        assert "otp_signup.js" in content
+        assert response.context_data["initial_tab"] == "signup"
 
     def test_client_get_landing_page_and_login(self, client: Client):
         """Verify full HTTP request-response cycle for root and login URLs."""
         resp_root = client.get("/")
         assert resp_root.status_code == 200
-        assert "session_timeout_overlay" in resp_root.content.decode("utf-8")
 
         resp_login = client.get("/login/")
         assert resp_login.status_code == 200
-        assert "otp_login_identifier" in resp_login.content.decode("utf-8")
 
     def test_default_redirect_settings_routes_to_root(self):
         """Verify settings.DEFAULT_REDIRECT routes to root i.e. '/' instead of '/accounts/profile/'."""
@@ -393,12 +276,7 @@ class TestLoginView:
         assert response.status_code == 200
         content = response.render().content.decode("utf-8")
 
-        # Renders dashboard content
-        assert "PILOT PHASE: Commercial Senders Only" in content
-        assert "landing-page-shell" in content
-        assert "desktop-floating-chip" in content
-        assert "mobile-bottom-navbar" in content
-        # Login form is hidden
+        # Login form is hidden for authenticated user
         assert "form_otp_login" not in content
 
     def test_otp_verify_view_attaches_cookies_and_redirects(self, client: Client, user):

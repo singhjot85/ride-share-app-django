@@ -2,18 +2,23 @@
 
 {% from "core/components/common/icons.jinja" import icon %}
 {% block title %}
-    {{ labels.brand_name|default("ROUTEWAY") }} / {{ labels_hi.brand_name|default("रूटवे") }} — {{ labels.brand_tagline|default("Direct Corridor Freight") }}
+    {{ labels.brand_name }} / {{ labels_hi.brand_name }} — {{ labels.brand_tagline }}
 {% endblock title %}
 {% block extra_head %}
     {{ super() }}
-    <!-- LoadShare Unified Design Tokens & Theme Stylesheets -->
-    <link rel="stylesheet" href="{{ static('css/variables.css') }}">
-    <link rel="stylesheet" href="{{ static('css/theme_override.css') }}">
+    <!-- LoadShare Page Layout & Component Stylesheets -->
     <link rel="stylesheet" href="{{ static('css/landing_layout.css') }}">
     <link rel="stylesheet" href="{{ static('css/floating_chip.css') }}">
     <link rel="stylesheet" href="{{ static('css/bottom_navbar.css') }}">
-    <!-- Theme Preference Initialization & Handler (Prevents FOUC) -->
-    <script src="{{ static('js/theme_toggle.js') }}"></script>
+    <link rel="stylesheet" href="{{ static('css/components/carousel.css') }}">
+    <link rel="stylesheet" href="{{ static('css/components/state_card.css') }}">
+    <link rel="stylesheet" href="{{ static('css/components/accordion.css') }}">
+    <link rel="stylesheet"
+          href="{{ static('css/components/filter_chips.css') }}">
+    <link rel="stylesheet"
+          href="{{ static('css/components/context_bar.css') }}">
+    <link rel="stylesheet" href="{{ static('css/components/modal.css') }}">
+    <link rel="stylesheet" href="{{ static('css/components/sticky_bar.css') }}">
 {% endblock extra_head %}
 {# Remove core app sidebar, navbar and footer on landing page #}
 {% block sidebar %}
@@ -35,9 +40,9 @@
                     <div class="brand-logo-box">{{ icon("local_shipping", size=20, extra_classes="text-on-primary") }}</div>
                     <div class="brand-text-stack">
                         <span class="brand-title font-bold tracking-tight text-primary lang-text"
-                              data-en="{{ labels_en.brand_name|default('ROUTEWAY') }}"
-                              data-hi="{{ labels_hi.brand_name|default('लोडशेयर') }}">{{ labels.brand_name|default("ROUTEWAY") }}</span>
-                        {# <span class="brand-subtitle text-xs text-on-surface-variant font-medium">/ {{ labels_hi.brand_name|default("रूटवे") }}</span> #}
+                              id="top-bar-title"
+                              data-en="{{ labels_en.brand_name }}"
+                              data-hi="{{ labels_hi.brand_name }}">{{ labels.brand_name }}</span>
                     </div>
                 </a>
                 <!-- Rightmost: Separate Language Toggle & Theme Toggle -->
@@ -67,7 +72,7 @@
                 </div>
             </div>
         </header>
-        <!-- Desktop Floating Nav Chip (Centered, Hides on Scroll) -->
+        <!-- Desktop Floating Nav Chip (Centered, Reveals on Hover) -->
         {% include "components/floating_chip.jinja" %}
 
         <!-- Tabbed Subviews Container -->
@@ -86,8 +91,16 @@
 {% endblock content %}
 {% block extra_scripts %}
     {{ super() }}
+    <!-- Modular Components -->
+    <script src="{{ static('js/components/carousel.js') }}"></script>
+    <script src="{{ static('js/components/state_card.js') }}"></script>
+    <script src="{{ static('js/components/accordion.js') }}"></script>
+    <script src="{{ static('js/components/filter_chips.js') }}"></script>
+    <script src="{{ static('js/components/modal.js') }}"></script>
+    <script src="{{ static('js/components/sticky_bar.js') }}"></script>
     <!-- Modular Interactive States -->
     <script src="{{ static('js/language_toggle.js') }}"></script>
     <script src="{{ static('js/states/navigation_state.js') }}"></script>
     <script src="{{ static('js/states/corridor_state.js') }}"></script>
+    <script src="{{ static('js/states/profile_state.js') }}"></script>
 {% endblock extra_scripts %}

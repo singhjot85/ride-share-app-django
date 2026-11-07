@@ -1,0 +1,29 @@
+{# Accordion & Collapsible Section Component #}
+{% from "core/components/common/icons.jinja" import icon %}
+{% macro accordion(id=None, variant="separated", allow_multiple=true, extra_classes="") %}
+    <div class="accordion-container accordion-{{ variant }}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+         {% if id %}id="{{ id }}"{% endif %}
+         data-allow-multiple="{{ 'true' if allow_multiple else 'false' }}"
+         data-variant="{{ variant }}">{{ caller() }}</div>
+{% endmacro %}
+{% macro accordion_item(title=None, title_icon=None, title_en=None, title_hi=None, is_open=false, variant="card", has_border_bottom=true, extra_classes="") %}
+    <details class="accordion-item group {% if variant == 'card' %}bg-surface-container-lowest rounded-xl border border-outline-variant/40 overflow-hidden shadow-xs{% elif variant == 'flush' %}{% if has_border_bottom %}border-b border-outline-variant/30{% endif %} py-3{% endif %}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+             {% if is_open %}open{% endif %}>
+        <summary class="accordion-summary flex items-center justify-between cursor-pointer select-none {% if variant == 'card' %}p-4 text-sm font-semibold text-primary{% elif variant == 'flush' %}font-bold text-xs md:text-sm text-primary list-none gap-2{% endif %}">
+            <span class="flex items-center gap-2">
+                {% if title_icon %}
+                    <span class="accordion-title-icon text-secondary flex items-center shrink-0">{{ icon(title_icon, size=16) }}</span>
+                {% endif %}
+                <span class="accordion-title-text leading-snug lang-text"
+                      {% if title_en %}data-en="{{ title_en }}"{% endif %}
+                      {% if title_hi %}data-hi="{{ title_hi }}"{% endif %}>{{ title }}</span>
+            </span>
+            <span class="accordion-chevron text-on-surface-variant flex items-center shrink-0">
+                {{ icon("expand_more", size=20, extra_classes="transition-transform duration-200 group-open:rotate-180 text-outline") }}
+            </span>
+        </summary>
+        <div class="accordion-content {% if variant == 'card' %}px-4 pb-4 text-xs text-on-surface-variant border-t border-outline-variant/20 pt-3 leading-relaxed{% elif variant == 'flush' %}mt-3 pl-6 text-xs text-on-surface-variant leading-relaxed{% endif %}">
+            {{ caller() }}
+        </div>
+    </details>
+{% endmacro %}

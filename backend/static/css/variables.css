@@ -7,7 +7,10 @@
  */
 
 :root,
-[data-theme="light"] {
+:root[data-theme="light"],
+html[data-theme="light"],
+[data-theme="light"],
+body[data-theme="light"] {
   /* Brand Primary: Deep Industrial Logistics Navy */
   --color-primary: #001428;
   --color-primary-hover: #0f2942;
@@ -36,6 +39,11 @@
   --color-tertiary-fixed: #96f4d9;
   --color-on-tertiary: #ffffff;
 
+  --color-accent: var(--color-primary);
+  --color-accent-hover: var(--color-primary-hover);
+  --color-accent-subtle: var(--color-primary-subtle);
+  --color-accent-contrast: var(--color-primary-contrast);
+
   /* Surfaces & Canvas */
   --color-bg: #f8f9ff;
   --color-surface: #ffffff;
@@ -49,6 +57,7 @@
   --color-surface-container-highest: #d3e4fe;
   --color-surface-container-lowest: #ffffff;
   --color-surface-variant: #d3e4fe;
+  --color-surface-overlay: rgba(0, 20, 40, 0.65);
 
   /* Component Shell Backdrops */
   --color-header-bg: rgba(255, 255, 255, 0.95);
@@ -62,12 +71,44 @@
   --color-text-subtle: #74777e;
   --color-text-inverse: #ffffff;
 
+  /* Typography & Font Tokens */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-family-base: var(--font-sans);
+  --font-family-mono: var(--font-mono);
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+
   /* Borders & Outlines */
   --color-border: #c3c6ce;
   --color-border-subtle: rgba(195, 198, 206, 0.5);
   --color-outline: #74777e;
   --color-outline-variant: #c3c6ce;
   --color-divider: #e5eeff;
+
+  /* Radii */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Motion & Transition Tokens (Emil Kowalski Standards) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  --transition-fast: 150ms var(--ease-out);
+  --transition-base: 200ms var(--ease-out);
+  --transition-slow: 300ms var(--ease-out);
 
   /* Feedback Colors */
   --color-success: #005141;
@@ -100,17 +141,16 @@
    ========================================================================== */
 [data-theme="dark"],
 html.dark,
-body.dark,
-.dark {
-  /* Brand Primary */
-  --color-primary: #d1e4ff;
-  --color-primary-hover: #b0c9e8;
-  --color-primary-active: #8fb0d6;
-  --color-primary-subtle: rgba(209, 228, 255, 0.12);
+body.dark {
+  /* Brand Primary: High-contrast radiant azure in dark mode */
+  --color-primary: #58a6ff;
+  --color-primary-hover: #79b8ff;
+  --color-primary-active: #388bfd;
+  --color-primary-subtle: rgba(88, 166, 255, 0.15);
   --color-primary-contrast: #001428;
   --color-on-primary: #001428;
-  --color-primary-container: #1b324d;
-  --color-on-primary-container: #d1e4ff;
+  --color-primary-container: #152c48;
+  --color-on-primary-container: #d0e5ff;
 
   /* Brand Secondary: Bright vibrant safety orange in dark mode */
   --color-secondary: #ff6e38;
@@ -130,6 +170,11 @@ body.dark,
   --color-tertiary-fixed: #96f4d9;
   --color-on-tertiary: #002019;
 
+  --color-accent: var(--color-primary);
+  --color-accent-hover: var(--color-primary-hover);
+  --color-accent-subtle: var(--color-primary-subtle);
+  --color-accent-contrast: var(--color-primary-contrast);
+
   /* Surfaces & Canvas: Deep Industrial Navy Canvas */
   --color-bg: #07121e;
   --color-surface: #0e2035;
@@ -143,6 +188,7 @@ body.dark,
   --color-surface-container-highest: #243e5e;
   --color-surface-container-lowest: #091726;
   --color-surface-variant: #243e5e;
+  --color-surface-overlay: rgba(7, 10, 18, 0.85);
 
   /* Component Shell Backdrops in Dark Mode */
   --color-header-bg: rgba(14, 32, 53, 0.95);
@@ -153,8 +199,22 @@ body.dark,
   --color-text: #e5eeff;
   --color-text-title: #ffffff;
   --color-text-muted: #9ab0cb;
-  --color-text-subtle: #7991af;
+  --color-text-subtle: #28323d;
   --color-text-inverse: #0b1c30;
+
+  /* Typography & Font Tokens */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-family-base: var(--font-sans);
+  --font-family-mono: var(--font-mono);
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
 
   /* Borders & Outlines in Dark Mode */
   --color-border: rgba(195, 198, 206, 0.22);
@@ -162,6 +222,24 @@ body.dark,
   --color-outline: #5c708a;
   --color-outline-variant: rgba(195, 198, 206, 0.25);
   --color-divider: rgba(255, 255, 255, 0.08);
+
+  /* Radii */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Motion & Transition Tokens (Emil Kowalski Standards) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  --transition-fast: 150ms var(--ease-out);
+  --transition-base: 200ms var(--ease-out);
+  --transition-slow: 300ms var(--ease-out);
 
   /* Feedback Colors */
   --color-success: #7ad8bd;

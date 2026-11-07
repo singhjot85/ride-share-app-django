@@ -1,0 +1,43 @@
+/**
+ * state_card.css: Multi-state card and panel container styles.
+ *
+ * HARD RULE: Uses CSS variables from variables.css exclusively.
+ */
+
+.state-container {
+  position: relative;
+  width: 100%;
+}
+
+.state-panel {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.state-panel.hidden {
+  display: none !important;
+}
+
+/* Capacity Warning State Card */
+.card-capacity-state {
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-warning);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Error State Card */
+.card-error-state {
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-danger);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Empty State Card */
+.state-panel.state-empty {
+  border-radius: 1rem;
+}
+
+/* Skeleton Loading State */
+.state-panel.state-skeleton {
+  pointer-events: none;
+  user-select: none;
+}

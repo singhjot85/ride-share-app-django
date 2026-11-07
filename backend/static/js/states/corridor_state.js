@@ -17,29 +17,8 @@
      */
     function goToWizardStep(step) {
         currentStep = step;
-        var s1 = document.getElementById("wizardStep1");
-        var s2 = document.getElementById("wizardStep2");
-        var s3 = document.getElementById("wizardStep3");
-
-        var p1 = document.getElementById("stepProgress1");
-        var p2 = document.getElementById("stepProgress2");
-        var p3 = document.getElementById("stepProgress3");
-        var counter = document.getElementById("stepCounterText");
-
-        var activeBarClass = "h-1.5 flex-1 rounded-full bg-secondary transition-all duration-300";
-        var inactiveBarClass = "h-1.5 flex-1 rounded-full bg-surface-container-high transition-all duration-300";
-
-        if (s1 && s2 && s3) {
-            s1.classList.toggle("hidden", step !== 1);
-            s2.classList.toggle("hidden", step !== 2);
-            s3.classList.toggle("hidden", step !== 3);
-        }
-
-        if (p1 && p2 && p3 && counter) {
-            p1.className = activeBarClass;
-            p2.className = (step >= 2) ? activeBarClass : inactiveBarClass;
-            p3.className = (step >= 3) ? activeBarClass : inactiveBarClass;
-            counter.textContent = step + "/3";
+        if (window.CarouselComponent && window.CarouselComponent.goToStep) {
+            window.CarouselComponent.goToStep("search-engine", step);
         }
     }
 
@@ -95,53 +74,49 @@
      * @param {string} state - 'default' | 'skeleton' | 'empty' | 'capacity' | 'error'
      */
     function setCorridorState(state) {
-        var def = document.getElementById("stateCardsDefault");
-        var skel = document.getElementById("stateCardsSkeleton");
-        var emp = document.getElementById("stateCardsEmpty");
-        var cap = document.getElementById("stateCardsCapacity");
-        var err = document.getElementById("stateCardsError");
+        if (window.StateCardComponent && window.StateCardComponent.setState) {
+            window.StateCardComponent.setState("results-container", state);
+        } else {
+            var def = document.getElementById("stateCardsDefault");
+            var skel = document.getElementById("stateCardsSkeleton");
+            var emp = document.getElementById("stateCardsEmpty");
+            var cap = document.getElementById("stateCardsCapacity");
+            var err = document.getElementById("stateCardsError");
+            var states = [def, skel, emp, cap, err];
+            states.forEach(function (el) {
+                if (el) el.classList.add("hidden");
+            });
+            var targetEl = {
+                "default": def,
+                "skeleton": skel,
+                "empty": emp,
+                "capacity": cap,
+                "error": err
+            }[state];
+            if (targetEl) targetEl.classList.remove("hidden");
+        }
+
         var head = document.getElementById("resultsHeader");
+        if (head) {
+            head.classList.toggle("hidden", state !== "default" && state !== "skeleton");
+        }
 
-        var btnDef = document.getElementById("btnStateDefault");
-        var btnSkel = document.getElementById("btnStateSkeleton");
-        var btnEmp = document.getElementById("btnStateEmpty");
-        var btnCap = document.getElementById("btnStateCapacity");
-        var btnErr = document.getElementById("btnStateError");
-
-        var states = [def, skel, emp, cap, err];
-        states.forEach(function (el) {
-            if (el) el.classList.add("hidden");
-        });
-
-        var buttons = [btnDef, btnSkel, btnEmp, btnCap, btnErr];
-        buttons.forEach(function (b) {
-            if (b) {
-                b.className = "px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all";
-            }
-        });
-
-        var activeBtnClass = "px-2 py-0.5 rounded text-[11px] font-bold bg-primary text-on-primary transition-all";
-
-        if (state === "default") {
-            if (def) def.classList.remove("hidden");
-            if (head) head.classList.remove("hidden");
-            if (btnDef) btnDef.className = activeBtnClass;
-        } else if (state === "skeleton") {
-            if (skel) skel.classList.remove("hidden");
-            if (head) head.classList.remove("hidden");
-            if (btnSkel) btnSkel.className = activeBtnClass;
-        } else if (state === "empty") {
-            if (emp) emp.classList.remove("hidden");
-            if (head) head.classList.add("hidden");
-            if (btnEmp) btnEmp.className = activeBtnClass;
-        } else if (state === "capacity") {
-            if (cap) cap.classList.remove("hidden");
-            if (head) head.classList.add("hidden");
-            if (btnCap) btnCap.className = activeBtnClass;
-        } else if (state === "error") {
-            if (err) err.classList.remove("hidden");
-            if (head) head.classList.add("hidden");
-            if (btnErr) btnErr.className = activeBtnClass;
+        if (window.FilterChipsComponent && window.FilterChipsComponent.setActive) {
+            window.FilterChipsComponent.setActive("reviewer-state-switcher", state, false);
+        } else {
+            var btnDef = document.getElementById("btnStateDefault");
+            var btnSkel = document.getElementById("btnStateSkeleton");
+            var btnEmp = document.getElementById("btnStateEmpty");
+            var btnCap = document.getElementById("btnStateCapacity");
+            var btnErr = document.getElementById("btnStateError");
+            var buttons = [btnDef, btnSkel, btnEmp, btnCap, btnErr];
+            buttons.forEach(function (b) {
+                if (b) {
+                    var isMatch = b.getAttribute("data-value") === state;
+                    b.classList.toggle("is-active", isMatch);
+                    b.setAttribute("aria-selected", isMatch ? "true" : "false");
+                }
+            });
         }
     }
 
@@ -153,21 +128,31 @@
      * @param {HTMLElement} btn
      */
     function selectTruck(time, type, price, btn) {
-        var bar = document.getElementById("stickyBottomBar");
+        var summaryText = time + " departure · " + type + " · " + price;
         var summary = document.getElementById("pinnedTruckSummary");
         if (summary) {
-            summary.textContent = time + " departure · " + type + " · " + price;
+            summary.textContent = summaryText;
         }
-        if (bar) {
-            bar.classList.remove("translate-y-full");
+        var modalSummary = document.getElementById("bookingModalSummary");
+        if (modalSummary) {
+            modalSummary.textContent = summaryText;
+        }
+
+        if (window.LoadShareStickyBar) {
+            window.LoadShareStickyBar.show("stickyBottomBar");
+        } else {
+            var bar = document.getElementById("stickyBottomBar");
+            if (bar) {
+                bar.classList.remove("translate-y-full");
+            }
         }
 
         var buttons = document.querySelectorAll(".select-truck-btn");
         buttons.forEach(function (b) {
-            b.className = "select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all";
+            b.className = "select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all inline-flex items-center justify-center gap-1.5 shadow-xs";
         });
         if (btn) {
-            btn.className = "select-truck-btn bg-secondary text-on-secondary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all shadow-xs";
+            btn.className = "select-truck-btn bg-secondary text-on-secondary px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all inline-flex items-center justify-center gap-1.5 shadow-xs";
         }
     }
 
@@ -175,9 +160,13 @@
      * Dismiss pinned truck selection bar.
      */
     function dismissBottomBar() {
-        var bar = document.getElementById("stickyBottomBar");
-        if (bar) {
-            bar.classList.add("translate-y-full");
+        if (window.LoadShareStickyBar) {
+            window.LoadShareStickyBar.hide("stickyBottomBar");
+        } else {
+            var bar = document.getElementById("stickyBottomBar");
+            if (bar) {
+                bar.classList.add("translate-y-full");
+            }
         }
     }
 
@@ -185,7 +174,11 @@
      * Confirm reserve action.
      */
     function confirmBooking() {
-        window.alert("Opening LoadShare OTP Booking:\nLinehaul space reserved on NH48. Driver SMS verification code will be dispatched to your phone.");
+        if (window.LoadShareModal) {
+            window.LoadShareModal.open("booking-confirm-modal");
+        } else {
+            window.alert("Opening LoadShare OTP Booking:\nLinehaul space reserved on NH48. Driver SMS verification code will be dispatched to your phone.");
+        }
     }
 
     /**

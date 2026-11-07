@@ -1,0 +1,178 @@
+/**
+ * Modal Dialog Component Stylesheet
+ * Accessible modal dialogs and alert overlays with backdrop blur.
+ */
+
+.ls-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+}
+
+.ls-modal-overlay.ls-modal--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Backdrop */
+.ls-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-surface-overlay, rgba(7, 10, 18, 0.75));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 50;
+}
+
+/* Container */
+.ls-modal-container {
+  position: relative;
+  z-index: 51;
+  width: 100%;
+  max-width: 26rem;
+  margin: auto;
+}
+
+/* Card */
+.ls-modal-card {
+  position: relative;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem 1.5rem;
+  box-shadow: var(--shadow-xl);
+  color: var(--color-text);
+  text-align: center;
+  transform: scale(0.94) translateY(8px);
+  transition: transform var(--transition-base), opacity var(--transition-base);
+}
+
+.ls-modal-overlay.ls-modal--open .ls-modal-card {
+  transform: scale(1) translateY(0);
+}
+
+/* Close button */
+.ls-modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.ls-modal-close-btn:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface-container);
+}
+
+/* Icon */
+.ls-modal-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+/* Title & Description */
+.ls-modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-title);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.ls-modal-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+/* Actions */
+.ls-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 480px) {
+  .ls-modal-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .ls-modal-actions > * {
+    flex: 1;
+  }
+}
+
+/* Buttons inside modal */
+.ls-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.625rem 1rem;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  text-decoration: none;
+  border: none;
+}
+
+.ls-modal-btn:active {
+  transform: scale(0.98);
+}
+
+.ls-modal-btn--primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+.ls-modal-btn--primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.ls-modal-btn--secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-on-secondary);
+}
+
+.ls-modal-btn--secondary:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+.ls-modal-btn--ghost {
+  background-color: var(--color-surface-container);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.ls-modal-btn--ghost:hover {
+  background-color: var(--color-surface-container-high);
+}
+
+.ls-modal-btn--danger {
+  background-color: var(--color-error);
+  color: var(--color-error-contrast, #ffffff);
+}

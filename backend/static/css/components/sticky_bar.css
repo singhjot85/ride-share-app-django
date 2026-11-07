@@ -1,0 +1,51 @@
+/**
+ * Sticky Action Bar Component Stylesheet
+ * Responsive bottom dock pinned above mobile bottom navbar, flush on desktop.
+ */
+
+.sticky-action-bar,
+.sticky-truck-bottom-bar {
+  position: fixed;
+  bottom: 3.5rem;
+  left: 0;
+  width: 100%;
+  z-index: 45;
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  border-top: 2px solid var(--color-secondary);
+  box-shadow: var(--shadow-lg);
+  padding: 0.75rem 1rem;
+  /* Entrance: smooth, deliberate curve */
+  transition: transform 240ms var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1));
+}
+
+@media (min-width: 768px) {
+  .sticky-action-bar,
+  .sticky-truck-bottom-bar {
+    bottom: 0;
+  }
+}
+
+.sticky-action-bar.translate-y-full,
+.sticky-truck-bottom-bar.translate-y-full {
+  transform: translateY(120%);
+  /* Exit: fast, snappy dismissal */
+  transition: transform 160ms var(--ease-exit, cubic-bezier(0.4, 0, 1, 1));
+}
+
+.sticky-action-bar-inner {
+  max-width: 42rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .sticky-action-bar-inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
