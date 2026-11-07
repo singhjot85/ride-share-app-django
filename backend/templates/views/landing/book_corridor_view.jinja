@@ -3,6 +3,9 @@
 {% from "components/carousel.jinja" import carousel, carousel_slide %}
 {% from "components/state_card.jinja" import state_container, state_panel %}
 {% from "components/filter_chips.jinja" import filter_chips, filter_chip %}
+{% from "components/context_bar.jinja" import context_bar, context_back_btn, context_badge %}
+{% from "components/sticky_bar.jinja" import sticky_bar %}
+{% from "components/modal.jinja" import modal %}
 <section id="view-book-corridor"
          class="landing-tab-view hidden"
          aria-labelledby="corridor-view-title">
@@ -10,30 +13,18 @@
         <!-- ========================================================================= -->
         <!-- 1. CORRIDOR CONTEXT BAR (Breadcrumb + route facts + timing badge) -->
         <!-- ========================================================================= -->
-        <div class="bg-surface-container-low border border-outline-variant/50 rounded-xl px-4 py-2.5 shadow-xs">
-            <div class="flex flex-wrap items-center justify-between text-xs font-mono text-on-surface-variant gap-2">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <button type="button"
-                            onclick="LoadShareNav.switchTab('home')"
-                            class="btn-back-link hover:text-primary transition-colors">
-                        {{ icon("arrow_back", size=14) }}
-                        <span class="lang-text"
-                              data-en="{{ labels_en.corridor_back_home }}"
-                              data-hi="{{ labels_hi.corridor_back_home }}">{{ labels.corridor_back_home }}</span>
-                    </button>
-                    <span class="text-outline-variant">•</span>
-                    <span class="font-medium text-primary lang-text"
-                          data-en="{{ labels_en.corridor_route_facts }}"
-                          data-hi="{{ labels_hi.corridor_route_facts }}">{{ labels.corridor_route_facts }}</span>
-                </div>
-                <div class="inline-flex items-center gap-1.5 bg-surface-container px-2 py-0.5 rounded text-[11px] font-semibold text-secondary">
-                    {{ icon("schedule", size=12) }}
-                    <span class="lang-text"
-                          data-en="{{ labels_en.corridor_timing_badge }}"
-                          data-hi="{{ labels_hi.corridor_timing_badge }}">{{ labels.corridor_timing_badge }}</span>
-                </div>
+        {% call context_bar(id="corridor-context-bar", variant="card") %}
+            <div class="context-bar-left">
+                {{ context_back_btn(label=labels.corridor_back_home, label_en=labels_en.corridor_back_home, label_hi=labels_hi.corridor_back_home, on_click="LoadShareNav.switchTab('home')") }}
+                <span class="context-bar-divider">•</span>
+                <span class="context-bar-title lang-text"
+                      data-en="{{ labels_en.corridor_route_facts }}"
+                      data-hi="{{ labels_hi.corridor_route_facts }}">{{ labels.corridor_route_facts }}</span>
             </div>
-        </div>
+            <div class="context-bar-right">
+                {{ context_badge(label=labels.corridor_timing_badge, label_en=labels_en.corridor_timing_badge, label_hi=labels_hi.corridor_timing_badge, icon_name="schedule") }}
+            </div>
+        {% endcall %}
         <!-- ========================================================================= -->
         <!-- 2. REVIEWER PREVIEW TOOLBAR (Interactive State Switcher) -->
         <!-- ========================================================================= -->
@@ -657,33 +648,58 @@
     <!-- ========================================================================= -->
     <!-- 6. PINNED STICKY BOTTOM BAR (Appears on truck selection) -->
     <!-- ========================================================================= -->
-    <aside class="sticky-truck-bottom-bar translate-y-full" id="stickyBottomBar">
-        <div class="max-w-2xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-3 min-w-0">
-                <div class="p-2 bg-primary-container text-secondary rounded-lg shrink-0 flex items-center justify-center">
-                    {{ icon("local_shipping", size=20) }}
-                </div>
-                <div class="min-w-0 flex-1">
-                    <div class="text-xs sm:text-sm font-bold font-mono text-on-primary leading-tight"
-                         id="pinnedTruckSummary">20:45 departure · Eicher Pro 17ft · ₹2,125</div>
-                    <button type="button"
-                            onclick="dismissBottomBar()"
-                            class="text-[11px] font-mono text-primary-contrast hover:underline inline-flex items-center gap-0.5 mt-0.5 opacity-80 hover:opacity-100">
-                        {{ icon("close", size=12) }}
-                        <span class="lang-text"
-                              data-en="{{ labels_en.pinned_bar_change }}"
-                              data-hi="{{ labels_hi.pinned_bar_change }}">{{ labels.pinned_bar_change }}</span>
-                    </button>
-                </div>
+    {% call sticky_bar(id="stickyBottomBar", is_visible=false) %}
+        <div class="flex items-center gap-3 min-w-0">
+            <div class="p-2 bg-primary-container text-secondary rounded-lg shrink-0 flex items-center justify-center">
+                {{ icon("local_shipping", size=20) }}
             </div>
+            <div class="min-w-0 flex-1">
+                <div class="text-xs sm:text-sm font-bold font-mono text-on-primary leading-tight"
+                     id="pinnedTruckSummary">20:45 departure · Eicher Pro 17ft · ₹2,125</div>
+                <button type="button"
+                        onclick="dismissBottomBar()"
+                        class="text-[11px] font-mono text-primary-contrast hover:underline inline-flex items-center gap-0.5 mt-0.5 opacity-80 hover:opacity-100">
+                    {{ icon("close", size=12) }}
+                    <span class="lang-text"
+                          data-en="{{ labels_en.pinned_bar_change }}"
+                          data-hi="{{ labels_hi.pinned_bar_change }}">{{ labels.pinned_bar_change }}</span>
+                </button>
+            </div>
+        </div>
+        <button type="button"
+                onclick="confirmBooking()"
+                class="w-full sm:w-auto bg-secondary hover:bg-secondary-container text-on-secondary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-mono font-bold tracking-wide transition-all shadow-md shrink-0 flex items-center justify-center gap-2 active:scale-95">
+            {{ icon("lock", size=14) }}
+            <span class="lang-text"
+                  data-en="{{ labels_en.pinned_bar_confirm }}"
+                  data-hi="{{ labels_hi.pinned_bar_confirm }}">{{ labels.pinned_bar_confirm }}</span>
+        </button>
+    {% endcall %}
+    <!-- Booking Reservation Confirmation Modal Dialog -->
+    {% call modal(id="booking-confirm-modal", title=labels.pinned_bar_confirm, icon_name="local_shipping", icon_classes="text-secondary") %}
+        <p class="text-xs text-on-surface-variant font-mono mb-2">
+            <span class="lang-text"
+                  data-en="{{ labels_en.corridor_route_facts }}"
+                  data-hi="{{ labels_hi.corridor_route_facts }}">{{ labels.corridor_route_facts }}</span>
+        </p>
+        <p class="text-xs text-on-surface-variant mb-4 font-mono text-primary"
+           id="bookingModalSummary">20:45 departure · Eicher Pro 17ft · ₹2,125</p>
+        <div class="ls-modal-actions">
             <button type="button"
-                    onclick="confirmBooking()"
-                    class="w-full sm:w-auto bg-secondary hover:bg-secondary-container text-on-secondary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-mono font-bold tracking-wide transition-all shadow-md shrink-0 flex items-center justify-center gap-2 active:scale-95">
-                {{ icon("lock", size=14) }}
+                    class="ls-modal-btn ls-modal-btn--ghost"
+                    onclick="LoadShareModal.close('booking-confirm-modal')">
+                <span class="lang-text"
+                      data-en="{{ labels_en.pinned_bar_change }}"
+                      data-hi="{{ labels_hi.pinned_bar_change }}">{{ labels.pinned_bar_change }}</span>
+            </button>
+            <button type="button"
+                    class="ls-modal-btn ls-modal-btn--secondary"
+                    onclick="LoadShareModal.close('booking-confirm-modal'); LoadShareNav.switchTab('profile')">
+                {{ icon("check", size=16) }}
                 <span class="lang-text"
                       data-en="{{ labels_en.pinned_bar_confirm }}"
                       data-hi="{{ labels_hi.pinned_bar_confirm }}">{{ labels.pinned_bar_confirm }}</span>
             </button>
         </div>
-    </aside>
+    {% endcall %}
 </section>

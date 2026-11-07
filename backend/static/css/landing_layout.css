@@ -709,30 +709,6 @@ details[open] summary .material-symbols-outlined {
   color: var(--color-text);
 }
 
-/* Pinned Sticky Bottom Reservation Bar */
-.sticky-truck-bottom-bar {
-  position: fixed;
-  bottom: 3.5rem;
-  left: 0;
-  width: 100%;
-  z-index: 45;
-  background-color: var(--color-primary);
-  color: var(--color-primary-contrast);
-  border-top: 2px solid var(--color-secondary);
-  box-shadow: var(--shadow-lg);
-  padding: 0.75rem 1rem;
-  transition: transform 0.25s ease-in-out;
-}
-
-@media (min-width: 768px) {
-  .sticky-truck-bottom-bar {
-    bottom: 0;
-  }
-}
-
-.sticky-truck-bottom-bar.translate-y-full {
-  transform: translateY(120%);
-}
 
 /* =========================================================================
    Layout, Spacing & Responsive Alignment Utilities

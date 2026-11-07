@@ -1,6 +1,8 @@
 {# Sender Profile & Consignment History View #}
 {% from "core/components/common/icons.jinja" import icon %}
 {% from "components/filter_chips.jinja" import filter_chips, filter_chip %}
+{% from "components/context_bar.jinja" import context_bar, context_back_btn %}
+{% from "components/modal.jinja" import modal %}
 {% set current_user = user if user is defined and user else (request.user if request is defined and request.user is defined else None) %}
 {% set user_display_name = (current_user.get_full_name() if current_user and current_user.get_full_name is defined and current_user.get_full_name() else (current_user.username if current_user and current_user.username is defined else None)) or labels.profile_default_name %}
 {% set user_display_phone = (current_user.phone_number if current_user and current_user.phone_number is defined else None) or (phone if phone is defined and phone else None) or labels.profile_default_phone %}
@@ -11,26 +13,21 @@
         <!-- ========================================================================= -->
         <!-- 1. PROFILE CONTEXT BAR (Back link + Quick Action) -->
         <!-- ========================================================================= -->
-        <div class="px-4 py-2.5 flex items-center justify-between">
-            <div class="flex items-center gap-2">
+        {% call context_bar(id="profile-context-bar", variant="flat") %}
+            <div class="context-bar-left">
+                {{ context_back_btn(label=labels.corridor_back_home, label_en=labels_en.corridor_back_home, label_hi=labels_hi.corridor_back_home, on_click="LoadShareNav.switchTab('home')", icon_size=16) }}
+            </div>
+            <div class="context-bar-right">
                 <button type="button"
-                        onclick="LoadShareNav.switchTab('home')"
-                        class="btn-back-link hover:text-primary transition-colors">
-                    {{ icon("arrow_back", size=16) }}
+                        onclick="LoadShareNav.switchTab('book-corridor')"
+                        class="bg-secondary text-on-secondary px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 active:scale-95">
+                    {{ icon("add_box", size=16) }}
                     <span class="lang-text"
-                          data-en="{{ labels_en.corridor_back_home }}"
-                          data-hi="{{ labels_hi.corridor_back_home }}">{{ labels.corridor_back_home }}</span>
+                          data-en="{{ labels_en.profile_book_delivery_btn }}"
+                          data-hi="{{ labels_hi.profile_book_delivery_btn }}">{{ labels.profile_book_delivery_btn }}</span>
                 </button>
             </div>
-            <button type="button"
-                    onclick="LoadShareNav.switchTab('book-corridor')"
-                    class="bg-secondary text-on-secondary px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 active:scale-95">
-                {{ icon("add_box", size=16) }}
-                <span class="lang-text"
-                      data-en="{{ labels_en.profile_book_delivery_btn }}"
-                      data-hi="{{ labels_hi.profile_book_delivery_btn }}">{{ labels.profile_book_delivery_btn }}</span>
-            </button>
-        </div>
+        {% endcall %}
         <!-- ========================================================================= -->
         <!-- 2. SENDER ACCOUNT CARD -->
         <!-- ========================================================================= -->
@@ -323,4 +320,27 @@
                data-hi="{{ labels_hi.profile_legal_notice }}">{{ labels.profile_legal_notice }}</p>
         </section>
     </div>
+    <!-- Sign Out Confirmation Modal Dialog -->
+    {% call modal(id="signout-confirm-modal", title=labels.profile_sign_out, icon_name="logout", icon_classes="text-warning") %}
+        <p class="text-xs text-on-surface-variant mb-4">
+            <span class="lang-text"
+                  data-en="Are you sure you want to sign out of LoadShare?"
+                  data-hi="क्या आप वाकई लोडशेयर से साइन आउट करना चाहते हैं?">Are you sure you want to sign out of LoadShare?</span>
+        </p>
+        <div class="ls-modal-actions">
+            <button type="button"
+                    class="ls-modal-btn ls-modal-btn--ghost"
+                    onclick="LoadShareModal.close('signout-confirm-modal')">
+                <span class="lang-text" data-en="Cancel" data-hi="रद्द करें">Cancel</span>
+            </button>
+            <button type="button"
+                    class="ls-modal-btn ls-modal-btn--danger"
+                    onclick="LoadShareProfile.executeSignOut()">
+                {{ icon("logout", size=16) }}
+                <span class="lang-text"
+                      data-en="{{ labels_en.profile_sign_out }}"
+                      data-hi="{{ labels_hi.profile_sign_out }}">{{ labels.profile_sign_out }}</span>
+            </button>
+        </div>
+    {% endcall %}
 </section>

@@ -128,13 +128,23 @@
      * @param {HTMLElement} btn
      */
     function selectTruck(time, type, price, btn) {
-        var bar = document.getElementById("stickyBottomBar");
+        var summaryText = time + " departure · " + type + " · " + price;
         var summary = document.getElementById("pinnedTruckSummary");
         if (summary) {
-            summary.textContent = time + " departure · " + type + " · " + price;
+            summary.textContent = summaryText;
         }
-        if (bar) {
-            bar.classList.remove("translate-y-full");
+        var modalSummary = document.getElementById("bookingModalSummary");
+        if (modalSummary) {
+            modalSummary.textContent = summaryText;
+        }
+
+        if (window.LoadShareStickyBar) {
+            window.LoadShareStickyBar.show("stickyBottomBar");
+        } else {
+            var bar = document.getElementById("stickyBottomBar");
+            if (bar) {
+                bar.classList.remove("translate-y-full");
+            }
         }
 
         var buttons = document.querySelectorAll(".select-truck-btn");
@@ -150,9 +160,13 @@
      * Dismiss pinned truck selection bar.
      */
     function dismissBottomBar() {
-        var bar = document.getElementById("stickyBottomBar");
-        if (bar) {
-            bar.classList.add("translate-y-full");
+        if (window.LoadShareStickyBar) {
+            window.LoadShareStickyBar.hide("stickyBottomBar");
+        } else {
+            var bar = document.getElementById("stickyBottomBar");
+            if (bar) {
+                bar.classList.add("translate-y-full");
+            }
         }
     }
 
@@ -160,7 +174,11 @@
      * Confirm reserve action.
      */
     function confirmBooking() {
-        window.alert("Opening LoadShare OTP Booking:\nLinehaul space reserved on NH48. Driver SMS verification code will be dispatched to your phone.");
+        if (window.LoadShareModal) {
+            window.LoadShareModal.open("booking-confirm-modal");
+        } else {
+            window.alert("Opening LoadShare OTP Booking:\nLinehaul space reserved on NH48. Driver SMS verification code will be dispatched to your phone.");
+        }
     }
 
     /**

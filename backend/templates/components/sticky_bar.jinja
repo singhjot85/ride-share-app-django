@@ -1,0 +1,14 @@
+{# =============================================================================
+   Sticky Action Bar Component Macro
+   Viewport-pinned bottom action dock that slides into view upon item selection
+   or contextual flow triggers.
+   ============================================================================= #}
+{% from "core/components/common/icons.jinja" import icon %}
+{% macro sticky_bar(id="stickyBottomBar", is_visible=false, extra_classes="") %}
+    <aside id="{{ id }}"
+           class="sticky-action-bar{% if not is_visible %} translate-y-full{% endif %}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+           role="region"
+           aria-label="Action Bar">
+        <div class="sticky-action-bar-inner">{{ caller() if caller is defined else '' }}</div>
+    </aside>
+{% endmacro %}

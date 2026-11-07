@@ -1,6 +1,7 @@
 {% extends "core/base.jinja" %}
 
 {% from "core/components/common/icons.jinja" import icon %}
+{% from "components/modal.jinja" import modal %}
 {% block title %}
     {{ page_title or (PROJECT_LABEL or 'LoadShare') ~ ' - Protected Area' }}
 {% endblock title %}
@@ -9,8 +10,10 @@
     <!-- LoadShare Unified Design Tokens & Theme Stylesheets -->
     <link rel="stylesheet" href="{{ static('css/variables.css') }}">
     <link rel="stylesheet" href="{{ static('css/theme_override.css') }}">
+    <link rel="stylesheet" href="{{ static('css/components/modal.css') }}">
     <!-- Theme Preference Initialization & Handler (Prevents FOUC) -->
     <script src="{{ static('js/theme_toggle.js') }}"></script>
+    <script src="{{ static('js/components/modal.js') }}"></script>
 {% endblock extra_head %}
 {# Override top-level app_shell: renders either the OTP login template or the authenticated view shell #}
 {% block app_shell %}
@@ -24,24 +27,13 @@
     {% endif %}
     {# Global Session Expiration Blocking Overlay & Modal Dialog #}
     {% set labels = resolve_labels("users_template_label", labels) if resolve_labels is defined else (labels or {}) %}
-    <div id="session_timeout_overlay"
-         class="session-timeout-overlay"
-         style="display: none"
-         role="alertdialog"
-         aria-modal="true"
-         aria-labelledby="session_timeout_title"
-         aria-describedby="session_timeout_desc">
-        <div class="session-timeout-modal">
-            <div class="session-timeout-icon">{{ icon("timer_off", size=48, extra_classes="text-warning") }}</div>
-            <h3 id="session_timeout_title" class="session-timeout-title">{{ labels.session_expired }}</h3>
-            <p id="session_timeout_desc" class="session-timeout-message">{{ labels.session_expired_message }}</p>
-            <div class="session-timeout-actions">
-                <a href="{{ login_url|default("/login/") }}?next={{ request.path|urlencode if request else '/' }}"
-                   id="btn_session_timeout_login"
-                   class="btn btn-primary w-full">{{ labels.return_to_login }}</a>
-            </div>
+    {% call modal(id="session_timeout_overlay", title=labels.session_expired, desc=labels.session_expired_message, variant="alert", dismissible=false, role="alertdialog", icon_name="timer_off", icon_classes="text-warning") %}
+        <div class="session-timeout-actions ls-modal-actions">
+            <a href="{{ login_url|default("/login/") }}?next={{ request.path|urlencode if request else '/' }}"
+               id="btn_session_timeout_login"
+               class="ls-modal-btn ls-modal-btn--primary w-full">{{ labels.return_to_login }}</a>
         </div>
-    </div>
+    {% endcall %}
     {# Client-side JWT auth detection: auto-reload if client cookie exists on unauthenticated SSR #}
     <script src="{{ static('js/session_sync.js') }}"></script>
 {% endblock app_shell %}

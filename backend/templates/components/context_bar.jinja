@@ -1,0 +1,36 @@
+{# =============================================================================
+   Context Bar Component Macro
+   Standard sub-navigation bar providing back links, route facts, breadcrumbs,
+   and contextual action badges/CTAs.
+   ============================================================================= #}
+{% from "core/components/common/icons.jinja" import icon %}
+{% macro context_bar(id="", variant="card", extra_classes="") %}
+    <div {% if id %}id="{{ id }}"{% endif %}
+         class="context-bar context-bar--{{ variant }}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+         role="navigation"
+         aria-label="Context Bar">
+        <div class="context-bar-inner">{{ caller() if caller is defined else '' }}</div>
+    </div>
+{% endmacro %}
+{% macro context_back_btn(label="", label_en="", label_hi="", on_click="LoadShareNav.switchTab('home')", icon_name="arrow_back", icon_size=14, extra_classes="") %}
+    <button type="button"
+            {% if on_click %}onclick="{{ on_click }}"{% endif %}
+            class="context-bar-btn context-bar-back-btn{% if extra_classes %} {{ extra_classes }}{% endif %}">
+        {{ icon(icon_name, size=icon_size) }}
+        {% if label or label_en or label_hi %}
+            <span class="lang-text"
+                  {% if label_en %}data-en="{{ label_en }}"{% endif %}
+                  {% if label_hi %}data-hi="{{ label_hi }}"{% endif %}>{{ label }}</span>
+        {% endif %}
+    </button>
+{% endmacro %}
+{% macro context_badge(label="", label_en="", label_hi="", icon_name="", icon_size=12, variant="secondary", extra_classes="") %}
+    <div class="context-bar-badge context-bar-badge--{{ variant }}{% if extra_classes %} {{ extra_classes }}{% endif %}">
+        {% if icon_name %}{{ icon(icon_name, size=icon_size) }}{% endif %}
+        {% if label or label_en or label_hi %}
+            <span class="lang-text"
+                  {% if label_en %}data-en="{{ label_en }}"{% endif %}
+                  {% if label_hi %}data-hi="{{ label_hi }}"{% endif %}>{{ label }}</span>
+        {% endif %}
+    </div>
+{% endmacro %}

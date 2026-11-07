@@ -139,13 +139,23 @@
      * Sign out user confirmation dialog.
      */
     function confirmSignOut() {
-        var msg = "Are you sure you want to sign out of LoadShare?";
-        if (window.confirm(msg)) {
-            // Delete cookies & route to login
-            document.cookie = "loadshare_jwt=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-            document.cookie = "access_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-            window.location.href = "/login/";
+        if (window.LoadShareModal) {
+            window.LoadShareModal.open("signout-confirm-modal");
+        } else {
+            var msg = "Are you sure you want to sign out of LoadShare?";
+            if (window.confirm(msg)) {
+                executeSignOut();
+            }
         }
+    }
+
+    /**
+     * Execute sign out and clear session tokens.
+     */
+    function executeSignOut() {
+        document.cookie = "loadshare_jwt=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        document.cookie = "access_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        window.location.href = "/login/";
     }
 
     // Public API
@@ -154,7 +164,8 @@
         saveProfile: saveProfile,
         setFilter: setBookingFilter,
         toggleEmptyState: toggleEmptyState,
-        confirmSignOut: confirmSignOut
+        confirmSignOut: confirmSignOut,
+        executeSignOut: executeSignOut
     };
 
     // Global aliases for clean template callbacks
