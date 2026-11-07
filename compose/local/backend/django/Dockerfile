@@ -26,6 +26,7 @@ RUN pipx install poetry==2.4.1 && \
 ENV PATH="/root/.local/bin:${PATH}"
 
 COPY backend/pyproject.toml backend/poetry.lock /
+COPY backend/core-common-django-apps /core-common-django-apps
 
 RUN poetry export \
     -f requirements.txt \

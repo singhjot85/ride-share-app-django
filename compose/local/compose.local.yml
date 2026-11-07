@@ -21,6 +21,7 @@ services:
         condition: service_healthy
     volumes:
       - ../../backend:/backend
+      - ../../backend/core-common-django-apps:/backend/core-common-django-apps
       # - ./backend/scripts:/scripts
     environment:
       - PYTHONDONTWRITEBYTECODE=1

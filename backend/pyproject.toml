@@ -10,7 +10,7 @@ dependencies = [
     "django ( ==5.2.16)",
     "djangorestframework ( >= 3.17.1,<4.0.0)",
     "djangorestframework-simplejwt (>=5.5.1,<6.0.0)",
-    "core-common-django-apps @ git+https://github.com/singhjot85/core-common-django-apps.git@main",
+    "core-common-django-apps @ core-common-django-apps",
 ]
 
 [build-system]
@@ -32,7 +32,7 @@ pythonpath = ["."]
 python_files = ["test_*.py", "*_tests.py"]
 python_classes = ["Test*", "*Tests"]
 python_functions = ["test_*"]
-testpaths = ["tests",]
+testpaths = ["tests"]
 addopts = [
     "-vv",
     "--tb=short",
@@ -40,7 +40,7 @@ addopts = [
     "--reuse-db",
     "--import-mode=importlib",
     "-p no:warnings",
-    "--maxfail=5"
+    "--maxfail=5",
 ]
 markers = [
     "slow: marks tests that take longer to run",
