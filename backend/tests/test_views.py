@@ -196,6 +196,7 @@ class TestLandingPageView:
         assert response.cookies[DJANGO_LANGUAGE_COOKIE_NAME].value == "hi"
 
 
+@pytest.mark.django_db
 class TestLoginView:
     """
     Test LoginView behavior enforcing OTP-only authentication.
@@ -464,6 +465,7 @@ class TestLoginView:
         assert created_user.is_phone_verified is True
 
 
+@pytest.mark.django_db
 class TestSetLanguageView:
     """
     Test SetLanguageView endpoint for Layer 2 State Persistence.
