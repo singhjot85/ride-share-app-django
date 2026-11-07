@@ -12,10 +12,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Path to /backend
 APP_DIR = os.path.join(BASE_DIR, APP_NAME)  # Path to /backend/apps
 PROJECT_TEMPLATES_DIR = BASE_DIR / "templates"
 PROJECT_STATIC_DIR = BASE_DIR / "static"
+PROJECT_MEDIA_DIR = BASE_DIR / "media"
+MEDIA_ROOT = str(PROJECT_MEDIA_DIR)
+MEDIA_URL = "/media/"
 
 # -------------------------------------------------------
-# Host Project Specifics
+#   Host Project Django Specifics
 # -------------------------------------------------------
+ROOT_URLCONF = "config.urls"
+PUBLIC_SCHEMA_URLCONF = "config.public_urls"
+
 MIGRATION_MODULES = {
     app.rsplit(".", 1)[-1]: f"db_migrations.{app.rsplit('.', 1)[-1]}"
     for app in PROJECT_APPS

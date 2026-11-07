@@ -1,5 +1,7 @@
 from core.config.api_protected import core_public_url_mapping, resolve_and_build_paths
 from core.utils.admin.sites import public_admin_site
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -29,3 +31,5 @@ urlpatterns = [
     # Backend API Endpoints
     *resolve_and_build_paths(core_public_url_mapping),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
