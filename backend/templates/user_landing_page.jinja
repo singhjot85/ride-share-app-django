@@ -2,7 +2,7 @@
 
 {% from "core/components/common/icons.jinja" import icon %}
 {% block title %}
-    {{ labels.brand_name|default("ROUTEWAY") }} / {{ labels_hi.brand_name|default("रूटवे") }} — {{ labels.brand_tagline|default("Direct Corridor Freight") }}
+    {{ labels.brand_name }} / {{ labels_hi.brand_name }} — {{ labels.brand_tagline }}
 {% endblock title %}
 {% block extra_head %}
     {{ super() }}
@@ -15,6 +15,7 @@
     <!-- Component Stylesheets -->
     <link rel="stylesheet" href="{{ static('css/components/carousel.css') }}">
     <link rel="stylesheet" href="{{ static('css/components/state_card.css') }}">
+    <link rel="stylesheet" href="{{ static('css/components/accordion.css') }}">
     <!-- Theme Preference Initialization & Handler (Prevents FOUC) -->
     <script src="{{ static('js/theme_toggle.js') }}"></script>
 {% endblock extra_head %}
@@ -39,8 +40,8 @@
                     <div class="brand-text-stack">
                         <span class="brand-title font-bold tracking-tight text-primary lang-text"
                               id="top-bar-title"
-                              data-en="{{ labels_en.brand_name|default('ROUTEWAY') }}"
-                              data-hi="{{ labels_hi.brand_name|default('लोडशेयर') }}">{{ labels.brand_name|default("ROUTEWAY") }}</span>
+                              data-en="{{ labels_en.brand_name }}"
+                              data-hi="{{ labels_hi.brand_name }}">{{ labels.brand_name }}</span>
                     </div>
                 </a>
                 <!-- Rightmost: Separate Language Toggle & Theme Toggle -->
@@ -92,6 +93,7 @@
     <!-- Modular Components -->
     <script src="{{ static('js/components/carousel.js') }}"></script>
     <script src="{{ static('js/components/state_card.js') }}"></script>
+    <script src="{{ static('js/components/accordion.js') }}"></script>
     <!-- Modular Interactive States -->
     <script src="{{ static('js/language_toggle.js') }}"></script>
     <script src="{{ static('js/states/navigation_state.js') }}"></script>

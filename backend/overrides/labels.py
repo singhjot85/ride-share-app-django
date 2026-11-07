@@ -698,4 +698,29 @@ LANDING_PAGE_LABELS = {
     "nav_home": {"en": "Home", "hi": "होम"},
     "nav_support": {"en": "Support", "hi": "सहायता"},
     "nav_profile": {"en": "Profile", "hi": "प्रोफ़ाइल"},
+    # Auth & Session Dialogs
+    "session_expired": {
+        "en": "Session Expired",
+        "hi": "सत्र समाप्त हो गया",
+    },
+    "session_expired_message": {
+        "en": "Your session has expired. Please sign in again to continue.",
+        "hi": "आपका सत्र समाप्त हो गया है। कृपया जारी रखने के लिए फिर से साइन इन करें।",
+    },
+    "return_to_login": {
+        "en": "Sign In Again",
+        "hi": "फिर से साइन इन करें",
+    },
+    "privacy_policy": {
+        "en": "Privacy Policy",
+        "hi": "गोपनीयता नीति",
+    },
+    "terms_of_service": {
+        "en": "Terms of Service",
+        "hi": "सेवा की शर्तें",
+    },
+    "platform_status": {
+        "en": "Platform Status",
+        "hi": "प्लेटफ़ॉर्म स्थिति",
+    },
 }

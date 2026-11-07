@@ -1,6 +1,7 @@
 {# Home View Shell: Sourced faithfully from local_data/design/user-facing/01_landing_page.html #}
 {% from "core/components/common/icons.jinja" import icon %}
 {% from "components/state_card.jinja" import state_container, state_panel %}
+{% from "components/accordion.jinja" import accordion, accordion_item %}
 <section id="view-home"
          class="landing-tab-view active"
          aria-labelledby="home-hero-title">
@@ -350,64 +351,52 @@
                    data-en="{{ labels_en.faq_subtitle }}"
                    data-hi="{{ labels_hi.faq_subtitle }}">{{ labels.faq_subtitle }}</p>
             </div>
-            <div class="space-y-2">
+            {% call accordion(id="faq-accordion", variant="separated") %}
                 <!-- FAQ 1 -->
-                <details class="group bg-surface-container-lowest rounded-xl border border-outline-variant/40 overflow-hidden shadow-xs">
-                    <summary class="p-4 cursor-pointer flex items-center justify-between text-sm font-semibold text-primary select-none">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.faq_1_q }}"
-                              data-hi="{{ labels_hi.faq_1_q }}">{{ labels.faq_1_q }}</span>
-                        {{ icon("expand_more", size=20, extra_classes="transition-transform duration-200 group-open:rotate-180 text-outline") }}
-                    </summary>
-                    <div class="px-4 pb-4 text-xs text-on-surface-variant border-t border-outline-variant/20 pt-3 leading-relaxed">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.faq_1_a }}"
-                              data-hi="{{ labels_hi.faq_1_a }}">{{ labels.faq_1_a }}</span>
-                    </div>
-                </details>
+                {% call accordion_item(
+                    title=labels.faq_1_q,
+                    title_en=labels_en.faq_1_q,
+                    title_hi=labels_hi.faq_1_q,
+                    variant="card"
+                    ) %}
+                    <span class="lang-text"
+                          data-en="{{ labels_en.faq_1_a }}"
+                          data-hi="{{ labels_hi.faq_1_a }}">{{ labels.faq_1_a }}</span>
+                {% endcall %}
                 <!-- FAQ 2 -->
-                <details class="group bg-surface-container-lowest rounded-xl border border-outline-variant/40 overflow-hidden shadow-xs">
-                    <summary class="p-4 cursor-pointer flex items-center justify-between text-sm font-semibold text-primary select-none">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.faq_2_q }}"
-                              data-hi="{{ labels_hi.faq_2_q }}">{{ labels.faq_2_q }}</span>
-                        {{ icon("expand_more", size=20, extra_classes="transition-transform duration-200 group-open:rotate-180 text-outline") }}
-                    </summary>
-                    <div class="px-4 pb-4 text-xs text-on-surface-variant border-t border-outline-variant/20 pt-3 leading-relaxed">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.faq_2_a }}"
-                              data-hi="{{ labels_hi.faq_2_a }}">{{ labels.faq_2_a }}</span>
-                    </div>
-                </details>
+                {% call accordion_item(
+                    title=labels.faq_2_q,
+                    title_en=labels_en.faq_2_q,
+                    title_hi=labels_hi.faq_2_q,
+                    variant="card"
+                    ) %}
+                    <span class="lang-text"
+                          data-en="{{ labels_en.faq_2_a }}"
+                          data-hi="{{ labels_hi.faq_2_a }}">{{ labels.faq_2_a }}</span>
+                {% endcall %}
                 <!-- FAQ 3 -->
-                <details class="group bg-surface-container-lowest rounded-xl border border-outline-variant/40 overflow-hidden shadow-xs">
-                    <summary class="p-4 cursor-pointer flex items-center justify-between text-sm font-semibold text-primary select-none">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.faq_3_q }}"
-                              data-hi="{{ labels_hi.faq_3_q }}">{{ labels.faq_3_q }}</span>
-                        {{ icon("expand_more", size=20, extra_classes="transition-transform duration-200 group-open:rotate-180 text-outline") }}
-                    </summary>
-                    <div class="px-4 pb-4 text-xs text-on-surface-variant border-t border-outline-variant/20 pt-3 leading-relaxed">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.faq_3_a }}"
-                              data-hi="{{ labels_hi.faq_3_a }}">{{ labels.faq_3_a }}</span>
-                    </div>
-                </details>
+                {% call accordion_item(
+                    title=labels.faq_3_q,
+                    title_en=labels_en.faq_3_q,
+                    title_hi=labels_hi.faq_3_q,
+                    variant="card"
+                    ) %}
+                    <span class="lang-text"
+                          data-en="{{ labels_en.faq_3_a }}"
+                          data-hi="{{ labels_hi.faq_3_a }}">{{ labels.faq_3_a }}</span>
+                {% endcall %}
                 <!-- FAQ 4 -->
-                <details class="group bg-surface-container-lowest rounded-xl border border-outline-variant/40 overflow-hidden shadow-xs">
-                    <summary class="p-4 cursor-pointer flex items-center justify-between text-sm font-semibold text-primary select-none">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.faq_4_q }}"
-                              data-hi="{{ labels_hi.faq_4_q }}">{{ labels.faq_4_q }}</span>
-                        {{ icon("expand_more", size=20, extra_classes="transition-transform duration-200 group-open:rotate-180 text-outline") }}
-                    </summary>
-                    <div class="px-4 pb-4 text-xs text-on-surface-variant border-t border-outline-variant/20 pt-3 leading-relaxed">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.faq_4_a }}"
-                              data-hi="{{ labels_hi.faq_4_a }}">{{ labels.faq_4_a }}</span>
-                    </div>
-                </details>
-            </div>
+                {% call accordion_item(
+                    title=labels.faq_4_q,
+                    title_en=labels_en.faq_4_q,
+                    title_hi=labels_hi.faq_4_q,
+                    variant="card"
+                    ) %}
+                    <span class="lang-text"
+                          data-en="{{ labels_en.faq_4_a }}"
+                          data-hi="{{ labels_hi.faq_4_a }}">{{ labels.faq_4_a }}</span>
+                {% endcall %}
+            {% endcall %}
         </section>
         <!-- ========================================================================= -->
         <!-- 6. CLEAN FOOTER                                                           -->

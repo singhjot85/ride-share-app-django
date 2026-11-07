@@ -12,10 +12,8 @@
                 <div class="flex items-center gap-xs">
                     {{ icon("campaign", size=16, extra_classes="text-warning") }}
                     <span class="lang-text font-weight-medium"
-                          data-en="{{ labels_en.pilot_notice|default('Delhi ⇄ Jaipur NH48 Pilot Corridor') }}"
-                          data-hi="{{ labels_hi.pilot_notice|default('दिल्ली ⇄ जयपुर NH48 पायलट कॉरिडोर') }}">
-                        {{ labels.pilot_notice|default("Delhi ⇄ Jaipur NH48 Pilot Corridor") }}
-                    </span>
+                          data-en="{{ labels_en.pilot_notice }}"
+                          data-hi="{{ labels_hi.pilot_notice }}">{{ labels.pilot_notice }}</span>
                 </div>
                 <!-- Layer 2 Language Switcher Toggle -->
                 <a href="/set-language/?lang={{ 'hi' if current_lang == 'en' else 'en' }}&next={{ request.path|urlencode if request else '/login/' }}"
@@ -34,18 +32,16 @@
                     <div>
                         <h1 class="auth-brand-title">
                             <span class="lang-text"
-                                  data-en="{{ labels_en.brand_name|default('LoadShare') }}"
-                                  data-hi="{{ labels_hi.brand_name|default('लोडशेयर') }}">{{ labels.brand_name|default("LoadShare") }}</span>
-                            <span class="text-muted font-size-sm font-weight-normal"> / {{ labels_hi.brand_name|default("लोडशेयर") if current_lang == 'en' else labels_en.brand_name|default('LoadShare') }}</span>
+                                  data-en="{{ labels_en.brand_name }}"
+                                  data-hi="{{ labels_hi.brand_name }}">{{ labels.brand_name }}</span>
+                            <span class="text-muted font-size-sm font-weight-normal"> / {{ labels_hi.brand_name if current_lang == 'en' else labels_en.brand_name }}</span>
                         </h1>
                     </div>
                 </div>
                 <p class="auth-brand-subtitle">
                     <span class="lang-text"
-                          data-en="{{ labels_en.brand_tagline|default('Direct Heavy Vehicle Corridor Logistics • NH48 Pilot') }}"
-                          data-hi="{{ labels_hi.brand_tagline|default('सीधा हेवी व्हीकल कॉरिडोर लॉजिस्टिक्स • NH48 पायलट') }}">
-                        {{ labels.brand_tagline|default("Direct Heavy Vehicle Corridor Logistics • NH48 Pilot") }}
-                    </span>
+                          data-en="{{ labels_en.brand_tagline }}"
+                          data-hi="{{ labels_hi.brand_tagline }}">{{ labels.brand_tagline }}</span>
                 </p>
             </div>
             <!-- Master Authentication Card (OTP Only) -->
@@ -86,11 +82,11 @@
             <div class="auth-footer text-center mt-md">
                 <div class="flex items-center justify-center gap-md font-size-xs text-muted">
                     <a href="{{ privacy_url|default('#privacy') }}"
-                       class="text-muted hover:text-primary">{{ labels.privacy_policy|default("Privacy Policy") }}</a>
+                       class="text-muted hover:text-primary">{{ labels.privacy_policy }}</a>
                     <a href="{{ terms_url|default('#terms') }}"
-                       class="text-muted hover:text-primary">{{ labels.terms_of_service|default("Terms of Service") }}</a>
+                       class="text-muted hover:text-primary">{{ labels.terms_of_service }}</a>
                     <a href="{{ status_url|default('#status') }}"
-                       class="text-muted hover:text-primary">{{ labels.platform_status|default("Platform Status") }}</a>
+                       class="text-muted hover:text-primary">{{ labels.platform_status }}</a>
                 </div>
             </div>
         </div>

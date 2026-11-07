@@ -29,16 +29,12 @@
          aria-describedby="session_timeout_desc">
         <div class="session-timeout-modal">
             <div class="session-timeout-icon">{{ icon("timer_off", size=48, extra_classes="text-warning") }}</div>
-            <h3 id="session_timeout_title" class="session-timeout-title">
-                {{ labels.session_expired|default("Session Expired") }}
-            </h3>
-            <p id="session_timeout_desc" class="session-timeout-message">
-                {{ labels.session_expired_message|default("Your session has expired. Please sign in again to continue.") }}
-            </p>
+            <h3 id="session_timeout_title" class="session-timeout-title">{{ labels.session_expired }}</h3>
+            <p id="session_timeout_desc" class="session-timeout-message">{{ labels.session_expired_message }}</p>
             <div class="session-timeout-actions">
                 <a href="{{ login_url|default("/login/") }}?next={{ request.path|urlencode if request else '/' }}"
                    id="btn_session_timeout_login"
-                   class="btn btn-primary w-full">{{ labels.return_to_login|default("Sign In Again") }}</a>
+                   class="btn btn-primary w-full">{{ labels.return_to_login }}</a>
             </div>
         </div>
     </div>

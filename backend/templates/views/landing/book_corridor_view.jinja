@@ -17,25 +17,19 @@
                             class="btn-back-link hover:text-primary transition-colors">
                         {{ icon("arrow_back", size=14) }}
                         <span class="lang-text"
-                              data-en="{{ labels_en.corridor_back_home|default('Back to Home') }}"
-                              data-hi="{{ labels_hi.corridor_back_home|default('होम पर वापस') }}">
-                            {{ labels.corridor_back_home|default("Back to Home") }}
-                        </span>
+                              data-en="{{ labels_en.corridor_back_home }}"
+                              data-hi="{{ labels_hi.corridor_back_home }}">{{ labels.corridor_back_home }}</span>
                     </button>
                     <span class="text-outline-variant">•</span>
                     <span class="font-medium text-primary lang-text"
-                          data-en="{{ labels_en.corridor_route_facts|default('NH48 Corridor · Delhi ⇄ Jaipur · 270 km') }}"
-                          data-hi="{{ labels_hi.corridor_route_facts|default('NH48 कॉरिडोर · दिल्ली ⇄ जयपुर · 270 किमी') }}">
-                        {{ labels.corridor_route_facts|default("NH48 Corridor · Delhi ⇄ Jaipur · 270 km") }}
-                    </span>
+                          data-en="{{ labels_en.corridor_route_facts }}"
+                          data-hi="{{ labels_hi.corridor_route_facts }}">{{ labels.corridor_route_facts }}</span>
                 </div>
                 <div class="inline-flex items-center gap-1.5 bg-surface-container px-2 py-0.5 rounded text-[11px] font-semibold text-secondary">
                     {{ icon("schedule", size=12) }}
                     <span class="lang-text"
-                          data-en="{{ labels_en.corridor_timing_badge|default('Departs daily 18:00–22:00') }}"
-                          data-hi="{{ labels_hi.corridor_timing_badge|default('प्रतिदिन रवानगी 18:00–22:00') }}">
-                        {{ labels.corridor_timing_badge|default("Departs daily 18:00–22:00") }}
-                    </span>
+                          data-en="{{ labels_en.corridor_timing_badge }}"
+                          data-hi="{{ labels_hi.corridor_timing_badge }}">{{ labels.corridor_timing_badge }}</span>
                 </div>
             </div>
         </div>
@@ -47,10 +41,8 @@
                 <div class="flex items-center gap-1.5 font-mono text-on-surface-variant">
                     {{ icon("science", size=16) }}
                     <span class="font-bold lang-text"
-                          data-en="{{ labels_en.reviewer_state_label|default('Reviewer State Switcher:') }}"
-                          data-hi="{{ labels_hi.reviewer_state_label|default('रिव्यूअर स्टेट स्विचर:') }}">
-                        {{ labels.reviewer_state_label|default("Reviewer State Switcher:") }}
-                    </span>
+                          data-en="{{ labels_en.reviewer_state_label }}"
+                          data-hi="{{ labels_hi.reviewer_state_label }}">{{ labels.reviewer_state_label }}</span>
                 </div>
                 <div class="flex flex-wrap items-center gap-1.5 font-mono">
                     <button type="button"
@@ -58,29 +50,25 @@
                             onclick="setCorridorState('default')"
                             class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary text-on-primary transition-all">
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_trucks|default('[Show 3 Trucks]') }}"
-                              data-hi="{{ labels_hi.btn_state_trucks|default('[3 ट्रक देखें]') }}">
-                            {{ labels.btn_state_trucks|default("[Show 3 Trucks]") }}
-                        </span>
+                              data-en="{{ labels_en.btn_state_trucks }}"
+                              data-hi="{{ labels_hi.btn_state_trucks }}">{{ labels.btn_state_trucks }}</span>
                     </button>
                     <button type="button"
                             id="btnStateSkeleton"
                             onclick="setCorridorState('skeleton')"
                             class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_skeleton|default('[Loading Skeleton]') }}"
-                              data-hi="{{ labels_hi.btn_state_skeleton|default('[लोडिंग स्केलेटन]') }}">
-                            {{ labels.btn_state_skeleton|default("[Loading Skeleton]") }}
-                        </span>
+                              data-en="{{ labels_en.btn_state_skeleton }}"
+                              data-hi="{{ labels_hi.btn_state_skeleton }}">{{ labels.btn_state_skeleton }}</span>
                     </button>
                     <button type="button"
                             id="btnStateEmpty"
                             onclick="setCorridorState('empty')"
                             class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_empty_corridor|default('[0 Results Empty]') }}"
-                              data-hi="{{ labels_hi.btn_state_empty_corridor|default('[0 परिणाम रिक्त]') }}">
-                            {{ labels.btn_state_empty_corridor|default("[0 Results Empty]") }}
+                              data-en="{{ labels_en.btn_state_empty_corridor }}"
+                              data-hi="{{ labels_hi.btn_state_empty_corridor }}">
+                            {{ labels.btn_state_empty_corridor }}
                         </span>
                     </button>
                     <button type="button"
@@ -88,20 +76,16 @@
                             onclick="setCorridorState('capacity')"
                             class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_capacity|default('[Corridor at Capacity]') }}"
-                              data-hi="{{ labels_hi.btn_state_capacity|default('[कॉरिडोर फुल]') }}">
-                            {{ labels.btn_state_capacity|default("[Corridor at Capacity]") }}
-                        </span>
+                              data-en="{{ labels_en.btn_state_capacity }}"
+                              data-hi="{{ labels_hi.btn_state_capacity }}">{{ labels.btn_state_capacity }}</span>
                     </button>
                     <button type="button"
                             id="btnStateError"
                             onclick="setCorridorState('error')"
                             class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_error|default('[Error State]') }}"
-                              data-hi="{{ labels_hi.btn_state_error|default('[त्रुटि स्थिति]') }}">
-                            {{ labels.btn_state_error|default("[Error State]") }}
-                        </span>
+                              data-en="{{ labels_en.btn_state_error }}"
+                              data-hi="{{ labels_hi.btn_state_error }}">{{ labels.btn_state_error }}</span>
                     </button>
                 </div>
             </div>
@@ -111,13 +95,13 @@
         <!-- ========================================================================= -->
         {% call carousel(
             id="search-engine",
-            title=labels.wizard_title|default("Find Instant Truck Space"),
+            title=labels.wizard_title,
             title_icon="search",
             total_steps=3,
             initial_step=1,
             variant="wizard",
-            title_en=labels_en.wizard_title|default("Find Instant Truck Space"),
-            title_hi=labels_hi.wizard_title|default("NH48 पर तुरंत ट्रक में स्थान खोजें")
+            title_en=labels_en.wizard_title,
+            title_hi=labels_hi.wizard_title
             ) %}
             <!-- STEP 1: PICKUP & DROP HUB SELECTION -->
             {% call carousel_slide(id="wizardStep1", step_number=1, is_active=true) %}
@@ -128,16 +112,14 @@
                             <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
                                 <span class="text-secondary flex items-center">{{ icon("trip_origin", size=14) }}</span>
                                 <span class="lang-text"
-                                      data-en="{{ labels_en.label_pickup_point|default('Pickup Point') }}"
-                                      data-hi="{{ labels_hi.label_pickup_point|default('पिकअप स्थान') }}">
-                                    {{ labels.label_pickup_point|default("Pickup Point") }}
+                                      data-en="{{ labels_en.label_pickup_point }}"
+                                      data-hi="{{ labels_hi.label_pickup_point }}">
+                                    {{ labels.label_pickup_point }}
                                 </span>
                             </label>
                             <span class="text-[10px] font-mono text-secondary font-semibold lang-text"
-                                  data-en="{{ labels_en.corridor_name_tag|default('NH48 Corridor') }}"
-                                  data-hi="{{ labels_hi.corridor_name_tag|default('NH48 कॉरिडोर') }}">
-                                {{ labels.corridor_name_tag|default("NH48 Corridor") }}
-                            </span>
+                                  data-en="{{ labels_en.corridor_name_tag }}"
+                                  data-hi="{{ labels_hi.corridor_name_tag }}">{{ labels.corridor_name_tag }}</span>
                         </div>
                         <button type="button"
                                 onclick="simulateLocationClick(this)"
@@ -146,14 +128,14 @@
                                 <span class="text-secondary flex items-center shrink-0">{{ icon("my_location", size=18) }}</span>
                                 <span class="leading-snug">
                                     <span class="block lang-text"
-                                          data-en="{{ labels_en.btn_use_location|default('Use my location for closest hub') }}"
-                                          data-hi="{{ labels_hi.btn_use_location|default('निकटतम हब हेतु मेरी लोकेशन चुनें') }}">
-                                        {{ labels.btn_use_location|default("Use my location for closest hub") }}
+                                          data-en="{{ labels_en.btn_use_location }}"
+                                          data-hi="{{ labels_hi.btn_use_location }}">
+                                        {{ labels.btn_use_location }}
                                     </span>
                                     <span class="block text-[11px] text-on-surface-variant font-normal lang-text"
-                                          data-en="{{ labels_en.pickup_detected_hint|default('Sanjay Gandhi Transport Nagar, Delhi (Auto-detected)') }}"
-                                          data-hi="{{ labels_hi.pickup_detected_hint|default('संजय गांधी ट्रांसपोर्ट नगर, दिल्ली (स्वतः पहचाना गया)') }}">
-                                        {{ labels.pickup_detected_hint|default("Sanjay Gandhi Transport Nagar, Delhi (Auto-detected)") }}
+                                          data-en="{{ labels_en.pickup_detected_hint }}"
+                                          data-hi="{{ labels_hi.pickup_detected_hint }}">
+                                        {{ labels.pickup_detected_hint }}
                                     </span>
                                 </span>
                             </span>
@@ -162,36 +144,28 @@
                         <!-- Quick Hub Selector Pills -->
                         <div class="flex items-center gap-1.5 flex-wrap pt-1 text-[11px] font-mono">
                             <span class="text-on-surface-variant mr-1 lang-text"
-                                  data-en="{{ labels_en.quick_hubs_label|default('Popular Pickup Hubs:') }}"
-                                  data-hi="{{ labels_hi.quick_hubs_label|default('लोकप्रिय पिकअप हब:') }}">
-                                {{ labels.quick_hubs_label|default("Popular Pickup Hubs:") }}
-                            </span>
+                                  data-en="{{ labels_en.quick_hubs_label }}"
+                                  data-hi="{{ labels_hi.quick_hubs_label }}">{{ labels.quick_hubs_label }}</span>
                             <button type="button"
                                     onclick="quickSelectPickup('Delhi (SGTN Bay 4)', this)"
                                     class="quick-hub-btn">
                                 <span class="lang-text"
-                                      data-en="{{ labels_en.hub_sgtn|default('Delhi (SGTN Bay 4)') }}"
-                                      data-hi="{{ labels_hi.hub_sgtn|default('दिल्ली (SGTN बे 4)') }}">
-                                    {{ labels.hub_sgtn|default("Delhi (SGTN Bay 4)") }}
-                                </span>
+                                      data-en="{{ labels_en.hub_sgtn }}"
+                                      data-hi="{{ labels_hi.hub_sgtn }}">{{ labels.hub_sgtn }}</span>
                             </button>
                             <button type="button"
                                     onclick="quickSelectPickup('Gurugram (Hero Honda)', this)"
                                     class="quick-hub-btn">
                                 <span class="lang-text"
-                                      data-en="{{ labels_en.hub_gurugram|default('Gurugram (Hero Honda)') }}"
-                                      data-hi="{{ labels_hi.hub_gurugram|default('गुरुग्राम (हीरो होंडा)') }}">
-                                    {{ labels.hub_gurugram|default("Gurugram (Hero Honda)") }}
-                                </span>
+                                      data-en="{{ labels_en.hub_gurugram }}"
+                                      data-hi="{{ labels_hi.hub_gurugram }}">{{ labels.hub_gurugram }}</span>
                             </button>
                             <button type="button"
                                     onclick="quickSelectPickup('Manesar IMT Depot', this)"
                                     class="quick-hub-btn">
                                 <span class="lang-text"
-                                      data-en="{{ labels_en.hub_manesar|default('Manesar IMT Depot') }}"
-                                      data-hi="{{ labels_hi.hub_manesar|default('मानेसर IMT डिपो') }}">
-                                    {{ labels.hub_manesar|default("Manesar IMT Depot") }}
-                                </span>
+                                      data-en="{{ labels_en.hub_manesar }}"
+                                      data-hi="{{ labels_hi.hub_manesar }}">{{ labels.hub_manesar }}</span>
                             </button>
                         </div>
                     </div>
@@ -200,9 +174,9 @@
                         <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
                             <span class="text-primary flex items-center">{{ icon("location_on", size=14) }}</span>
                             <span class="lang-text"
-                                  data-en="{{ labels_en.label_drop_destination|default('Drop Destination') }}"
-                                  data-hi="{{ labels_hi.label_drop_destination|default('ड्रॉप गंतव्य') }}">
-                                {{ labels.label_drop_destination|default("Drop Destination") }}
+                                  data-en="{{ labels_en.label_drop_destination }}"
+                                  data-hi="{{ labels_hi.label_drop_destination }}">
+                                {{ labels.label_drop_destination }}
                             </span>
                         </label>
                         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 bg-surface-container-lowest border border-outline-variant/80 rounded-lg p-3">
@@ -210,11 +184,11 @@
                                 <span class="text-primary flex items-center mt-0.5 shrink-0">{{ icon("domain", size=20) }}</span>
                                 <div>
                                     <span class="text-xs font-bold text-primary font-mono block"
-                                          id="displayDropHub">{{ labels.drop_default_hub|default("Jaipur VKI Depot") }}</span>
+                                          id="displayDropHub">{{ labels.drop_default_hub }}</span>
                                     <span class="text-[11px] text-on-surface-variant block leading-normal lang-text"
-                                          data-en="{{ labels_en.drop_default_address|default('Vishwakarma Road 14 (South Terminal Dock 8)') }}"
-                                          data-hi="{{ labels_hi.drop_default_address|default('विश्वकर्मा रोड 14 (साउथ टर्मिनल डॉक 8)') }}">
-                                        {{ labels.drop_default_address|default("Vishwakarma Road 14 (South Terminal Dock 8)") }}
+                                          data-en="{{ labels_en.drop_default_address }}"
+                                          data-hi="{{ labels_hi.drop_default_address }}">
+                                        {{ labels.drop_default_address }}
                                     </span>
                                 </div>
                             </div>
@@ -235,10 +209,8 @@
                         onclick="goToWizardStep(2)"
                         class="w-full bg-secondary hover:bg-secondary-container active:scale-[0.99] text-on-secondary py-3 px-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md flex items-center justify-center gap-2">
                     <span class="lang-text"
-                          data-en="{{ labels_en.btn_next_window|default('Next: Select Departure Window') }}"
-                          data-hi="{{ labels_hi.btn_next_window|default('आगे: रवानगी समय चुनें') }}">
-                        {{ labels.btn_next_window|default("Next: Select Departure Window") }}
-                    </span>
+                          data-en="{{ labels_en.btn_next_window }}"
+                          data-hi="{{ labels_hi.btn_next_window }}">{{ labels.btn_next_window }}</span>
                     {{ icon("arrow_forward", size=16) }}
                 </button>
             {% endcall %}
@@ -249,15 +221,15 @@
                         <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
                             <span class="text-primary flex items-center">{{ icon("schedule", size=14) }}</span>
                             <span class="lang-text"
-                                  data-en="{{ labels_en.label_departure_window|default('Departure Window') }}"
-                                  data-hi="{{ labels_hi.label_departure_window|default('रवानगी समय') }}">
-                                {{ labels.label_departure_window|default("Departure Window") }}
+                                  data-en="{{ labels_en.label_departure_window }}"
+                                  data-hi="{{ labels_hi.label_departure_window }}">
+                                {{ labels.label_departure_window }}
                             </span>
                         </label>
                         <span class="text-[10px] font-mono text-on-surface-variant lang-text"
-                              data-en="{{ labels_en.tonight_priority_badge|default('Tonight priority') }}"
-                              data-hi="{{ labels_hi.tonight_priority_badge|default('आज रात प्राथमिकता') }}">
-                            {{ labels.tonight_priority_badge|default("Tonight priority") }}
+                              data-en="{{ labels_en.tonight_priority_badge }}"
+                              data-hi="{{ labels_hi.tonight_priority_badge }}">
+                            {{ labels.tonight_priority_badge }}
                         </span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs">
@@ -266,36 +238,30 @@
                                 class="date-pill active py-2.5 px-3 text-left sm:text-center font-bold rounded-lg border transition-all bg-primary text-on-primary border-primary shadow-xs flex flex-row sm:flex-col justify-between sm:justify-center items-center">
                             <span class="text-xs leading-tight">
                                 <span class="block lang-text"
-                                      data-en="{{ labels_en.window_tonight|default('Tonight') }}"
-                                      data-hi="{{ labels_hi.window_tonight|default('आज रात') }}">
-                                    {{ labels.window_tonight|default("Tonight") }}
-                                </span>
+                                      data-en="{{ labels_en.window_tonight }}"
+                                      data-hi="{{ labels_hi.window_tonight }}">{{ labels.window_tonight }}</span>
                             </span>
-                            <span class="text-[11px] opacity-80 font-normal">{{ labels.window_tonight_sub|default("18:00–22:00") }}</span>
+                            <span class="text-[11px] opacity-80 font-normal">{{ labels.window_tonight_sub }}</span>
                         </button>
                         <button type="button"
                                 onclick="selectDateWindow(this)"
                                 class="date-pill py-2.5 px-3 text-left sm:text-center font-semibold rounded-lg border border-outline-variant bg-surface-container-lowest text-primary hover:bg-surface-container transition-all flex flex-row sm:flex-col justify-between sm:justify-center items-center">
                             <span class="text-xs leading-tight">
                                 <span class="block lang-text"
-                                      data-en="{{ labels_en.window_tomorrow|default('Tomorrow') }}"
-                                      data-hi="{{ labels_hi.window_tomorrow|default('कल') }}">
-                                    {{ labels.window_tomorrow|default("Tomorrow") }}
-                                </span>
+                                      data-en="{{ labels_en.window_tomorrow }}"
+                                      data-hi="{{ labels_hi.window_tomorrow }}">{{ labels.window_tomorrow }}</span>
                             </span>
-                            <span class="text-[11px] text-on-surface-variant font-normal">{{ labels.window_tomorrow_sub|default("T+1 Regular") }}</span>
+                            <span class="text-[11px] text-on-surface-variant font-normal">{{ labels.window_tomorrow_sub }}</span>
                         </button>
                         <button type="button"
                                 onclick="selectDateWindow(this)"
                                 class="date-pill py-2.5 px-3 text-left sm:text-center font-semibold rounded-lg border border-outline-variant bg-surface-container-lowest text-primary hover:bg-surface-container transition-all flex flex-row sm:flex-col justify-between sm:justify-center items-center">
                             <span class="text-xs leading-tight">
                                 <span class="block lang-text"
-                                      data-en="{{ labels_en.window_custom|default('Custom Date') }}"
-                                      data-hi="{{ labels_hi.window_custom|default('तारीख चुनें') }}">
-                                    {{ labels.window_custom|default("Custom Date") }}
-                                </span>
+                                      data-en="{{ labels_en.window_custom }}"
+                                      data-hi="{{ labels_hi.window_custom }}">{{ labels.window_custom }}</span>
                             </span>
-                            <span class="text-[11px] text-on-surface-variant font-normal">{{ labels.window_custom_sub|default("Select Day") }}</span>
+                            <span class="text-[11px] text-on-surface-variant font-normal">{{ labels.window_custom_sub }}</span>
                         </button>
                     </div>
                 </div>
@@ -306,19 +272,15 @@
                             class="w-1/3 bg-surface-container hover:bg-surface-container-high text-primary py-3 px-3 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5">
                         {{ icon("arrow_back", size=14) }}
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_wizard_back|default('Back') }}"
-                              data-hi="{{ labels_hi.btn_wizard_back|default('पीछे') }}">
-                            {{ labels.btn_wizard_back|default("Back") }}
-                        </span>
+                              data-en="{{ labels_en.btn_wizard_back }}"
+                              data-hi="{{ labels_hi.btn_wizard_back }}">{{ labels.btn_wizard_back }}</span>
                     </button>
                     <button type="button"
                             onclick="goToWizardStep(3)"
                             class="w-2/3 bg-secondary hover:bg-secondary-container active:scale-[0.99] text-on-secondary py-3 px-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md flex items-center justify-center gap-2">
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_next_weight|default('Next: Select Consignment Weight') }}"
-                              data-hi="{{ labels_hi.btn_next_weight|default('आगे: वजन चुनें') }}">
-                            {{ labels.btn_next_weight|default("Next: Select Consignment Weight") }}
-                        </span>
+                              data-en="{{ labels_en.btn_next_weight }}"
+                              data-hi="{{ labels_hi.btn_next_weight }}">{{ labels.btn_next_weight }}</span>
                         {{ icon("arrow_forward", size=16) }}
                     </button>
                 </div>
@@ -330,47 +292,39 @@
                         <label class="text-[11px] font-mono font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
                             <span class="text-primary flex items-center">{{ icon("scale", size=14) }}</span>
                             <span class="lang-text"
-                                  data-en="{{ labels_en.label_consignment_weight|default('Consignment Weight') }}"
-                                  data-hi="{{ labels_hi.label_consignment_weight|default('पार्सल वजन') }}">
-                                {{ labels.label_consignment_weight|default("Consignment Weight") }}
+                                  data-en="{{ labels_en.label_consignment_weight }}"
+                                  data-hi="{{ labels_hi.label_consignment_weight }}">
+                                {{ labels.label_consignment_weight }}
                             </span>
                         </label>
                         <span class="text-[10px] font-mono text-secondary font-bold lang-text"
-                              data-en="{{ labels_en.fair_tariff_badge|default('Per-KG Fair Tariff') }}"
-                              data-hi="{{ labels_hi.fair_tariff_badge|default('प्रति-किग्रा उचित दर') }}">
-                            {{ labels.fair_tariff_badge|default("Per-KG Fair Tariff") }}
-                        </span>
+                              data-en="{{ labels_en.fair_tariff_badge }}"
+                              data-hi="{{ labels_hi.fair_tariff_badge }}">{{ labels.fair_tariff_badge }}</span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs">
                         <button type="button"
                                 onclick="selectWeightSlab('sm', this)"
                                 class="weight-pill active py-2.5 px-2 text-center rounded-lg border border-secondary bg-secondary-fixed text-on-secondary-fixed font-bold shadow-xs transition-all">
-                            <span class="font-bold text-xs block">{{ labels.weight_slab_sm_title|default("10–50 kg") }}</span>
+                            <span class="font-bold text-xs block">{{ labels.weight_slab_sm_title }}</span>
                             <span class="text-[11px] text-on-surface-variant lang-text"
-                                  data-en="{{ labels_en.weight_slab_sm_desc|default('Standard') }}"
-                                  data-hi="{{ labels_hi.weight_slab_sm_desc|default('मानक') }}">
-                                {{ labels.weight_slab_sm_desc|default("Standard") }}
-                            </span>
+                                  data-en="{{ labels_en.weight_slab_sm_desc }}"
+                                  data-hi="{{ labels_hi.weight_slab_sm_desc }}">{{ labels.weight_slab_sm_desc }}</span>
                         </button>
                         <button type="button"
                                 onclick="selectWeightSlab('md', this)"
                                 class="weight-pill py-2.5 px-2 text-center rounded-lg border border-outline-variant bg-surface-container-lowest text-primary hover:bg-surface-container font-semibold transition-all">
-                            <span class="font-bold text-xs block">{{ labels.weight_slab_md_title|default("51–250 kg") }}</span>
+                            <span class="font-bold text-xs block">{{ labels.weight_slab_md_title }}</span>
                             <span class="text-[11px] text-secondary lang-text"
-                                  data-en="{{ labels_en.weight_slab_md_desc|default('Commercial ★') }}"
-                                  data-hi="{{ labels_hi.weight_slab_md_desc|default('व्यावसायिक ★') }}">
-                                {{ labels.weight_slab_md_desc|default("Commercial ★") }}
-                            </span>
+                                  data-en="{{ labels_en.weight_slab_md_desc }}"
+                                  data-hi="{{ labels_hi.weight_slab_md_desc }}">{{ labels.weight_slab_md_desc }}</span>
                         </button>
                         <button type="button"
                                 onclick="selectWeightSlab('lg', this)"
                                 class="weight-pill py-2.5 px-2 text-center rounded-lg border border-outline-variant bg-surface-container-lowest text-primary hover:bg-surface-container font-semibold transition-all">
-                            <span class="font-bold text-xs block">{{ labels.weight_slab_lg_title|default("250 kg+") }}</span>
+                            <span class="font-bold text-xs block">{{ labels.weight_slab_lg_title }}</span>
                             <span class="text-[11px] text-on-surface-variant lang-text"
-                                  data-en="{{ labels_en.weight_slab_lg_desc|default('Part-Load LTL') }}"
-                                  data-hi="{{ labels_hi.weight_slab_lg_desc|default('पार्ट-लोड LTL') }}">
-                                {{ labels.weight_slab_lg_desc|default("Part-Load LTL") }}
-                            </span>
+                                  data-en="{{ labels_en.weight_slab_lg_desc }}"
+                                  data-hi="{{ labels_hi.weight_slab_lg_desc }}">{{ labels.weight_slab_lg_desc }}</span>
                         </button>
                     </div>
                 </div>
@@ -381,19 +335,17 @@
                             class="w-1/4 bg-surface-container hover:bg-surface-container-high text-primary py-3.5 px-3 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1">
                         {{ icon("arrow_back", size=14) }}
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_wizard_back|default('Back') }}"
-                              data-hi="{{ labels_hi.btn_wizard_back|default('पीछे') }}">
-                            {{ labels.btn_wizard_back|default("Back") }}
-                        </span>
+                              data-en="{{ labels_en.btn_wizard_back }}"
+                              data-hi="{{ labels_hi.btn_wizard_back }}">{{ labels.btn_wizard_back }}</span>
                     </button>
                     <button type="button"
                             onclick="triggerSearch()"
                             class="w-3/4 bg-secondary hover:bg-secondary-container active:scale-[0.99] text-on-secondary py-3.5 px-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md flex items-center justify-center gap-2">
                         {{ icon("local_shipping", size=18) }}
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_find_corridor_trucks|default('Find trucks on this corridor') }}"
-                              data-hi="{{ labels_hi.btn_find_corridor_trucks|default('इस कॉरिडोर पर ट्रक खोजें') }}">
-                            {{ labels.btn_find_corridor_trucks|default("Find trucks on this corridor") }}
+                              data-en="{{ labels_en.btn_find_corridor_trucks }}"
+                              data-hi="{{ labels_hi.btn_find_corridor_trucks }}">
+                            {{ labels.btn_find_corridor_trucks }}
                         </span>
                     </button>
                 </div>
@@ -408,10 +360,8 @@
                 <div class="flex items-center gap-2">
                     <span class="live-dot-pulse"></span>
                     <h2 class="text-sm font-bold text-primary font-mono lang-text"
-                        data-en="{{ labels_en.results_count_live|default('3 trucks departing tonight · 18:00–22:00') }}"
-                        data-hi="{{ labels_hi.results_count_live|default('3 ट्रक आज रात रवाना होंगे · 18:00–22:00') }}">
-                        {{ labels.results_count_live|default("3 trucks departing tonight · 18:00–22:00") }}
-                    </h2>
+                        data-en="{{ labels_en.results_count_live }}"
+                        data-hi="{{ labels_hi.results_count_live }}">{{ labels.results_count_live }}</h2>
                 </div>
             </div>
             <!-- STATE: 3 TRUCK RESULT CARDS (DEFAULT) -->
@@ -421,18 +371,14 @@
                     <div class="flex items-center justify-between w-full">
                         <span class="text-2xl font-bold font-mono text-primary tracking-tight">19:30</span>
                         <span class="w-7 h-7 rounded-full badge-verified flex items-center justify-center shrink-0 shadow-xs"
-                              title="{{ labels.verified_carrier_tooltip|default('Verified Linehaul Carrier') }}">
-                            {{ icon("check", size=16) }}
-                        </span>
+                              title="{{ labels.verified_carrier_tooltip }}">{{ icon("check", size=16) }}</span>
                     </div>
                     <!-- Price line -->
                     <div class="flex items-center gap-2 -mt-1 font-mono text-xs">
                         <span class="font-bold text-sm text-primary">₹850</span>
                         <span class="text-on-surface-variant text-[11px] lang-text"
-                              data-en="{{ labels_en.total_price_suffix|default('total') }}"
-                              data-hi="{{ labels_hi.total_price_suffix|default('कुल') }}">
-                            {{ labels.total_price_suffix|default("total") }}
-                        </span>
+                              data-en="{{ labels_en.total_price_suffix }}"
+                              data-hi="{{ labels_hi.total_price_suffix }}">{{ labels.total_price_suffix }}</span>
                         <span class="text-outline-variant">•</span>
                         <span class="text-secondary font-semibold">₹8.50 / kg</span>
                     </div>
@@ -457,18 +403,16 @@
                             <span class="text-primary font-medium">Eicher Pro 14ft</span>
                             <span class="text-success font-bold">
                                 320 kg <span class="lang-text"
-       data-en="{{ labels_en.available_suffix|default('available') }}"
-       data-hi="{{ labels_hi.available_suffix|default('उपलब्ध') }}">{{ labels.available_suffix|default("available") }}</span>
+       data-en="{{ labels_en.available_suffix }}"
+       data-hi="{{ labels_hi.available_suffix }}">{{ labels.available_suffix }}</span>
                             </span>
                         </div>
                         <button type="button"
                                 onclick="selectTruck('19:30', 'Eicher Pro 14ft', '₹850', this)"
                                 class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all">
                             <span class="lang-text"
-                                  data-en="{{ labels_en.btn_request_reserve|default('Request Reserve') }}"
-                                  data-hi="{{ labels_hi.btn_request_reserve|default('रिजर्वेशन अनुरोध') }}">
-                                {{ labels.btn_request_reserve|default("Request Reserve") }}
-                            </span>
+                                  data-en="{{ labels_en.btn_request_reserve }}"
+                                  data-hi="{{ labels_hi.btn_request_reserve }}">{{ labels.btn_request_reserve }}</span>
                         </button>
                     </div>
                 </article>
@@ -477,17 +421,13 @@
                     <div class="flex items-center justify-between w-full">
                         <span class="text-2xl font-bold font-mono text-primary tracking-tight">20:45</span>
                         <span class="w-7 h-7 rounded-full badge-verified flex items-center justify-center shrink-0 shadow-xs"
-                              title="{{ labels.verified_carrier_tooltip|default('Verified Linehaul Carrier') }}">
-                            {{ icon("check", size=16) }}
-                        </span>
+                              title="{{ labels.verified_carrier_tooltip }}">{{ icon("check", size=16) }}</span>
                     </div>
                     <div class="flex items-center gap-2 -mt-1 font-mono text-xs">
                         <span class="font-bold text-sm text-primary">₹2,125</span>
                         <span class="text-on-surface-variant text-[11px] lang-text"
-                              data-en="{{ labels_en.total_price_suffix|default('total') }}"
-                              data-hi="{{ labels_hi.total_price_suffix|default('कुल') }}">
-                            {{ labels.total_price_suffix|default("total") }}
-                        </span>
+                              data-en="{{ labels_en.total_price_suffix }}"
+                              data-hi="{{ labels_hi.total_price_suffix }}">{{ labels.total_price_suffix }}</span>
                         <span class="text-outline-variant">•</span>
                         <span class="text-secondary font-semibold">₹8.50 / kg</span>
                     </div>
@@ -510,18 +450,16 @@
                             <span class="text-primary font-medium">Eicher Pro 17ft</span>
                             <span class="text-success font-bold">
                                 450 kg <span class="lang-text"
-       data-en="{{ labels_en.available_suffix|default('available') }}"
-       data-hi="{{ labels_hi.available_suffix|default('उपलब्ध') }}">{{ labels.available_suffix|default("available") }}</span>
+       data-en="{{ labels_en.available_suffix }}"
+       data-hi="{{ labels_hi.available_suffix }}">{{ labels.available_suffix }}</span>
                             </span>
                         </div>
                         <button type="button"
                                 onclick="selectTruck('20:45', 'Eicher Pro 17ft', '₹2,125', this)"
                                 class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all">
                             <span class="lang-text"
-                                  data-en="{{ labels_en.btn_request_reserve|default('Request Reserve') }}"
-                                  data-hi="{{ labels_hi.btn_request_reserve|default('रिजर्वेशन अनुरोध') }}">
-                                {{ labels.btn_request_reserve|default("Request Reserve") }}
-                            </span>
+                                  data-en="{{ labels_en.btn_request_reserve }}"
+                                  data-hi="{{ labels_hi.btn_request_reserve }}">{{ labels.btn_request_reserve }}</span>
                         </button>
                     </div>
                 </article>
@@ -530,17 +468,13 @@
                     <div class="flex items-center justify-between w-full">
                         <span class="text-2xl font-bold font-mono text-primary tracking-tight">21:40</span>
                         <span class="w-7 h-7 rounded-full badge-verified flex items-center justify-center shrink-0 shadow-xs"
-                              title="{{ labels.verified_carrier_tooltip|default('Verified Linehaul Carrier') }}">
-                            {{ icon("check", size=16) }}
-                        </span>
+                              title="{{ labels.verified_carrier_tooltip }}">{{ icon("check", size=16) }}</span>
                     </div>
                     <div class="flex items-center gap-2 -mt-1 font-mono text-xs">
                         <span class="font-bold text-sm text-primary">₹1,275</span>
                         <span class="text-on-surface-variant text-[11px] lang-text"
-                              data-en="{{ labels_en.total_price_suffix|default('total') }}"
-                              data-hi="{{ labels_hi.total_price_suffix|default('कुल') }}">
-                            {{ labels.total_price_suffix|default("total") }}
-                        </span>
+                              data-en="{{ labels_en.total_price_suffix }}"
+                              data-hi="{{ labels_hi.total_price_suffix }}">{{ labels.total_price_suffix }}</span>
                         <span class="text-outline-variant">•</span>
                         <span class="text-secondary font-semibold">₹8.50 / kg</span>
                     </div>
@@ -563,18 +497,16 @@
                             <span class="text-primary font-medium">Tata 407</span>
                             <span class="text-success font-bold">
                                 180 kg <span class="lang-text"
-       data-en="{{ labels_en.available_suffix|default('available') }}"
-       data-hi="{{ labels_hi.available_suffix|default('उपलब्ध') }}">{{ labels.available_suffix|default("available") }}</span>
+       data-en="{{ labels_en.available_suffix }}"
+       data-hi="{{ labels_hi.available_suffix }}">{{ labels.available_suffix }}</span>
                             </span>
                         </div>
                         <button type="button"
                                 onclick="selectTruck('21:40', 'Tata 407', '₹1,275', this)"
                                 class="select-truck-btn bg-surface-container hover:bg-secondary hover:text-on-secondary text-primary px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all">
                             <span class="lang-text"
-                                  data-en="{{ labels_en.btn_request_reserve|default('Request Reserve') }}"
-                                  data-hi="{{ labels_hi.btn_request_reserve|default('रिजर्वेशन अनुरोध') }}">
-                                {{ labels.btn_request_reserve|default("Request Reserve") }}
-                            </span>
+                                  data-en="{{ labels_en.btn_request_reserve }}"
+                                  data-hi="{{ labels_hi.btn_request_reserve }}">{{ labels.btn_request_reserve }}</span>
                         </button>
                     </div>
                 </article>
@@ -611,34 +543,26 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-sm text-primary font-mono lang-text"
-                        data-en="{{ labels_en.empty_corridor_title|default('No trucks match — try a ±2 hour window') }}"
-                        data-hi="{{ labels_hi.empty_corridor_title|default('कोई ट्रक उपलब्ध नहीं — ±2 घंटे का समय बदलें') }}">
-                        {{ labels.empty_corridor_title|default("No trucks match — try a ±2 hour window") }}
-                    </h3>
+                        data-en="{{ labels_en.empty_corridor_title }}"
+                        data-hi="{{ labels_hi.empty_corridor_title }}">{{ labels.empty_corridor_title }}</h3>
                     <p class="text-xs text-on-surface-variant mt-1 max-w-sm mx-auto lang-text"
-                       data-en="{{ labels_en.empty_corridor_desc|default('All immediate vehicles on this exact slot have closed manifests. Try broadening your departure filter or join priority dispatch.') }}"
-                       data-hi="{{ labels_hi.empty_corridor_desc|default('इस समय के सभी वाहनों का घोषणापत्र भर चुका है। कृपया समय सीमा बढ़ाएं या प्रतीक्षा सूची में शामिल हों।') }}">
-                        {{ labels.empty_corridor_desc|default("All immediate vehicles on this exact slot have closed manifests. Try broadening your departure filter or join priority dispatch.") }}
-                    </p>
+                       data-en="{{ labels_en.empty_corridor_desc }}"
+                       data-hi="{{ labels_hi.empty_corridor_desc }}">{{ labels.empty_corridor_desc }}</p>
                 </div>
                 <div class="flex flex-wrap gap-2 justify-center pt-1">
                     <button type="button"
                             onclick="setCorridorState('default')"
                             class="bg-surface-container hover:bg-surface-container-high text-primary px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors">
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_reset_filters|default('Reset Filters') }}"
-                              data-hi="{{ labels_hi.btn_reset_filters|default('फ़िल्टर रीसेट करें') }}">
-                            {{ labels.btn_reset_filters|default("Reset Filters") }}
-                        </span>
+                              data-en="{{ labels_en.btn_reset_filters }}"
+                              data-hi="{{ labels_hi.btn_reset_filters }}">{{ labels.btn_reset_filters }}</span>
                     </button>
                     <button type="button"
                             onclick="window.alert('Standby registered. SMS alert will arrive if capacity opens.')"
                             class="bg-secondary text-on-secondary px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-all shadow-xs">
                         <span class="lang-text"
-                              data-en="{{ labels_en.btn_join_standby|default('Join standby list') }}"
-                              data-hi="{{ labels_hi.btn_join_standby|default('प्रतीक्षा सूची में शामिल हों') }}">
-                            {{ labels.btn_join_standby|default("Join standby list") }}
-                        </span>
+                              data-en="{{ labels_en.btn_join_standby }}"
+                              data-hi="{{ labels_hi.btn_join_standby }}">{{ labels.btn_join_standby }}</span>
                     </button>
                 </div>
             {% endcall %}
@@ -648,53 +572,39 @@
                     <span class="text-warning flex items-center mt-0.5">{{ icon("warning", size=24) }}</span>
                     <div>
                         <span class="text-[11px] font-mono uppercase bg-warning text-on-warning font-bold px-1.5 py-0.5 rounded lang-text"
-                              data-en="{{ labels_en.capacity_badge_text|default('High Demand') }}"
-                              data-hi="{{ labels_hi.capacity_badge_text|default('उच्च मांग') }}">
-                            {{ labels.capacity_badge_text|default("High Demand") }}
-                        </span>
+                              data-en="{{ labels_en.capacity_badge_text }}"
+                              data-hi="{{ labels_hi.capacity_badge_text }}">{{ labels.capacity_badge_text }}</span>
                         <h3 class="font-bold text-sm text-primary font-mono mt-1 lang-text"
-                            data-en="{{ labels_en.capacity_corridor_title|default('Tonight full · Next slot tomorrow 18:00') }}"
-                            data-hi="{{ labels_hi.capacity_corridor_title|default('आज रात फुल · अगला स्लॉट कल 18:00 बजे') }}">
-                            {{ labels.capacity_corridor_title|default("Tonight full · Next slot tomorrow 18:00") }}
-                        </h3>
+                            data-en="{{ labels_en.capacity_corridor_title }}"
+                            data-hi="{{ labels_hi.capacity_corridor_title }}">{{ labels.capacity_corridor_title }}</h3>
                         <p class="text-xs text-on-surface-variant mt-0.5 lang-text"
-                           data-en="{{ labels_en.capacity_corridor_desc|default('All 5 linehauls departing tonight are at 100% volumetric payload.') }}"
-                           data-hi="{{ labels_hi.capacity_corridor_desc|default('आज रात के सभी 5 वाहन पूरी तरह से भर चुके हैं।') }}">
-                            {{ labels.capacity_corridor_desc|default("All 5 linehauls departing tonight are at 100% volumetric payload.") }}
-                        </p>
+                           data-en="{{ labels_en.capacity_corridor_desc }}"
+                           data-hi="{{ labels_hi.capacity_corridor_desc }}">{{ labels.capacity_corridor_desc }}</p>
                     </div>
                 </div>
                 <button type="button"
                         onclick="window.alert('Standby waitlist confirmed. Next release at 17:30 IST.')"
                         class="w-full sm:w-auto bg-primary hover:bg-primary-hover text-on-primary font-mono text-xs font-bold px-4 py-2 rounded-lg transition-colors whitespace-nowrap shadow-xs">
                     <span class="lang-text"
-                          data-en="{{ labels_en.btn_request_standby|default('Request standby') }}"
-                          data-hi="{{ labels_hi.btn_request_standby|default('स्टैंडबाय अनुरोध करें') }}">
-                        {{ labels.btn_request_standby|default("Request standby") }}
-                    </span>
+                          data-en="{{ labels_en.btn_request_standby }}"
+                          data-hi="{{ labels_hi.btn_request_standby }}">{{ labels.btn_request_standby }}</span>
                 </button>
             {% endcall %}
             <!-- STATE: ERROR STATE -->
             {% call state_panel(id="stateCardsError", state="error", is_active=false, extra_classes="card-error-state rounded-2xl p-5 text-center shadow-sm flex flex-col items-center gap-2") %}
                 <span class="text-danger flex items-center">{{ icon("error", size=28) }}</span>
                 <h3 class="font-bold text-sm text-primary font-mono lang-text"
-                    data-en="{{ labels_en.error_corridor_title|default('Could not load trucks') }}"
-                    data-hi="{{ labels_hi.error_corridor_title|default('ट्रक लोड नहीं हो सके') }}">
-                    {{ labels.error_corridor_title|default("Could not load trucks") }}
-                </h3>
+                    data-en="{{ labels_en.error_corridor_title }}"
+                    data-hi="{{ labels_hi.error_corridor_title }}">{{ labels.error_corridor_title }}</h3>
                 <p class="text-xs text-on-surface-variant lang-text"
-                   data-en="{{ labels_en.error_corridor_desc|default('Connection to NH48 Linehaul Telemetry timed out.') }}"
-                   data-hi="{{ labels_hi.error_corridor_desc|default('NH48 टेलीमेट्री कनेक्शन समय समाप्त।') }}">
-                    {{ labels.error_corridor_desc|default("Connection to NH48 Linehaul Telemetry timed out.") }}
-                </p>
+                   data-en="{{ labels_en.error_corridor_desc }}"
+                   data-hi="{{ labels_hi.error_corridor_desc }}">{{ labels.error_corridor_desc }}</p>
                 <button type="button"
                         onclick="setCorridorState('default')"
                         class="bg-danger hover:bg-danger/90 text-on-error font-mono text-xs font-bold px-4 py-1.5 rounded-lg mt-1 transition-colors shadow-xs">
                     <span class="lang-text"
-                          data-en="{{ labels_en.btn_retry_search|default('Retry') }}"
-                          data-hi="{{ labels_hi.btn_retry_search|default('पुनः प्रयास करें') }}">
-                        {{ labels.btn_retry_search|default("Retry") }}
-                    </span>
+                          data-en="{{ labels_en.btn_retry_search }}"
+                          data-hi="{{ labels_hi.btn_retry_search }}">{{ labels.btn_retry_search }}</span>
                 </button>
             {% endcall %}
         {% endcall %}
@@ -704,15 +614,11 @@
         <section class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-4 md:p-6 shadow-sm space-y-3">
             <div class="border-b border-outline-variant/30 pb-3 mb-1 flex flex-wrap items-center justify-between gap-1">
                 <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-secondary lang-text"
-                    data-en="{{ labels_en.guidelines_heading|default('Corridor Guidelines & Hub Details') }}"
-                    data-hi="{{ labels_hi.guidelines_heading|default('कॉरिडोर दिशानिर्देश व हब विवरण') }}">
-                    {{ labels.guidelines_heading|default("Corridor Guidelines & Hub Details") }}
-                </h3>
+                    data-en="{{ labels_en.guidelines_heading }}"
+                    data-hi="{{ labels_hi.guidelines_heading }}">{{ labels.guidelines_heading }}</h3>
                 <span class="text-[11px] font-mono text-on-surface-variant lang-text"
-                      data-en="{{ labels_en.guidelines_count_badge|default('4 Essential Guides') }}"
-                      data-hi="{{ labels_hi.guidelines_count_badge|default('4 आवश्यक गाइड') }}">
-                    {{ labels.guidelines_count_badge|default("4 Essential Guides") }}
-                </span>
+                      data-en="{{ labels_en.guidelines_count_badge }}"
+                      data-hi="{{ labels_hi.guidelines_count_badge }}">{{ labels.guidelines_count_badge }}</span>
             </div>
             <!-- Accordion 1: Pickup points -->
             <details class="group border-b border-outline-variant/30 py-3">
@@ -720,19 +626,15 @@
                     <span class="flex items-center gap-2">
                         <span class="text-secondary flex items-center shrink-0">{{ icon("pin_drop", size=16) }}</span>
                         <span class="leading-snug lang-text"
-                              data-en="{{ labels_en.guide_1_q|default('Pickup points on this route') }}"
-                              data-hi="{{ labels_hi.guide_1_q|default('इस मार्ग पर पिकअप केंद्र') }}">
-                            {{ labels.guide_1_q|default("Pickup points on this route") }}
-                        </span>
+                              data-en="{{ labels_en.guide_1_q }}"
+                              data-hi="{{ labels_hi.guide_1_q }}">{{ labels.guide_1_q }}</span>
                     </span>
                     <span class="text-on-surface-variant shrink-0">{{ icon("expand_more", size=16) }}</span>
                 </summary>
                 <div class="mt-3 pl-6 text-xs text-on-surface-variant leading-relaxed">
                     <p class="lang-text"
-                       data-en="{{ labels_en.guide_1_a|default('Linehaul vehicles accept parcel handovers at Delhi Sanjay Gandhi Transport Nagar (Bay 4), Gurugram Hero Honda Chowk, and Manesar IMT Depot.') }}"
-                       data-hi="{{ labels_hi.guide_1_a|default('दिल्ली संजय गांधी ट्रांसपोर्ट नगर, गुरुग्राम और मानेसर में पार्सल हैंडओवर स्वीकार किए जाते हैं।') }}">
-                        {{ labels.guide_1_a|default("Linehaul vehicles accept parcel handovers at Delhi Sanjay Gandhi Transport Nagar (Bay 4), Gurugram Hero Honda Chowk, and Manesar IMT Depot.") }}
-                    </p>
+                       data-en="{{ labels_en.guide_1_a }}"
+                       data-hi="{{ labels_hi.guide_1_a }}">{{ labels.guide_1_a }}</p>
                 </div>
             </details>
             <!-- Accordion 2: Linehaul schedule -->
@@ -741,19 +643,15 @@
                     <span class="flex items-center gap-2">
                         <span class="text-secondary flex items-center shrink-0">{{ icon("timelapse", size=16) }}</span>
                         <span class="leading-snug lang-text"
-                              data-en="{{ labels_en.guide_2_q|default('Linehaul schedule & cutoff times') }}"
-                              data-hi="{{ labels_hi.guide_2_q|default('लाइनहॉल शेड्यूल और कटऑफ समय') }}">
-                            {{ labels.guide_2_q|default("Linehaul schedule & cutoff times") }}
-                        </span>
+                              data-en="{{ labels_en.guide_2_q }}"
+                              data-hi="{{ labels_hi.guide_2_q }}">{{ labels.guide_2_q }}</span>
                     </span>
                     <span class="text-on-surface-variant shrink-0">{{ icon("expand_more", size=16) }}</span>
                 </summary>
                 <div class="mt-3 pl-6 text-xs text-on-surface-variant leading-relaxed">
                     <p class="lang-text"
-                       data-en="{{ labels_en.guide_2_a|default('Manifests close 45 minutes before departure. Direct transit on NH48 averages 7 to 8 hours with live driver GPS tracking.') }}"
-                       data-hi="{{ labels_hi.guide_2_a|default('रवानगी से 45 मिनट पहले घोषणापत्र बंद हो जाते हैं। NH48 पर औसत ट्रांजिट समय 7 से 8 घंटे है।') }}">
-                        {{ labels.guide_2_a|default("Manifests close 45 minutes before departure. Direct transit on NH48 averages 7 to 8 hours with live driver GPS tracking.") }}
-                    </p>
+                       data-en="{{ labels_en.guide_2_a }}"
+                       data-hi="{{ labels_hi.guide_2_a }}">{{ labels.guide_2_a }}</p>
                 </div>
             </details>
             <!-- Accordion 3: Cargo dimensions -->
@@ -762,19 +660,15 @@
                     <span class="flex items-center gap-2">
                         <span class="text-secondary flex items-center shrink-0">{{ icon("inventory_2", size=16) }}</span>
                         <span class="leading-snug lang-text"
-                              data-en="{{ labels_en.guide_3_q|default('Cargo dimensions & prohibited goods') }}"
-                              data-hi="{{ labels_hi.guide_3_q|default('कार्गो आयाम और प्रतिबंधित सामान') }}">
-                            {{ labels.guide_3_q|default("Cargo dimensions & prohibited goods") }}
-                        </span>
+                              data-en="{{ labels_en.guide_3_q }}"
+                              data-hi="{{ labels_hi.guide_3_q }}">{{ labels.guide_3_q }}</span>
                     </span>
                     <span class="text-on-surface-variant shrink-0">{{ icon("expand_more", size=16) }}</span>
                 </summary>
                 <div class="mt-3 pl-6 text-xs text-on-surface-variant leading-relaxed">
                     <p class="lang-text"
-                       data-en="{{ labels_en.guide_3_a|default('Standard boxed parcels up to 1.8m height accepted. Flammable liquids, unregistered chemicals, unpacked glass, and hazardous goods are strictly prohibited.') }}"
-                       data-hi="{{ labels_hi.guide_3_a|default('1.8 मीटर ऊंचाई तक के मानक बॉक्स स्वीकार किए जाते हैं। ज्वलनशील पदार्थ व खतरनाक रसायन वर्जित हैं।') }}">
-                        {{ labels.guide_3_a|default("Standard boxed parcels up to 1.8m height accepted. Flammable liquids, unregistered chemicals, unpacked glass, and hazardous goods are strictly prohibited.") }}
-                    </p>
+                       data-en="{{ labels_en.guide_3_a }}"
+                       data-hi="{{ labels_hi.guide_3_a }}">{{ labels.guide_3_a }}</p>
                 </div>
             </details>
             <!-- Accordion 4: Proof of delivery -->
@@ -783,19 +677,15 @@
                     <span class="flex items-center gap-2">
                         <span class="text-secondary flex items-center shrink-0">{{ icon("verified", size=16) }}</span>
                         <span class="leading-snug lang-text"
-                              data-en="{{ labels_en.guide_4_q|default('Proof of delivery & GPS tracking') }}"
-                              data-hi="{{ labels_hi.guide_4_q|default('डिलीवरी प्रमाण और GPS ट्रैकिंग') }}">
-                            {{ labels.guide_4_q|default("Proof of delivery & GPS tracking") }}
-                        </span>
+                              data-en="{{ labels_en.guide_4_q }}"
+                              data-hi="{{ labels_hi.guide_4_q }}">{{ labels.guide_4_q }}</span>
                     </span>
                     <span class="text-on-surface-variant shrink-0">{{ icon("expand_more", size=16) }}</span>
                 </summary>
                 <div class="mt-3 pl-6 text-xs text-on-surface-variant leading-relaxed">
                     <p class="lang-text"
-                       data-en="{{ labels_en.guide_4_a|default('All linehauls are equipped with telematics. Senders receive instant SMS updates upon hub departure and destination arrival.') }}"
-                       data-hi="{{ labels_hi.guide_4_a|default('सभी वाहन टेलीमैटिक्स से सुसज्जित हैं। हब रवानगी और गंतव्य आगमन पर तुरंत SMS अपडेट मिलते हैं।') }}">
-                        {{ labels.guide_4_a|default("All linehauls are equipped with telematics. Senders receive instant SMS updates upon hub departure and destination arrival.") }}
-                    </p>
+                       data-en="{{ labels_en.guide_4_a }}"
+                       data-hi="{{ labels_hi.guide_4_a }}">{{ labels.guide_4_a }}</p>
                 </div>
             </details>
         </section>
@@ -817,10 +707,8 @@
                             class="text-[11px] font-mono text-primary-contrast hover:underline inline-flex items-center gap-0.5 mt-0.5 opacity-80 hover:opacity-100">
                         {{ icon("close", size=12) }}
                         <span class="lang-text"
-                              data-en="{{ labels_en.pinned_bar_change|default('Change selection') }}"
-                              data-hi="{{ labels_hi.pinned_bar_change|default('चयन बदलें') }}">
-                            {{ labels.pinned_bar_change|default("Change selection") }}
-                        </span>
+                              data-en="{{ labels_en.pinned_bar_change }}"
+                              data-hi="{{ labels_hi.pinned_bar_change }}">{{ labels.pinned_bar_change }}</span>
                     </button>
                 </div>
             </div>
@@ -829,10 +717,8 @@
                     class="w-full sm:w-auto bg-secondary hover:bg-secondary-container text-on-secondary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-mono font-bold tracking-wide transition-all shadow-md shrink-0 flex items-center justify-center gap-2 active:scale-95">
                 {{ icon("lock", size=14) }}
                 <span class="lang-text"
-                      data-en="{{ labels_en.pinned_bar_confirm|default('Confirm & Reserve (OTP)') }}"
-                      data-hi="{{ labels_hi.pinned_bar_confirm|default('पुष्टि व आरक्षण (OTP)') }}">
-                    {{ labels.pinned_bar_confirm|default("Confirm & Reserve (OTP)") }}
-                </span>
+                      data-en="{{ labels_en.pinned_bar_confirm }}"
+                      data-hi="{{ labels_hi.pinned_bar_confirm }}">{{ labels.pinned_bar_confirm }}</span>
             </button>
         </div>
     </aside>
