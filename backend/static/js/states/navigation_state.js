@@ -141,16 +141,21 @@
             if (empty) empty.classList.toggle("hidden", state !== "empty");
         }
 
-        var btnActive = document.getElementById("btn-state-dispatch");
-        var btnLoading = document.getElementById("btn-state-loading");
-        var btnEmpty = document.getElementById("btn-state-empty");
-
-        var activeClass = "px-2.5 py-1 rounded bg-surface-container-lowest text-primary shadow-xs font-semibold";
-        var inactiveClass = "px-2.5 py-1 rounded text-on-surface-variant hover:text-primary transition-all font-semibold";
-
-        if (btnActive) btnActive.className = (state === "active") ? activeClass : inactiveClass;
-        if (btnLoading) btnLoading.className = (state === "loading") ? activeClass : inactiveClass;
-        if (btnEmpty) btnEmpty.className = (state === "empty") ? activeClass : inactiveClass;
+        if (window.FilterChipsComponent && window.FilterChipsComponent.setActive) {
+            window.FilterChipsComponent.setActive("tracker-state-switcher", state, false);
+        } else {
+            var btnActive = document.getElementById("btn-state-dispatch");
+            var btnLoading = document.getElementById("btn-state-loading");
+            var btnEmpty = document.getElementById("btn-state-empty");
+            [btnActive, btnLoading, btnEmpty].forEach(function (btn) {
+                if (btn) {
+                    var val = btn.getAttribute("data-value");
+                    var isMatch = val ? val === state : btn.id.indexOf(state) !== -1;
+                    btn.classList.toggle("is-active", isMatch);
+                    btn.setAttribute("aria-selected", isMatch ? "true" : "false");
+                }
+            });
+        }
     }
 
     if (document.readyState === "loading") {

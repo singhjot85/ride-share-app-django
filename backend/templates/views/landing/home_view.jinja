@@ -2,6 +2,7 @@
 {% from "core/components/common/icons.jinja" import icon %}
 {% from "components/state_card.jinja" import state_container, state_panel %}
 {% from "components/accordion.jinja" import accordion, accordion_item %}
+{% from "components/filter_chips.jinja" import filter_chips, filter_chip %}
 <section id="view-home"
          class="landing-tab-view active"
          aria-labelledby="home-hero-title">
@@ -56,32 +57,11 @@
                     <span class="text-on-surface-variant font-bold uppercase tracking-wider text-[11px] lang-text"
                           data-en="{{ labels_en.tracker_preview }}"
                           data-hi="{{ labels_hi.tracker_preview }}">{{ labels.tracker_preview }}</span>
-                    <div class="inline-flex items-center p-1 bg-surface-container rounded-lg border border-outline-variant/30 gap-1 text-[11px] font-semibold">
-                        <button type="button"
-                                id="btn-state-dispatch"
-                                onclick="LoadShareNav.setDispatchState('active')"
-                                class="px-2.5 py-1 rounded bg-surface-container-lowest text-primary shadow-xs font-semibold">
-                            <span class="lang-text"
-                                  data-en="{{ labels_en.btn_item_in_dispatch }}"
-                                  data-hi="{{ labels_hi.btn_item_in_dispatch }}">{{ labels.btn_item_in_dispatch }}</span>
-                        </button>
-                        <button type="button"
-                                id="btn-state-loading"
-                                onclick="LoadShareNav.setDispatchState('loading')"
-                                class="px-2.5 py-1 rounded text-on-surface-variant hover:text-primary transition-all font-semibold">
-                            <span class="lang-text"
-                                  data-en="{{ labels_en.btn_loading_state }}"
-                                  data-hi="{{ labels_hi.btn_loading_state }}">{{ labels.btn_loading_state }}</span>
-                        </button>
-                        <button type="button"
-                                id="btn-state-empty"
-                                onclick="LoadShareNav.setDispatchState('empty')"
-                                class="px-2.5 py-1 rounded text-on-surface-variant hover:text-primary transition-all font-semibold">
-                            <span class="lang-text"
-                                  data-en="{{ labels_en.btn_empty_state }}"
-                                  data-hi="{{ labels_hi.btn_empty_state }}">{{ labels.btn_empty_state }}</span>
-                        </button>
-                    </div>
+                    {% call filter_chips(id="tracker-state-switcher", on_change="LoadShareNav.setDispatchState", variant="segmented", size="sm") %}
+                        {{ filter_chip(id="btn-state-dispatch", value="active", label=labels.btn_item_in_dispatch, label_en=labels_en.btn_item_in_dispatch, label_hi=labels_hi.btn_item_in_dispatch, is_active=true) }}
+                        {{ filter_chip(id="btn-state-loading", value="loading", label=labels.btn_loading_state, label_en=labels_en.btn_loading_state, label_hi=labels_hi.btn_loading_state) }}
+                        {{ filter_chip(id="btn-state-empty", value="empty", label=labels.btn_empty_state, label_en=labels_en.btn_empty_state, label_hi=labels_hi.btn_empty_state) }}
+                    {% endcall %}
                 </div>
                 {% call state_container(id="tracker-preview-container", active_state="active") %}
                     <!-- 1. State: Active Dispatch -->

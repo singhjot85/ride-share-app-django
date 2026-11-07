@@ -1,5 +1,6 @@
 {# Sender Profile & Consignment History View #}
 {% from "core/components/common/icons.jinja" import icon %}
+{% from "components/filter_chips.jinja" import filter_chips, filter_chip %}
 {% set current_user = user if user is defined and user else (request.user if request is defined and request.user is defined else None) %}
 {% set user_display_name = (current_user.get_full_name() if current_user and current_user.get_full_name is defined and current_user.get_full_name() else (current_user.username if current_user and current_user.username is defined else None)) or labels.profile_default_name %}
 {% set user_display_phone = (current_user.phone_number if current_user and current_user.phone_number is defined else None) or (phone if phone is defined and phone else None) or labels.profile_default_phone %}
@@ -149,34 +150,11 @@
                 </button>
             </div>
             <!-- Filter Chips Row -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-                <button type="button"
-                        id="filter-all"
-                        onclick="setFilter('all')"
-                        class="booking-filter-chip bg-primary text-on-primary font-bold text-xs px-3.5 py-1.5 rounded-full transition-all shrink-0 shadow-xs">
-                    <span class="lang-text"
-                          data-en="{{ labels_en.profile_filter_all }}"
-                          data-hi="{{ labels_hi.profile_filter_all }}">{{ labels.profile_filter_all }}</span>
-                </button>
-                <button type="button"
-                        id="filter-active"
-                        onclick="setFilter('active')"
-                        class="booking-filter-chip bg-surface-container-low text-on-surface-variant font-semibold text-xs px-3.5 py-1.5 rounded-full hover:bg-surface-container transition-all shrink-0">
-                    <span class="lang-text"
-                          data-en="{{ labels_en.profile_filter_active }}"
-                          data-hi="{{ labels_hi.profile_filter_active }}">{{ labels.profile_filter_active }}</span>
-                </button>
-                <button type="button"
-                        id="filter-completed"
-                        onclick="setFilter('completed')"
-                        class="booking-filter-chip bg-surface-container-low text-on-surface-variant font-semibold text-xs px-3.5 py-1.5 rounded-full hover:bg-surface-container transition-all shrink-0">
-                    <span class="lang-text"
-                          data-en="{{ labels_en.profile_filter_completed }}"
-                          data-hi="{{ labels_hi.profile_filter_completed }}">
-                        {{ labels.profile_filter_completed }}
-                    </span>
-                </button>
-            </div>
+            {% call filter_chips(id="booking-filters", on_change="setFilter", variant="pills", size="md") %}
+                {{ filter_chip(id="filter-all", value="all", label=labels.profile_filter_all, label_en=labels_en.profile_filter_all, label_hi=labels_hi.profile_filter_all, is_active=true) }}
+                {{ filter_chip(id="filter-active", value="active", label=labels.profile_filter_active, label_en=labels_en.profile_filter_active, label_hi=labels_hi.profile_filter_active) }}
+                {{ filter_chip(id="filter-completed", value="completed", label=labels.profile_filter_completed, label_en=labels_en.profile_filter_completed, label_hi=labels_hi.profile_filter_completed) }}
+            {% endcall %}
             <!-- Booking Cards Container -->
             <div class="space-y-3 pt-1" id="booking-cards-list">
                 <!-- Card 1: Active / In Transit -->

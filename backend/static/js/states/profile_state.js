@@ -64,25 +64,20 @@
      */
     function setBookingFilter(filter) {
         currentFilter = filter;
-        var filterAll = document.getElementById("filter-all");
-        var filterActive = document.getElementById("filter-active");
-        var filterCompleted = document.getElementById("filter-completed");
-
-        var chips = {
-            all: filterAll,
-            active: filterActive,
-            completed: filterCompleted
-        };
-
-        var activeChipClass = "booking-filter-chip bg-primary text-on-primary font-bold text-xs px-3.5 py-1.5 rounded-full transition-all shrink-0 shadow-xs";
-        var inactiveChipClass = "booking-filter-chip bg-surface-container-low text-on-surface-variant font-semibold text-xs px-3.5 py-1.5 rounded-full hover:bg-surface-container transition-all shrink-0";
-
-        Object.keys(chips).forEach(function (key) {
-            var chip = chips[key];
-            if (chip) {
-                chip.className = (key === filter) ? activeChipClass : inactiveChipClass;
-            }
-        });
+        if (window.FilterChipsComponent && window.FilterChipsComponent.setActive) {
+            window.FilterChipsComponent.setActive("booking-filters", filter, false);
+        } else {
+            var filterAll = document.getElementById("filter-all");
+            var filterActive = document.getElementById("filter-active");
+            var filterCompleted = document.getElementById("filter-completed");
+            [filterAll, filterActive, filterCompleted].forEach(function (chip) {
+                if (chip) {
+                    var isMatch = chip.getAttribute("data-value") === filter;
+                    chip.classList.toggle("is-active", isMatch);
+                    chip.setAttribute("aria-selected", isMatch ? "true" : "false");
+                }
+            });
+        }
 
         if (isForcedEmpty) return;
 

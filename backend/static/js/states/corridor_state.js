@@ -101,28 +101,23 @@
             head.classList.toggle("hidden", state !== "default" && state !== "skeleton");
         }
 
-        var btnDef = document.getElementById("btnStateDefault");
-        var btnSkel = document.getElementById("btnStateSkeleton");
-        var btnEmp = document.getElementById("btnStateEmpty");
-        var btnCap = document.getElementById("btnStateCapacity");
-        var btnErr = document.getElementById("btnStateError");
-
-        var buttons = [btnDef, btnSkel, btnEmp, btnCap, btnErr];
-        buttons.forEach(function (b) {
-            if (b) {
-                b.className = "px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all";
-            }
-        });
-
-        var activeBtnClass = "px-2 py-0.5 rounded text-[11px] font-bold bg-primary text-on-primary transition-all";
-        var activeBtn = {
-            "default": btnDef,
-            "skeleton": btnSkel,
-            "empty": btnEmp,
-            "capacity": btnCap,
-            "error": btnErr
-        }[state];
-        if (activeBtn) activeBtn.className = activeBtnClass;
+        if (window.FilterChipsComponent && window.FilterChipsComponent.setActive) {
+            window.FilterChipsComponent.setActive("reviewer-state-switcher", state, false);
+        } else {
+            var btnDef = document.getElementById("btnStateDefault");
+            var btnSkel = document.getElementById("btnStateSkeleton");
+            var btnEmp = document.getElementById("btnStateEmpty");
+            var btnCap = document.getElementById("btnStateCapacity");
+            var btnErr = document.getElementById("btnStateError");
+            var buttons = [btnDef, btnSkel, btnEmp, btnCap, btnErr];
+            buttons.forEach(function (b) {
+                if (b) {
+                    var isMatch = b.getAttribute("data-value") === state;
+                    b.classList.toggle("is-active", isMatch);
+                    b.setAttribute("aria-selected", isMatch ? "true" : "false");
+                }
+            });
+        }
     }
 
     /**

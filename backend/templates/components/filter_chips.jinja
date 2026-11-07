@@ -1,0 +1,47 @@
+{# Filter Chips / Pill Switcher Component #}
+{% from "core/components/common/icons.jinja" import icon %}
+{% macro filter_chips(id=None, items=None, active_value=None, on_change=None, variant="pills", size="md", extra_classes="") %}
+    <div class="filter-chips-group filter-chips-{{ variant }} filter-chips-{{ size }}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+         {% if id %}id="{{ id }}"{% endif %}
+         data-filter-chips
+         data-variant="{{ variant }}"
+         data-size="{{ size }}"
+         {% if on_change %}data-on-change="{{ on_change }}"{% endif %}
+         role="tablist">
+        {% if items %}
+            {% for item in items %}
+                {{ filter_chip(id=item.id if item.id is defined else None,
+                                value=item.value,
+                                label=item.label,
+                                label_en=item.label_en if item.label_en is defined else None,
+                                label_hi=item.label_hi if item.label_hi is defined else None,
+                                is_active=(item.value == active_value) if active_value is not none else loop.first,
+                icon_name=item.icon if item.icon is defined else None,
+                count=item.count if item.count is defined else None,
+                on_click=item.on_click if item.on_click is defined else None,
+                size=size,
+                variant=variant
+                ) }}
+            {% endfor %}
+        {% elif caller %}
+            {{ caller() }}
+        {% endif %}
+    </div>
+{% endmacro %}
+{% macro filter_chip(id=None, value="", label="", label_en=None, label_hi=None, is_active=false, icon_name=None, count=None, on_click=None, size="md", variant="pills", extra_classes="") %}
+    <button type="button"
+            {% if id %}id="{{ id }}"{% endif %}
+            class="filter-chip filter-chip-{{ variant }} filter-chip-{{ size }}{% if is_active %} is-active{% endif %}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+            data-value="{{ value }}"
+            role="tab"
+            aria-selected="{{ 'true' if is_active else 'false' }}"
+            {% if on_click %}onclick="{{ on_click }}"{% endif %}>
+        {% if icon_name %}
+            <span class="filter-chip-icon flex items-center shrink-0">{{ icon(icon_name, size=14) }}</span>
+        {% endif %}
+        <span class="filter-chip-text lang-text"
+              {% if label_en %}data-en="{{ label_en }}"{% endif %}
+              {% if label_hi %}data-hi="{{ label_hi }}"{% endif %}>{{ label }}</span>
+        {% if count is not none %}<span class="filter-chip-badge font-mono">{{ count }}</span>{% endif %}
+    </button>
+{% endmacro %}

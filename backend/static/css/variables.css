@@ -113,7 +113,7 @@ body.dark,
   --color-on-primary-container: #d1e4ff;
 
   /* Brand Secondary: Bright vibrant safety orange in dark mode */
-  --color-secondary: #ff6e38;
+  --color-secondary: #ab3600;
   --color-secondary-hover: #ff8555;
   --color-secondary-active: #e5531d;
   --color-secondary-subtle: rgba(255, 110, 56, 0.18);

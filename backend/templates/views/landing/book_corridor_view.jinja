@@ -2,6 +2,7 @@
 {% from "core/components/common/icons.jinja" import icon %}
 {% from "components/carousel.jinja" import carousel, carousel_slide %}
 {% from "components/state_card.jinja" import state_container, state_panel %}
+{% from "components/filter_chips.jinja" import filter_chips, filter_chip %}
 <section id="view-book-corridor"
          class="landing-tab-view hidden"
          aria-labelledby="corridor-view-title">
@@ -44,50 +45,13 @@
                           data-en="{{ labels_en.reviewer_state_label }}"
                           data-hi="{{ labels_hi.reviewer_state_label }}">{{ labels.reviewer_state_label }}</span>
                 </div>
-                <div class="flex flex-wrap items-center gap-1.5 font-mono">
-                    <button type="button"
-                            id="btnStateDefault"
-                            onclick="setCorridorState('default')"
-                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary text-on-primary transition-all">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_trucks }}"
-                              data-hi="{{ labels_hi.btn_state_trucks }}">{{ labels.btn_state_trucks }}</span>
-                    </button>
-                    <button type="button"
-                            id="btnStateSkeleton"
-                            onclick="setCorridorState('skeleton')"
-                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_skeleton }}"
-                              data-hi="{{ labels_hi.btn_state_skeleton }}">{{ labels.btn_state_skeleton }}</span>
-                    </button>
-                    <button type="button"
-                            id="btnStateEmpty"
-                            onclick="setCorridorState('empty')"
-                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_empty_corridor }}"
-                              data-hi="{{ labels_hi.btn_state_empty_corridor }}">
-                            {{ labels.btn_state_empty_corridor }}
-                        </span>
-                    </button>
-                    <button type="button"
-                            id="btnStateCapacity"
-                            onclick="setCorridorState('capacity')"
-                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_capacity }}"
-                              data-hi="{{ labels_hi.btn_state_capacity }}">{{ labels.btn_state_capacity }}</span>
-                    </button>
-                    <button type="button"
-                            id="btnStateError"
-                            onclick="setCorridorState('error')"
-                            class="px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary transition-all">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.btn_state_error }}"
-                              data-hi="{{ labels_hi.btn_state_error }}">{{ labels.btn_state_error }}</span>
-                    </button>
-                </div>
+                {% call filter_chips(id="reviewer-state-switcher", on_change="setCorridorState", variant="segmented", size="sm") %}
+                    {{ filter_chip(id="btnStateDefault", value="default", label=labels.btn_state_trucks, label_en=labels_en.btn_state_trucks, label_hi=labels_hi.btn_state_trucks, is_active=true) }}
+                    {{ filter_chip(id="btnStateSkeleton", value="skeleton", label=labels.btn_state_skeleton, label_en=labels_en.btn_state_skeleton, label_hi=labels_hi.btn_state_skeleton) }}
+                    {{ filter_chip(id="btnStateEmpty", value="empty", label=labels.btn_state_empty_corridor, label_en=labels_en.btn_state_empty_corridor, label_hi=labels_hi.btn_state_empty_corridor) }}
+                    {{ filter_chip(id="btnStateCapacity", value="capacity", label=labels.btn_state_capacity, label_en=labels_en.btn_state_capacity, label_hi=labels_hi.btn_state_capacity) }}
+                    {{ filter_chip(id="btnStateError", value="error", label=labels.btn_state_error, label_en=labels_en.btn_state_error, label_hi=labels_hi.btn_state_error) }}
+                {% endcall %}
             </div>
         </div>
         <!-- ========================================================================= -->
