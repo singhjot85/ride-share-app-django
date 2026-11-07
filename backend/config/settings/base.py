@@ -22,9 +22,16 @@ MEDIA_URL = "/media/"
 ROOT_URLCONF = "config.urls"
 PUBLIC_SCHEMA_URLCONF = "config.public_urls"
 
+PROJECT_MIGRATION_PATH = "db_migrations"
 MIGRATION_MODULES = {
-    app.rsplit(".", 1)[-1]: f"db_migrations.{app.rsplit('.', 1)[-1]}"
-    for app in PROJECT_APPS
+    "configurations": f"{PROJECT_MIGRATION_PATH}.configurations",
+    "crm": f"{PROJECT_MIGRATION_PATH}.crm",
+    "integrations": f"{PROJECT_MIGRATION_PATH}.integrations",
+    "integrations_email": f"{PROJECT_MIGRATION_PATH}.integrations_email",
+    "integrations_sms": f"{PROJECT_MIGRATION_PATH}.integrations_sms",
+    "invoices": f"{PROJECT_MIGRATION_PATH}.invoices",
+    "tenants": f"{PROJECT_MIGRATION_PATH}.tenants",
+    "users": f"{PROJECT_MIGRATION_PATH}.users",
 }
 
 if "overrides" not in INSTALLED_APPS:
