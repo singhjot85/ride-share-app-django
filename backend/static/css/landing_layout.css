@@ -510,7 +510,8 @@ body,
    Tracker Preview Canvas & Cards
    ========================================================================= */
 #state-active-dispatch,
-#state-skeleton-dispatch {
+#state-skeleton-dispatch,
+.landing-footer {
   background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-container) 100%) !important;
   color: var(--color-primary-contrast) !important;
   border-color: var(--color-border-subtle) !important;

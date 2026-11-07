@@ -7,23 +7,33 @@
         <div class="auth-container"
              id="otp_auth_container"
              data-initial-tab="{{ initial_tab|default('login') }}">
-            <!-- Notice Bar: Pilot Phase Corridor & Language Switcher -->
-            <div class="bg-primary-container text-surface px-3 py-2 text-center font-size-xs flex items-center justify-between rounded-lg mb-md border border-primary">
+            <!-- Notice Bar: Pilot Phase Corridor, Theme & Language Switchers -->
+            <div class="auth-notice-bar px-3 py-2 text-center font-size-xs flex items-center justify-between rounded-lg mb-md">
                 <div class="flex items-center gap-xs">
                     {{ icon("campaign", size=16, extra_classes="text-warning") }}
                     <span class="lang-text font-weight-medium"
                           data-en="{{ labels_en.pilot_notice }}"
                           data-hi="{{ labels_hi.pilot_notice }}">{{ labels.pilot_notice }}</span>
                 </div>
-                <!-- Layer 2 Language Switcher Toggle -->
-                <a href="/set-language/?lang={{ 'hi' if current_lang == 'en' else 'en' }}&next={{ request.path|urlencode if request else '/login/' }}"
-                   class="lang-toggle-btn text-decoration-none"
-                   id="auth-lang-toggle"
-                   aria-label="Toggle language">
-                    <span class="{{ 'lang-active' if current_lang == 'en' else 'lang-inactive' }}">EN</span>
-                    <span class="text-muted mx-xs">/</span>
-                    <span class="{{ 'lang-active' if current_lang == 'hi' else 'lang-inactive' }}">हिंदी</span>
-                </a>
+                <div class="flex items-center gap-xs">
+                    <!-- Theme Mode Switcher Toggle -->
+                    <button type="button"
+                            id="theme-toggle-btn"
+                            class="theme-toggle-btn"
+                            onclick="toggleTheme()"
+                            aria-label="Toggle dark/light mode">
+                        {{ icon("dark_mode", size=16, extra_classes="theme-toggle-icon") }}
+                    </button>
+                    <!-- Layer 2 Language Switcher Toggle -->
+                    <a href="/set-language/?lang={{ 'hi' if current_lang == 'en' else 'en' }}&next={{ request.path|urlencode if request else '/login/' }}"
+                       class="lang-toggle-btn text-decoration-none"
+                       id="auth-lang-toggle"
+                       aria-label="Toggle language">
+                        <span class="{{ 'lang-active' if current_lang == 'en' else 'lang-inactive' }}">EN</span>
+                        <span class="text-muted mx-xs">/</span>
+                        <span class="{{ 'lang-active' if current_lang == 'hi' else 'lang-inactive' }}">हिंदी</span>
+                    </a>
+                </div>
             </div>
             <!-- Brand Identity Header -->
             <div class="auth-brand">
@@ -60,7 +70,7 @@
                 </div>
             </div>
             <!-- Trust Verification Strip -->
-            <div class="mt-md p-sm bg-surface-container rounded-lg border text-center font-size-xs text-muted flex items-center justify-around">
+            <div class="auth-trust-strip mt-md p-sm rounded-lg text-center font-size-xs flex items-center justify-around">
                 <span class="flex items-center gap-xs">
                     {{ icon("verified", size=14, extra_classes="text-secondary") }} OTP at Pickup
                 </span>

@@ -6,7 +6,8 @@
  *
  * Implements:
  * - Immediate theme resolution (cookie -> localStorage -> sessionStorage -> OS preference).
- * - Multi-layer persistence (cookie, localStorage, sessionStorage) with loadshare_ prefix.
+ * - Multi-layer persistence (cookie, localStorage, sessionStorage) for loadshare_ and core_theme.
+ * - Synchronizes with core framework theme state to prevent CSS variable leakage.
  * - Icon synchronization and 250ms debounce guard.
  */
 (function (window, document) {
@@ -25,7 +26,9 @@
             if (cookieMatch) {
                 return decodeURIComponent(cookieMatch[2]);
             }
-            var storageTheme = localStorage.getItem("loadshare_theme") || sessionStorage.getItem("loadshare_theme");
+            var storageTheme = localStorage.getItem("loadshare_theme") ||
+                               localStorage.getItem("core_theme") ||
+                               sessionStorage.getItem("loadshare_theme");
             if (storageTheme) {
                 return storageTheme;
             }
@@ -44,10 +47,10 @@
      * @param {'light' | 'dark'} theme
      */
     function updateThemeIcon(theme) {
-        var iconEl = document.querySelector("#theme-toggle-btn .theme-toggle-icon, #theme-toggle-btn .material-symbols-outlined");
-        if (iconEl) {
+        var icons = document.querySelectorAll(".theme-toggle-icon, #theme-toggle-btn .material-symbols-outlined");
+        icons.forEach(function (iconEl) {
             iconEl.textContent = (theme === "dark") ? "light_mode" : "dark_mode";
-        }
+        });
     }
 
     /**
@@ -77,6 +80,7 @@
 
         try {
             localStorage.setItem("loadshare_theme", theme);
+            localStorage.setItem("core_theme", theme);
             sessionStorage.setItem("loadshare_theme", theme);
         } catch (e) {
             console.debug("Theme storage write error:", e);
@@ -114,8 +118,17 @@
         document.documentElement.setAttribute("data-theme", "light");
     }
 
-    // 2. Synchronize toggle button icon when DOM is ready
+    // 2. Synchronize body and toggle button icon when DOM is ready
     function onDomReady() {
+        if (document.body) {
+            if (initialTheme === "dark") {
+                document.body.classList.add("dark");
+                document.body.setAttribute("data-theme", "dark");
+            } else {
+                document.body.classList.remove("dark");
+                document.body.setAttribute("data-theme", "light");
+            }
+        }
         updateThemeIcon(initialTheme);
     }
 
@@ -125,8 +138,9 @@
         onDomReady();
     }
 
-    // 3. Expose global API
+    // Expose toggle handler globally
     window.toggleTheme = toggleTheme;
     window.applyTheme = applyTheme;
     window.getStoredTheme = getStoredTheme;
+
 })(window, document);

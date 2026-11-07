@@ -6,20 +6,15 @@
 {% endblock title %}
 {% block extra_head %}
     {{ super() }}
-    <!-- LoadShare Unified Design Tokens & Theme Stylesheets -->
-    <link rel="stylesheet" href="{{ static('css/variables.css') }}">
-    <link rel="stylesheet" href="{{ static('css/theme_override.css') }}">
+    <!-- LoadShare Page Layout & Component Stylesheets -->
     <link rel="stylesheet" href="{{ static('css/landing_layout.css') }}">
     <link rel="stylesheet" href="{{ static('css/floating_chip.css') }}">
     <link rel="stylesheet" href="{{ static('css/bottom_navbar.css') }}">
-    <!-- Component Stylesheets -->
     <link rel="stylesheet" href="{{ static('css/components/carousel.css') }}">
     <link rel="stylesheet" href="{{ static('css/components/state_card.css') }}">
     <link rel="stylesheet" href="{{ static('css/components/accordion.css') }}">
     <link rel="stylesheet"
           href="{{ static('css/components/filter_chips.css') }}">
-    <!-- Theme Preference Initialization & Handler (Prevents FOUC) -->
-    <script src="{{ static('js/theme_toggle.js') }}"></script>
 {% endblock extra_head %}
 {# Remove core app sidebar, navbar and footer on landing page #}
 {% block sidebar %}

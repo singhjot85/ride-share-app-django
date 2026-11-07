@@ -1,0 +1,5 @@
+/**
+ * Host Override for Core variables.css
+ * Directs core framework to use LoadShare design tokens and palette.
+ */
+@import url("../../css/variables.css");

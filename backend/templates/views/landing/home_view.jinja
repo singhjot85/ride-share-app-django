@@ -381,11 +381,11 @@
         <!-- ========================================================================= -->
         <!-- 6. CLEAN FOOTER                                                           -->
         <!-- ========================================================================= -->
-        <footer class="bg-primary text-surface rounded-2xl border border-outline-variant/20 py-8 px-6 space-y-6">
+        <footer class="landing-footer w-full bg-gradient-to-b from-primary via-primary to-primary-container rounded-2xl border border-outline-variant/20 py-8 px-6 space-y-6 relative overflow-hidden shadow-md text-on-primary">
             <div class="space-y-2">
                 <div class="flex items-center gap-2">
                     {{ icon("local_shipping", size=24, extra_classes="text-secondary-fixed") }}
-                    <span class="text-xl font-bold text-surface tracking-tight lang-text"
+                    <span class="text-xl font-bold text-on-primary tracking-tight lang-text"
                           data-en="{{ labels_en.brand_name }}"
                           data-hi="{{ labels_hi.brand_name }}">{{ labels.brand_name }}</span>
                 </div>
@@ -394,7 +394,7 @@
                    data-hi="{{ labels_hi.footer_brand_desc }}">{{ labels.footer_brand_desc }}</p>
             </div>
             <!-- Contact and Links Cluster -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-primary-container">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-outline-variant/20">
                 <div>
                     <span class="text-[11px] font-bold text-surface-dim uppercase tracking-wider block lang-text"
                           data-en="{{ labels_en.footer_helpline_label }}"
@@ -406,7 +406,7 @@
                     <span class="text-[11px] font-bold text-surface-dim uppercase tracking-wider block lang-text"
                           data-en="{{ labels_en.footer_support_label }}"
                           data-hi="{{ labels_hi.footer_support_label }}">{{ labels.footer_support_label }}</span>
-                    <a class="text-xs text-surface flex items-center gap-1.5 hover:text-secondary-fixed pt-1"
+                    <a class="text-xs text-on-primary flex items-center gap-1.5 hover:text-secondary-fixed pt-1"
                        href="https://wa.me/9118004197688"
                        target="_blank"
                        rel="noopener noreferrer">
@@ -417,8 +417,8 @@
                     </a>
                 </div>
             </div>
-            <div class="pt-2 border-t border-primary-container flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                <a class="inline-flex items-center gap-1.5 text-xs font-semibold text-surface-variant hover:text-surface"
+            <div class="pt-2 border-t border-outline-variant/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <a class="inline-flex items-center gap-1.5 text-xs font-semibold text-surface-variant hover:text-on-primary"
                    href="#">
                     {{ icon("android", size=18) }}
                     <span class="lang-text"

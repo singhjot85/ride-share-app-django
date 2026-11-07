@@ -6,7 +6,11 @@
 {% endblock title %}
 {% block extra_head %}
     {{ super() }}
+    <!-- LoadShare Unified Design Tokens & Theme Stylesheets -->
+    <link rel="stylesheet" href="{{ static('css/variables.css') }}">
     <link rel="stylesheet" href="{{ static('css/theme_override.css') }}">
+    <!-- Theme Preference Initialization & Handler (Prevents FOUC) -->
+    <script src="{{ static('js/theme_toggle.js') }}"></script>
 {% endblock extra_head %}
 {# Override top-level app_shell: renders either the OTP login template or the authenticated view shell #}
 {% block app_shell %}
