@@ -2,16 +2,16 @@
  * profile_state.js: Client-side interactive controller for the Sender Profile View.
  *
  * Provides:
- * - Account details inline edit toggling (Business Name & Phone).
+ * - Account details inline edit toggling (Name, Phone & Email).
+ * - Live Customer profile update submission via CustomerService.
  * - Bookings list tab filtering (All, Active, Completed).
- * - Empty state simulation demo switcher.
  * - Sign out confirmation and redirection.
  */
 (function (window, document) {
     "use strict";
 
     var currentFilter = "all";
-    var isForcedEmpty = false;
+    var isForcedEmpty = true;
 
     /**
      * Toggle between account display mode and edit mode.
@@ -35,27 +35,48 @@
     }
 
     /**
-     * Handle account details form submission.
+     * Handle account details form submission and persist via CustomerService.
      * @param {Event} event
      */
-    function saveProfile(event) {
+    async function saveProfile(event) {
         if (event && event.preventDefault) {
             event.preventDefault();
         }
 
         var inputName = document.getElementById("input-name");
         var inputPhone = document.getElementById("input-phone");
+        var inputEmail = document.getElementById("input-email");
         var displayName = document.getElementById("display-name");
         var displayPhone = document.getElementById("display-phone");
+        var displayEmail = document.getElementById("display-email");
+        var emailContainer = document.getElementById("email-container");
 
-        if (inputName && displayName && inputName.value.trim()) {
-            displayName.textContent = inputName.value.trim();
-        }
-        if (inputPhone && displayPhone && inputPhone.value.trim()) {
-            displayPhone.textContent = inputPhone.value.trim();
+        var nameVal = inputName ? inputName.value.trim() : "";
+        var phoneVal = inputPhone ? inputPhone.value.trim() : "";
+        var emailVal = inputEmail ? inputEmail.value.trim() : "";
+
+        if (nameVal && displayName) displayName.textContent = nameVal;
+        if (phoneVal && displayPhone) displayPhone.textContent = phoneVal;
+        if (displayEmail) {
+            displayEmail.textContent = emailVal || "—";
+            if (emailContainer) {
+                emailContainer.style.display = emailVal ? "" : "none";
+            }
         }
 
         toggleProfileEdit(false);
+
+        if (window.CustomerService && typeof window.CustomerService.updateCustomer === "function") {
+            try {
+                await window.CustomerService.updateCustomer({
+                    business_name: nameVal,
+                    phone: phoneVal,
+                    email: emailVal
+                });
+            } catch (err) {
+                console.debug("Customer profile persist error:", err);
+            }
+        }
     }
 
     /**
@@ -79,8 +100,14 @@
             });
         }
 
-        if (isForcedEmpty) return;
+        if (isForcedEmpty) {
+            var countBadgeEmpty = document.getElementById("booking-count-badge");
+            if (countBadgeEmpty) countBadgeEmpty.textContent = "0";
+            return;
+        }
 
+        var cardsList = document.getElementById("booking-cards-list");
+        var emptyState = document.getElementById("booking-empty-state");
         var items = document.querySelectorAll(".booking-item");
         var visibleCount = 0;
 
@@ -98,10 +125,24 @@
         if (countBadge) {
             countBadge.textContent = visibleCount;
         }
+
+        if (visibleCount === 0) {
+            if (cardsList) cardsList.classList.add("hidden");
+            if (emptyState) {
+                emptyState.classList.remove("hidden");
+                emptyState.classList.add("flex");
+            }
+        } else {
+            if (cardsList) cardsList.classList.remove("hidden");
+            if (emptyState) {
+                emptyState.classList.add("hidden");
+                emptyState.classList.remove("flex");
+            }
+        }
     }
 
     /**
-     * Toggle between simulated empty state and populated bookings list.
+     * Toggle between empty state and populated bookings list.
      */
     function toggleEmptyState() {
         isForcedEmpty = !isForcedEmpty;
@@ -109,6 +150,7 @@
         var emptyState = document.getElementById("booking-empty-state");
         var toggleBtn = document.getElementById("toggle-empty-state-btn");
         var countBadge = document.getElementById("booking-count-badge");
+        var container = document.getElementById("booking-cards-container");
 
         if (isForcedEmpty) {
             if (cardsList) cardsList.classList.add("hidden");
@@ -116,6 +158,7 @@
                 emptyState.classList.remove("hidden");
                 emptyState.classList.add("flex");
             }
+            if (container) container.setAttribute("data-active-state", "empty");
             if (countBadge) countBadge.textContent = "0";
             if (toggleBtn) {
                 var restoreText = toggleBtn.getAttribute("data-restore-text") || "Restore list";
@@ -127,6 +170,7 @@
                 emptyState.classList.add("hidden");
                 emptyState.classList.remove("flex");
             }
+            if (container) container.setAttribute("data-active-state", "populated");
             if (toggleBtn) {
                 var simText = toggleBtn.getAttribute("data-sim-text") || "Simulate empty";
                 toggleBtn.textContent = simText;

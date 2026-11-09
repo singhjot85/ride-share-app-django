@@ -19,6 +19,15 @@
           href="{{ static('css/components/context_bar.css') }}">
     <link rel="stylesheet" href="{{ static('css/components/modal.css') }}">
     <link rel="stylesheet" href="{{ static('css/components/sticky_bar.css') }}">
+    {% if customer %}
+        <meta name="customer-id" content="{{ customer.id }}">
+        <script>
+            window.LOADSHARE_CUSTOMER_ID = "{{ customer.id }}";
+            try {
+                sessionStorage.setItem("customer_id", "{{ customer.id }}");
+            } catch (e) {}
+        </script>
+    {% endif %}
 {% endblock extra_head %}
 {# Remove core app sidebar, navbar and footer on landing page #}
 {% block sidebar %}
@@ -100,6 +109,7 @@
     <script src="{{ static('js/components/sticky_bar.js') }}"></script>
     <!-- Modular Interactive States -->
     <script src="{{ static('js/language_toggle.js') }}"></script>
+    <script src="{{ static('js/customerService.js') }}"></script>
     <script src="{{ static('js/states/navigation_state.js') }}"></script>
     <script src="{{ static('js/states/corridor_state.js') }}"></script>
     <script src="{{ static('js/states/profile_state.js') }}"></script>

@@ -1,20 +1,23 @@
 """
-Template views and API endpoints for the LoadShare host overrides application.
+Template views for the LoadShare host overrides application.
 
 Provides server-rendered UI views for the root landing page, OTP authentication
-flows, and Layer 2 state persistence for bilingual (English & Hindi) support.
+flows, Layer 2 state persistence for bilingual (English & Hindi) support, and
+direct file-based label resolution from the labels directory.
 """
 
+import json
 import logging
+import os
+from functools import lru_cache
 from typing import Any
 
-from core.utils.labels import resolve_labels
+from core.apps.crm import get_customer_model
+from core.utils.labels import LabelDict
 from core.utils.views import BaseTemplateView
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.views.generic.base import View
-
-from overrides.labels import LANDING_PAGE_LABELS
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,6 +26,8 @@ DEFAULT_LANGUAGE = "en"
 LANGUAGE_COOKIE_NAME = "loadshare_lang"
 DJANGO_LANGUAGE_COOKIE_NAME = "django_language"
 COOKIE_MAX_AGE = 365 * 24 * 60 * 60  # 1 year
+
+Customer = get_customer_model()
 
 
 def get_request_language(request: HttpRequest) -> str:
@@ -50,6 +55,51 @@ def get_request_language(request: HttpRequest) -> str:
         lang = getattr(settings, "LANGUAGE_CODE", DEFAULT_LANGUAGE)
 
     return lang if lang in SUPPORTED_LANGUAGES else DEFAULT_LANGUAGE
+
+
+@lru_cache(maxsize=16)
+def load_labels_file(filename: str) -> dict[str, Any]:
+    """
+    Load a JSON label dictionary from the backend/labels directory.
+
+    Args:
+        filename (str): Name of the JSON file (e.g., 'en.json', 'hi.json').
+
+    Returns:
+        dict[str, Any]: Loaded dictionary or empty dict if not found.
+    """
+    file_path = os.path.join(settings.BASE_DIR, "labels", filename)
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as exc:
+            LOGGER.warning("Could not read labels file %s: %s", filename, exc)
+    return {}
+
+
+def get_language_labels(lang: str = "en") -> dict[str, str]:
+    """
+    Retrieve localized label dictionary for the specified language from json files.
+
+    Args:
+        lang (str): Target language code ('en' or 'hi').
+
+    Returns:
+        dict[str, str]: Dictionary mapping label keys to translated strings.
+    """
+    labels = load_labels_file(f"{lang}.json")
+    if labels and isinstance(labels, dict):
+        return labels
+
+    multi_labels = load_labels_file("users_template_label.json")
+    if multi_labels and isinstance(multi_labels, dict):
+        return {
+            k: (v.get(lang) or v.get("en") or "") if isinstance(v, dict) else str(v)
+            for k, v in multi_labels.items()
+        }
+
+    return {}
 
 
 class SetLanguageView(View):
@@ -88,7 +138,7 @@ class SetLanguageView(View):
         """
         lang = request.POST.get("lang", DEFAULT_LANGUAGE)
         redirect_url = (
-            request.POST.get("next") or request.META.get("HTTP_REFERER") or "/"
+            request.GET.get("next") or request.META.get("HTTP_REFERER") or "/"
         )
         return self._build_response(redirect_url, lang)
 
@@ -122,12 +172,28 @@ class SetLanguageView(View):
 
 class BaseLanguageTemplateView(BaseTemplateView):
     """
-    Base TemplateView providing bilingual context and Layer 2 cookie persistence.
+    Base TemplateView providing bilingual context, file-based labels,
+    and Layer 2 cookie persistence.
     """
+
+    def add_labels_context(self, context: dict) -> None:
+        """
+        Inject template labels directly from file-based dictionaries without database calls.
+
+        Args:
+            context (dict): The template context dictionary.
+        """
+        if "labels" not in context or not isinstance(context["labels"], LabelDict):
+            current_lang = context.get("current_lang") or get_request_language(
+                self.request
+            )
+            active_labels = get_language_labels(current_lang)
+            context["labels"] = LabelDict(backend_labels=active_labels)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """
-        Assemble template context with active language and localized labels.
+        Assemble template context with active language and localized labels
+        retrieved directly from JSON files in the labels directory.
 
         Args:
             **kwargs: Keyword arguments passed to get_context_data.
@@ -140,24 +206,14 @@ class BaseLanguageTemplateView(BaseTemplateView):
         context["current_lang"] = current_lang
         context["supported_languages"] = SUPPORTED_LANGUAGES
 
-        # Build language-specific label dictionaries for client-side data-en and data-hi attributes
-        labels_en = {k: v.get("en", "") for k, v in LANDING_PAGE_LABELS.items()}
-        labels_hi = {k: v.get("hi", "") for k, v in LANDING_PAGE_LABELS.items()}
+        # Load language-specific label dictionaries from backend/labels/
+        labels_en = get_language_labels("en")
+        labels_hi = get_language_labels("hi")
         active_labels = labels_hi if current_lang == "hi" else labels_en
 
         context["labels_en"] = labels_en
         context["labels_hi"] = labels_hi
-
-        # Merge with database-resolved labels using core label infrastructure
-        db_labels = resolve_labels(
-            interface_type=self.template_label_interface_type,
-            language=current_lang,
-        )
-        # Active labels provide direct fallbacks to database labels
-        for key, val in active_labels.items():
-            db_labels.setdefault(key, val)
-
-        context["labels"] = db_labels
+        context["labels"] = LabelDict(backend_labels=active_labels)
         context["user"] = getattr(self.request, "user", None)
         context["phone"] = getattr(
             getattr(self.request, "user", None), "phone_number", None
@@ -168,14 +224,14 @@ class BaseLanguageTemplateView(BaseTemplateView):
         self, context: dict[str, Any], **response_kwargs: Any
     ) -> HttpResponse:
         """
-        Render response and persist active language in cookies if passed via GET parameter.
+        Render response and persist active language and customer ID in cookies.
 
         Args:
             context (dict[str, Any]): Template context dictionary.
             **response_kwargs: Extra keyword arguments passed to response class.
 
         Returns:
-            HttpResponse: Rendered response with language cookie if requested.
+            HttpResponse: Rendered response with cookies attached.
         """
         response = super().render_to_response(context, **response_kwargs)
         requested_lang = self.request.GET.get("lang")
@@ -189,6 +245,13 @@ class BaseLanguageTemplateView(BaseTemplateView):
             response.set_cookie(
                 DJANGO_LANGUAGE_COOKIE_NAME,
                 requested_lang,
+                max_age=COOKIE_MAX_AGE,
+                samesite="Lax",
+            )
+        if customer := context.get("customer"):
+            response.set_cookie(
+                "customer_id",
+                str(customer.id),
                 max_age=COOKIE_MAX_AGE,
                 samesite="Lax",
             )
@@ -301,4 +364,20 @@ class LandingPageView(BaseLanguageTemplateView):
         context.setdefault("redirect_url", default_redirect)
         context.setdefault("page_title", "LoadShare - Route-Based Logistics")
         context.setdefault("page_label", "Logistics Overview")
+
+        # Inject customer model if authenticated
+        user = getattr(self.request, "user", None)
+        if user and user.is_authenticated:
+            customer, _ = Customer.objects.get_or_create_for_user(user)
+            customer = (
+                Customer.objects.filter(pk=customer.pk)
+                .prefetch_related(
+                    "phones",
+                    "emails",
+                    "preferences__preference_type",
+                )
+                .first()
+            )
+            context["customer"] = customer
+
         return context
