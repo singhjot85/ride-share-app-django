@@ -18,6 +18,7 @@ from django.urls import path
 from overrides.api.views import (
     LandingPageView,
     LoginView,
+    LogoutView,
     SetLanguageView,
     SignupView,
 )
@@ -26,6 +27,7 @@ urlpatterns = [
     # UI / Template Endpoints
     path("", LandingPageView.as_view(), name="ui-root"),
     path("login/", LoginView.as_view(), name="ui-login"),
+    path("logout/", LogoutView.as_view(), name="ui-logout"),
     path("signup/", SignupView.as_view(), name="ui-signup"),
     path("register/", SignupView.as_view(), name="ui-register"),
     path("set-language/", SetLanguageView.as_view(), name="set-language"),

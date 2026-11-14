@@ -3,9 +3,13 @@ Unit and integration tests for LoadShare template views, authenticated template 
 and Layer 2 State Persistence for bilingual UI support.
 """
 
+import os
 from datetime import timedelta
 
 import pytest
+from core.apps.crm import (
+    get_customer_model,
+)
 from core.apps.users.services.otp.factory import OTPServiceFactory
 from core.utils.middleware import JWTCookieAuthenticationMiddleware
 from django.conf import settings
@@ -22,6 +26,7 @@ from overrides.api.views import (
     LandingPageView,
     LoginView,
     SignupView,
+    get_language_labels,
 )
 
 
@@ -371,3 +376,96 @@ class TestSetLanguageView:
         response = client.get("/set-language/?lang=invalid_lang&next=/")
         assert response.status_code == 302
         assert response.cookies[LANGUAGE_COOKIE_NAME].value == "en"
+
+
+@pytest.mark.django_db
+class TestCRMCustomerAPI:
+    """
+    Test suite for CRM Customer endpoints (/api/customers/v1/customers/{id}/).
+    """
+
+    def test_unauthenticated_crm_customer_returns_401(self, client: Client, user):
+        """Verify unauthenticated requests to CRM customer detail return 401."""
+        Customer = get_customer_model()
+        customer, _ = Customer.objects.get_or_create_for_user(user)
+
+        response = client.get(f"/api/customers/v1/customers/{customer.id}/")
+        assert response.status_code == 401
+
+    def test_authenticated_crm_customer_returns_details_and_relations(
+        self, client: Client, user
+    ):
+        """Verify authenticated GET /api/customers/v1/customers/{id}/ returns serialized customer data."""
+        Customer = get_customer_model()
+        customer, _ = Customer.objects.get_or_create_for_user(user)
+
+        refresh = RefreshToken.for_user(user)
+        client.cookies["access_token"] = str(refresh.access_token)
+
+        response = client.get(f"/api/customers/v1/customers/{customer.id}/")
+        assert response.status_code == 200
+        data = response.json()
+
+        assert data["id"] == str(customer.id)
+        assert "phones" in data
+        assert "emails" in data
+        assert "preferences" in data
+        # Check primary phone matching user phone number
+        assert len(data["phones"]) >= 1
+        assert data["phones"][0]["phone"] == str(user.phone_number)
+
+    def test_authenticated_crm_customer_updates_profile(self, client: Client, user):
+        """Verify PUT /api/customers/v1/customers/{id}/ updates customer attributes."""
+        Customer = get_customer_model()
+        customer, _ = Customer.objects.get_or_create_for_user(user)
+
+        refresh = RefreshToken.for_user(user)
+        client.cookies["access_token"] = str(refresh.access_token)
+
+        payload = {
+            "business_name": "Sharma Logistics Express",
+            "customer_type": "individual",
+        }
+        response = client.put(
+            f"/api/customers/v1/customers/{customer.id}/",
+            data=payload,
+            content_type="application/json",
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["business_name"] == "Sharma Logistics Express"
+
+
+@pytest.mark.django_db
+class TestFileBasedLabelResolution:
+    """
+    Test suite for file-based label resolution directly from backend/labels directory.
+    """
+
+    def test_json_label_files_exist_and_contain_keys(self):
+        """Verify JSON label files exist in backend/labels/ with full translation keys."""
+        labels_dir = os.path.join(settings.BASE_DIR, "labels")
+        assert os.path.exists(os.path.join(labels_dir, "en.json"))
+        assert os.path.exists(os.path.join(labels_dir, "hi.json"))
+        assert os.path.exists(os.path.join(labels_dir, "users_template_label.json"))
+
+        en_labels = get_language_labels("en")
+        hi_labels = get_language_labels("hi")
+        assert len(en_labels) >= 200
+        assert len(hi_labels) >= 200
+        assert en_labels["brand_name"] == "ROUTEWAY"
+        assert hi_labels["brand_name"] == "लोडशेयर"
+
+    def test_landing_page_renders_labels_directly_from_json_files(
+        self, rf: RequestFactory, user
+    ):
+        """Verify LandingPageView renders Hindi labels directly from JSON files without DB lookup."""
+        request = rf.get("/?lang=hi")
+        request.user = user
+
+        view = LandingPageView.as_view()
+        response = view(request)
+        content = response.render().content.decode("utf-8")
+
+        assert "लोडशेयर" in content
+        assert "उसी रूट पर जा रहे ट्रकों से किफायती पार्सल भेजें" in content

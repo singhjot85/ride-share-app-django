@@ -3,12 +3,19 @@
 {% from "components/filter_chips.jinja" import filter_chips, filter_chip %}
 {% from "components/context_bar.jinja" import context_bar, context_back_btn %}
 {% from "components/modal.jinja" import modal %}
+{% from "components/booking_card.jinja" import booking_cards_container, booking_card, booking_empty_state with context %}
+{% from "components/customer_card.jinja" import customer_card with context %}
 {% set current_user = user if user is defined and user else (request.user if request is defined and request.user is defined else None) %}
-{% set user_display_name = (current_user.get_full_name() if current_user and current_user.get_full_name is defined and current_user.get_full_name() else (current_user.username if current_user and current_user.username is defined else None)) or labels.profile_default_name %}
-{% set user_display_phone = (current_user.phone_number if current_user and current_user.phone_number is defined else None) or (phone if phone is defined and phone else None) or labels.profile_default_phone %}
+{% set customer_inst = customer if customer is defined and customer else None %}
+{% set customer_primary_phone = (customer_inst.phones.all()|selectattr("is_primary")|map(attribute="phone")|first) if (customer_inst and customer_inst.phones.exists()) else ((customer_inst.phones.all()|map(attribute="phone")|first) if (customer_inst and customer_inst.phones.exists()) else (current_user.phone_number if current_user and current_user.phone_number else (phone if phone is defined and phone else ''))) %}
+{% set customer_primary_email = (customer_inst.emails.all()|selectattr("is_primary")|map(attribute="email")|first) if (customer_inst and customer_inst.emails.exists()) else ((customer_inst.emails.all()|map(attribute="email")|first) if (customer_inst and customer_inst.emails.exists()) else (current_user.email if current_user and current_user.email else '')) %}
+{% set user_display_name = (customer_inst.business_name if customer_inst and customer_inst.business_name else (customer_inst.full_name if customer_inst and customer_inst.full_name else None)) or (current_user.get_full_name() if current_user and current_user.get_full_name is defined and current_user.get_full_name() else (current_user.username if current_user and current_user.username is defined else '')) %}
+{% set user_display_phone = customer_primary_phone %}
+{% set user_display_email = customer_primary_email %}
 <section id="view-profile"
          class="landing-tab-view hidden"
-         aria-label="Profile">
+         aria-label="Profile"
+         data-customer-id="{{ customer_inst.id if customer_inst else '' }}">
     <div class="landing-view-container max-w-2xl mx-auto px-4 md:px-8 py-5 space-y-6">
         <!-- ========================================================================= -->
         <!-- 1. PROFILE CONTEXT BAR (Back link + Quick Action) -->
@@ -29,99 +36,9 @@
             </div>
         {% endcall %}
         <!-- ========================================================================= -->
-        <!-- 2. SENDER ACCOUNT CARD -->
+        <!-- 2. CUSTOMER CARD COMPONENT -->
         <!-- ========================================================================= -->
-        <section class="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/60 shadow-sm"
-                 id="account-card">
-            <!-- Display View Mode -->
-            <div class="space-y-3" id="account-view-mode">
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <span class="text-[11px] font-mono uppercase text-on-surface-variant tracking-wider block mb-0.5 lang-text"
-                              data-en="{{ labels_en.profile_sender_account }}"
-                              data-hi="{{ labels_hi.profile_sender_account }}">
-                            {{ labels.profile_sender_account }}
-                        </span>
-                        <h2 class="text-lg font-bold text-primary leading-tight"
-                            id="display-name">{{ user_display_name }}</h2>
-                    </div>
-                    <button type="button"
-                            onclick="toggleProfileEdit(true)"
-                            id="edit-profile-btn"
-                            class="text-secondary font-bold text-xs hover:underline py-1 px-2.5 rounded-lg hover:bg-secondary-fixed/40 transition-colors flex items-center gap-1">
-                        {{ icon("edit", size=14) }}
-                        <span class="lang-text"
-                              data-en="{{ labels_en.profile_edit_btn }}"
-                              data-hi="{{ labels_hi.profile_edit_btn }}">{{ labels.profile_edit_btn }}</span>
-                    </button>
-                </div>
-                <div class="flex items-center gap-2 text-primary">
-                    <span class="text-outline flex items-center">{{ icon("phone_iphone", size=18) }}</span>
-                    <span class="font-mono text-sm font-semibold tracking-tight"
-                          id="display-phone">{{ user_display_phone }}</span>
-                </div>
-                <div class="pt-3 border-t border-outline-variant/30 flex items-center gap-2 text-on-surface-variant text-xs">
-                    <span class="text-success flex items-center">{{ icon("verified", size=16) }}</span>
-                    <span class="lang-text"
-                          data-en="{{ labels_en.profile_member_since }}"
-                          data-hi="{{ labels_hi.profile_member_since }}">{{ labels.profile_member_since }}</span>
-                </div>
-            </div>
-            <!-- Inline Interactive Edit Mode (Hidden initially) -->
-            <form class="hidden space-y-3.5 pt-1"
-                  id="account-edit-mode"
-                  onsubmit="saveProfile(event)">
-                <div class="flex items-center justify-between pb-2 border-b border-outline-variant/30">
-                    <h3 class="text-sm font-bold text-primary lang-text"
-                        data-en="{{ labels_en.profile_edit_title }}"
-                        data-hi="{{ labels_hi.profile_edit_title }}">{{ labels.profile_edit_title }}</h3>
-                    <span class="text-xs font-mono text-on-surface-variant lang-text"
-                          data-en="{{ labels_en.profile_kyc_id }}"
-                          data-hi="{{ labels_hi.profile_kyc_id }}">{{ labels.profile_kyc_id }}</span>
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
-                           for="input-name"
-                           data-en="{{ labels_en.profile_name_label }}"
-                           data-hi="{{ labels_hi.profile_name_label }}">{{ labels.profile_name_label }}</label>
-                    <input class="profile-input"
-                           id="input-name"
-                           required
-                           type="text"
-                           value="{{ user_display_name }}">
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
-                           for="input-phone"
-                           data-en="{{ labels_en.profile_phone_label }}"
-                           data-hi="{{ labels_hi.profile_phone_label }}">{{ labels.profile_phone_label }}</label>
-                    <div class="relative">
-                        <input class="profile-input pl-9 font-mono"
-                               id="input-phone"
-                               required
-                               type="text"
-                               value="{{ user_display_phone }}">
-                        <span class="text-outline absolute left-2.5 top-2.5 flex items-center">{{ icon("phone_iphone", size=16) }}</span>
-                    </div>
-                </div>
-                <div class="flex items-center justify-end gap-2 pt-2">
-                    <button type="button"
-                            onclick="toggleProfileEdit(false)"
-                            id="cancel-profile-btn"
-                            class="px-3.5 py-1.5 rounded-lg border border-outline-variant text-primary font-semibold text-xs hover:bg-surface-container transition-colors">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.profile_cancel_btn }}"
-                              data-hi="{{ labels_hi.profile_cancel_btn }}">{{ labels.profile_cancel_btn }}</span>
-                    </button>
-                    <button type="submit"
-                            class="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-bold text-xs hover:bg-primary-hover transition-colors shadow-xs">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.profile_save_btn }}"
-                              data-hi="{{ labels_hi.profile_save_btn }}">{{ labels.profile_save_btn }}</span>
-                    </button>
-                </div>
-            </form>
-        </section>
+        {{ customer_card(customer=customer_inst, user=current_user, allow_edit=true, allow_maximize=true, labels=labels, labels_en=labels_en, labels_hi=labels_hi) }}
         <!-- ========================================================================= -->
         <!-- 3. YOUR BOOKINGS LIST -->
         <!-- ========================================================================= -->
@@ -133,7 +50,7 @@
                         data-en="{{ labels_en.profile_bookings_title }}"
                         data-hi="{{ labels_hi.profile_bookings_title }}">{{ labels.profile_bookings_title }}</h2>
                     <span class="text-xs font-mono bg-surface-container text-on-surface-variant px-2.5 py-0.5 rounded-full font-bold"
-                          id="booking-count-badge">3</span>
+                          id="booking-count-badge">0</span>
                 </div>
                 <button type="button"
                         onclick="toggleEmptyState()"
@@ -142,8 +59,8 @@
                         data-restore-text="{{ labels.profile_restore_list }}"
                         class="text-xs font-medium text-on-surface-variant hover:text-primary transition-colors underline cursor-pointer">
                     <span class="lang-text"
-                          data-en="{{ labels_en.profile_simulate_empty }}"
-                          data-hi="{{ labels_hi.profile_simulate_empty }}">{{ labels.profile_simulate_empty }}</span>
+                          data-en="{{ labels_en.profile_restore_list }}"
+                          data-hi="{{ labels_hi.profile_restore_list }}">{{ labels.profile_restore_list }}</span>
                 </button>
             </div>
             <!-- Filter Chips Row -->
@@ -152,116 +69,8 @@
                 {{ filter_chip(id="filter-active", value="active", label=labels.profile_filter_active, label_en=labels_en.profile_filter_active, label_hi=labels_hi.profile_filter_active) }}
                 {{ filter_chip(id="filter-completed", value="completed", label=labels.profile_filter_completed, label_en=labels_en.profile_filter_completed, label_hi=labels_hi.profile_filter_completed) }}
             {% endcall %}
-            <!-- Booking Cards Container -->
-            <div class="space-y-3 pt-1" id="booking-cards-list">
-                <!-- Card 1: Active / In Transit -->
-                <article class="booking-item bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-4 shadow-sm hover:border-primary transition-all cursor-pointer"
-                         data-status="active">
-                    <div class="flex items-center justify-between pb-2 mb-2 border-b border-outline-variant/30">
-                        <span class="font-mono font-bold text-sm text-primary tracking-wide flex items-center gap-2">
-                            <span class="live-dot-pulse"></span>
-                            RTW-7814-DEL
-                        </span>
-                        <span class="badge-status-transit text-[11px] font-mono px-2.5 py-0.5 rounded-full flex items-center gap-1 font-semibold">
-                            {{ icon("local_shipping", size=14) }}
-                            <span class="lang-text"
-                                  data-en="{{ labels_en.profile_status_in_transit }}"
-                                  data-hi="{{ labels_hi.profile_status_in_transit }}">
-                                {{ labels.profile_status_in_transit }}
-                            </span>
-                        </span>
-                    </div>
-                    <p class="text-xs font-semibold text-primary">Delhi (Sanjay Gandhi TN) → Jaipur (VKI)</p>
-                    <div class="mt-2.5 pt-2 flex items-center justify-between text-on-surface-variant text-xs">
-                        <div class="flex items-center gap-1">
-                            <span class="text-outline flex items-center">{{ icon("schedule", size=14) }}</span>
-                            <span class="font-mono lang-text"
-                                  data-en="{{ labels_en.profile_departure_today }}"
-                                  data-hi="{{ labels_hi.profile_departure_today }}">
-                                {{ labels.profile_departure_today }}
-                            </span>
-                        </div>
-                        <span class="font-mono font-bold text-sm text-primary">₹2,125</span>
-                    </div>
-                </article>
-                <!-- Card 2: Requested -->
-                <article class="booking-item bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-4 shadow-sm hover:border-primary transition-all cursor-pointer"
-                         data-status="active">
-                    <div class="flex items-center justify-between pb-2 mb-2 border-b border-outline-variant/30">
-                        <span class="font-mono font-bold text-sm text-primary tracking-wide">RTW-7902-JPR</span>
-                        <span class="badge-status-requested text-[11px] font-mono px-2.5 py-0.5 rounded-full flex items-center gap-1 font-semibold">
-                            {{ icon("schedule", size=14) }}
-                            <span class="lang-text"
-                                  data-en="{{ labels_en.profile_status_requested }}"
-                                  data-hi="{{ labels_hi.profile_status_requested }}">
-                                {{ labels.profile_status_requested }}
-                            </span>
-                        </span>
-                    </div>
-                    <p class="text-xs font-semibold text-primary">Jaipur (VKI) → Delhi (Sanjay Gandhi TN)</p>
-                    <div class="mt-2.5 pt-2 flex items-center justify-between text-on-surface-variant text-xs">
-                        <div class="flex items-center gap-1">
-                            <span class="text-outline flex items-center">{{ icon("calendar_today", size=14) }}</span>
-                            <span class="font-mono lang-text"
-                                  data-en="{{ labels_en.profile_departure_tomorrow }}"
-                                  data-hi="{{ labels_hi.profile_departure_tomorrow }}">
-                                {{ labels.profile_departure_tomorrow }}
-                            </span>
-                        </div>
-                        <span class="font-mono font-bold text-sm text-primary">₹850</span>
-                    </div>
-                </article>
-                <!-- Card 3: Completed / Delivered -->
-                <article class="booking-item bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-4 shadow-sm hover:border-primary transition-all cursor-pointer"
-                         data-status="completed">
-                    <div class="flex items-center justify-between pb-2 mb-2 border-b border-outline-variant/30">
-                        <span class="font-mono font-bold text-sm text-primary tracking-wide">RTW-6420-DEL</span>
-                        <span class="badge-status-delivered text-[11px] font-mono px-2.5 py-0.5 rounded-full flex items-center gap-1 font-semibold">
-                            {{ icon("check_circle", size=14) }}
-                            <span class="lang-text"
-                                  data-en="{{ labels_en.profile_status_delivered }}"
-                                  data-hi="{{ labels_hi.profile_status_delivered }}">
-                                {{ labels.profile_status_delivered }}
-                            </span>
-                        </span>
-                    </div>
-                    <p class="text-xs font-semibold text-primary">Delhi (Sanjay Gandhi TN) → Jaipur (VKI)</p>
-                    <div class="mt-2.5 pt-2 flex items-center justify-between text-on-surface-variant text-xs">
-                        <div class="flex items-center gap-1">
-                            <span class="text-outline flex items-center">{{ icon("lock_clock", size=14) }}</span>
-                            <span class="font-mono lang-text"
-                                  data-en="{{ labels_en.profile_delivered_date }}"
-                                  data-hi="{{ labels_hi.profile_delivered_date }}">
-                                {{ labels.profile_delivered_date }}
-                            </span>
-                        </div>
-                        <span class="font-mono font-bold text-sm text-primary">₹3,400</span>
-                    </div>
-                </article>
-            </div>
-            <!-- Empty State Container -->
-            <div class="hidden bg-surface-container-lowest border border-dashed border-outline-variant rounded-2xl p-8 text-center flex-col items-center justify-center my-2 space-y-3"
-                 id="booking-empty-state">
-                <div class="w-14 h-14 rounded-full bg-surface-container flex items-center justify-center mx-auto text-on-surface-variant">
-                    {{ icon("inventory_2", size=28) }}
-                </div>
-                <div>
-                    <h3 class="text-base font-bold text-primary font-mono lang-text"
-                        data-en="{{ labels_en.profile_no_bookings_title }}"
-                        data-hi="{{ labels_hi.profile_no_bookings_title }}">{{ labels.profile_no_bookings_title }}</h3>
-                    <p class="text-xs text-on-surface-variant max-w-xs mx-auto mt-1 lang-text"
-                       data-en="{{ labels_en.profile_no_bookings_desc }}"
-                       data-hi="{{ labels_hi.profile_no_bookings_desc }}">{{ labels.profile_no_bookings_desc }}</p>
-                </div>
-                <button type="button"
-                        onclick="LoadShareNav.switchTab('book-corridor')"
-                        class="bg-secondary text-on-secondary px-4 py-2 rounded-xl inline-flex items-center gap-2 hover:bg-secondary-container transition-colors shadow-xs active:scale-95 text-xs font-bold font-mono">
-                    {{ icon("add_box", size=16) }}
-                    <span class="lang-text"
-                          data-en="{{ labels_en.btn_book_delivery }}"
-                          data-hi="{{ labels_hi.btn_book_delivery }}">{{ labels.btn_book_delivery }}</span>
-                </button>
-            </div>
+            <!-- Booking Cards Container with Default Empty State -->
+            {{ booking_cards_container(id="booking-cards-container", active_state="empty") }}
         </section>
         <!-- ========================================================================= -->
         <!-- 4. SUPPORT & SIGN-OUT -->
@@ -324,18 +133,20 @@
     {% call modal(id="signout-confirm-modal", title=labels.profile_sign_out, icon_name="logout", icon_classes="text-warning") %}
         <p class="text-xs text-on-surface-variant mb-4">
             <span class="lang-text"
-                  data-en="Are you sure you want to sign out of LoadShare?"
-                  data-hi="क्या आप वाकई लोडशेयर से साइन आउट करना चाहते हैं?">Are you sure you want to sign out of LoadShare?</span>
+                  data-en="{{ labels_en.profile_sign_out_confirm|default('Are you sure you want to sign out of LoadShare?') }}"
+                  data-hi="{{ labels_hi.profile_sign_out_confirm|default('क्या आप वाकई लोडशेयर से साइन आउट करना चाहते हैं?') }}">
+                {{ labels.profile_sign_out_confirm|default("Are you sure you want to sign out of LoadShare?") }}
+            </span>
         </p>
         <div class="ls-modal-actions">
             <button type="button"
                     class="ls-modal-btn ls-modal-btn--ghost"
-                    onclick="LoadShareModal.close('signout-confirm-modal')">
+                    onclick="if (window.LoadShareModal) { LoadShareModal.close('signout-confirm-modal'); } else { document.getElementById('signout-confirm-modal').style.display='none'; }">
                 <span class="lang-text" data-en="Cancel" data-hi="रद्द करें">Cancel</span>
             </button>
             <button type="button"
                     class="ls-modal-btn ls-modal-btn--danger"
-                    onclick="LoadShareProfile.executeSignOut()">
+                    onclick="executeSignOut()">
                 {{ icon("logout", size=16) }}
                 <span class="lang-text"
                       data-en="{{ labels_en.profile_sign_out }}"
@@ -343,4 +154,62 @@
             </button>
         </div>
     {% endcall %}
+    <!-- Self-contained Sign Out Controller Script -->
+    <script>
+        (function() {
+            if (!window.executeSignOut) {
+                window.executeSignOut = function() {
+                    var cookieNames = [
+                        "access_token",
+                        "refresh_token",
+                        "loadshare_jwt",
+                        "customer_id",
+                        "sessionid",
+                        "jwt_auth_synced"
+                    ];
+                    for (var i = 0; i < cookieNames.length; i++) {
+                        var name = cookieNames[i];
+                        document.cookie = name + "=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                        document.cookie = name + "=; path=/; domain=" + window.location.hostname + "; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    }
+                    try {
+                        if (window.sessionStorage) {
+                            sessionStorage.removeItem("customer_id");
+                            sessionStorage.removeItem("customer_data");
+                            sessionStorage.removeItem("jwt_auth_synced");
+                            sessionStorage.clear();
+                        }
+                        if (window.localStorage) {
+                            localStorage.removeItem("customer_id");
+                            localStorage.removeItem("customer_data");
+                        }
+                    } catch (e) {
+                        console.debug("Sign out storage clear error:", e);
+                    }
+                    window.location.href = "/logout/";
+                };
+            }
+
+            if (!window.confirmSignOut) {
+                window.confirmSignOut = function() {
+                    if (window.LoadShareModal && document.getElementById("signout-confirm-modal")) {
+                        window.LoadShareModal.open("signout-confirm-modal");
+                    } else {
+                        var isHi = (window.getActiveLanguage && window.getActiveLanguage() === "hi");
+                        var msg = isHi ?
+                            "क्या आप वाकई लोडशेयर से साइन आउट करना चाहते हैं?" :
+                            "Are you sure you want to sign out of LoadShare?";
+                        if (window.confirm(msg)) {
+                            window.executeSignOut();
+                        }
+                    }
+                };
+            }
+
+            if (window.LoadShareProfile) {
+                window.LoadShareProfile.confirmSignOut = window.confirmSignOut;
+                window.LoadShareProfile.executeSignOut = window.executeSignOut;
+            }
+        })();
+    </script>
 </section>
