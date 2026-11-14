@@ -453,9 +453,21 @@
     "en": "Profile",
     "hi": "प्रोफ़ाइल"
   },
+  "profile_data": {
+    "en": "Profile Data",
+    "hi": "प्रोफ़ाइल डेटा"
+  },
+  "profile_download_doc": {
+    "en": "Download",
+    "hi": "डाउनलोड करें"
+  },
+  "profile_no_document_file": {
+    "en": "No file attached",
+    "hi": "कोई फ़ाइल संलग्न नहीं है"
+  },
   "profile_sender_account": {
-    "en": "Sender Account",
-    "hi": "प्रेषक खाता"
+    "en": "Profile Data",
+    "hi": "प्रोफ़ाइल डेटा"
   },
   "profile_default_name": {
     "en": "Rajesh Trading Co. (Rajesh Sharma)",
@@ -570,8 +582,8 @@
     "hi": "साइन आउट"
   },
   "profile_sign_out_confirm": {
-    "en": "Are you sure you want to sign out of Routeway?",
-    "hi": "क्या आप वाकई साइन आउट करना चाहते हैं?"
+    "en": "Are you sure you want to sign out of LoadShare?",
+    "hi": "क्या आप वाकई लोडशेयर से साइन आउट करना चाहते हैं?"
   },
   "profile_legal_notice": {
     "en": "Pay on delivery via UPI or cash. Registered carrier under Carriage by Road Act.",

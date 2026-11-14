@@ -7,7 +7,9 @@ import os
 from datetime import timedelta
 
 import pytest
-from core.apps.crm import get_customer_model
+from core.apps.crm import (
+    get_customer_model,
+)
 from core.apps.users.services.otp.factory import OTPServiceFactory
 from core.utils.middleware import JWTCookieAuthenticationMiddleware
 from django.conf import settings

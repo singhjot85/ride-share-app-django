@@ -14,8 +14,10 @@ from typing import Any
 
 from core.apps.crm import get_customer_model
 from core.utils.labels import LabelDict
+from core.utils.middleware import JWTCookieAuthenticationMiddleware
 from core.utils.views import BaseTemplateView
 from django.conf import settings
+from django.contrib.auth import logout as django_logout
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.views.generic.base import View
 
@@ -167,6 +169,46 @@ class SetLanguageView(View):
             max_age=COOKIE_MAX_AGE,
             samesite="Lax",
         )
+        return response
+
+
+class LogoutView(View):
+    """
+    View handling user sign out and session termination.
+
+    Flushes the server-side Django session, drops JWT and identity cookies
+    (access_token, refresh_token, loadshare_jwt, customer_id, sessionid),
+    and redirects the client to the OTP login gateway.
+    """
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """
+        Handle sign out requests across all HTTP verbs by clearing state and redirecting.
+
+        Args:
+            request (HttpRequest): Incoming HTTP request.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponse: HTTP 302 redirect to the sign-in page with deletion cookies attached.
+        """
+        django_logout(request)
+
+        redirect_url = request.GET.get("next") or "/login/"
+        response = HttpResponseRedirect(redirect_url)
+
+        # Invalidate authentication, tenant, customer, and session cookies
+        response.delete_cookie("access_token", path="/")
+        response.delete_cookie("refresh_token", path="/")
+        response.delete_cookie("loadshare_jwt", path="/")
+        response.delete_cookie("customer_id", path="/")
+        response.delete_cookie("sessionid", path="/")
+        response.delete_cookie("jwt_auth_synced", path="/")
+
+        if hasattr(JWTCookieAuthenticationMiddleware, "clear_auth_cookies"):
+            JWTCookieAuthenticationMiddleware.clear_auth_cookies(response)
+
         return response
 
 
@@ -374,6 +416,8 @@ class LandingPageView(BaseLanguageTemplateView):
                 .prefetch_related(
                     "phones",
                     "emails",
+                    "addresses",
+                    "identifications",
                     "preferences__preference_type",
                 )
                 .first()

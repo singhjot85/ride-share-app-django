@@ -1,0 +1,487 @@
+{# =============================================================================
+   Customer Card Component Macro
+   Provides a responsive, multi-view customer profile card for desktop and mobile.
+
+   Features:
+   - Displays Customer / Business Name with verified status badge.
+   - For unverified customers (when customer.is_verified is not true),
+     displays a verification progress bar based on contact verification.
+   - Primary contact row: phone, email, and primary address.
+   - Member since: rendered from customer.created (omitted if no date).
+   - Optional inline editing (allow_edit=True) integrating with CustomerService.
+   - KYC ID #4920 removed from edit mode.
+   - Optional maximized details view (allow_maximize=True) displaying:
+     * All customer phones with ContactTypeChoices mapping.
+     * All customer emails with ContactTypeChoices mapping.
+     * All customer addresses with AddressTypeChoices mapping.
+     * Dedicated slot for future CustomerIdentification KYC documents.
+   ============================================================================= #}
+{% from "core/components/common/icons.jinja" import icon %}
+{% macro customer_card(customer=None, user=None, allow_edit=true, allow_maximize=true, is_maximized=false, id="account-card", extra_classes="", labels=None, labels_en=None, labels_hi=None) %}
+    {% set lbls = labels if (labels is defined and labels) else {} %}
+    {% set lbls_en = labels_en if (labels_en is defined and labels_en) else {} %}
+    {% set lbls_hi = labels_hi if (labels_hi is defined and labels_hi) else {} %}
+    {# Derive customer name with fallbacks #}
+    {% set cust_name = (customer.business_name if customer and customer.business_name else (customer.full_name if customer and customer.full_name else None)) or (user.get_full_name() if user and user.get_full_name is defined and user.get_full_name() else (user.username if user and user.username is defined else '')) %}
+    {# Extract primary contacts #}
+    {% set customer_phones = customer.phones.all() if (customer and customer.phones.exists()) else [] %}
+    {% set primary_phone_obj = (customer_phones|selectattr("is_primary")|first) if customer_phones else None %}
+    {% set primary_phone = (primary_phone_obj.phone if primary_phone_obj else (customer_phones[0].phone if customer_phones else (user.phone_number if user and user.phone_number else ''))) %}
+    {% set customer_emails = customer.emails.all() if (customer and customer.emails.exists()) else [] %}
+    {% set primary_email_obj = (customer_emails|selectattr("is_primary")|first) if customer_emails else None %}
+    {% set primary_email = (primary_email_obj.email if primary_email_obj else (customer_emails[0].email if customer_emails else (user.email if user and user.email else ''))) %}
+    {% set customer_addresses = customer.addresses.all() if (customer and customer.addresses.exists()) else [] %}
+    {% set primary_addr_obj = (customer_addresses|selectattr("is_primary")|first) if customer_addresses else (customer_addresses[0] if customer_addresses else None) %}
+    {% set primary_address = (primary_addr_obj.full_address if primary_addr_obj and primary_addr_obj.full_address else (primary_addr_obj.address_line_1 if primary_addr_obj else '')) %}
+    {% set customer_identifications = customer.identifications.all() if (customer and customer.identifications.exists()) else [] %}
+    {# Verified status flag (turns green only if customer.is_verified is truthy, default not present) #}
+    {% set is_verified = (customer.is_verified if (customer and customer.is_verified is defined and customer.is_verified is not none) else false) %}
+    {# Calculate verification progress for unverified customers #}
+    {% set has_v_phone = (customer_phones|selectattr("is_verified")|list|length > 0) or (primary_phone|length > 0) %}
+    {% set has_v_email = (customer_emails|selectattr("is_verified")|list|length > 0) %}
+    {% set has_v_addr = (customer_addresses|list|length > 0) %}
+    {% set has_v_id = (customer_identifications|selectattr("is_verified")|list|length > 0) %}
+    {% set completed_steps = (1 if has_v_phone else 0) + (1 if has_v_email else 0) + (1 if has_v_addr else 0) + (1 if has_v_id else 0) %}
+    {% set progress_pct = completed_steps * 25 %}
+    <section class="bg-surface-container-lowest rounded-2xl p-5 md:p-6 border border-outline-variant/60 shadow-sm transition-all duration-200{% if extra_classes %} {{ extra_classes }}{% endif %}"
+             id="{{ id }}"
+             data-customer-card="true"
+             data-customer-id="{{ customer.id if customer else '' }}"
+             data-verified="{{ 'true' if is_verified else 'false' }}">
+        <!-- ===================================================================== -->
+        <!-- DISPLAY VIEW MODE -->
+        <!-- ===================================================================== -->
+        <div class="space-y-4" id="account-view-mode">
+            <!-- Header Row: Label, Name, Verified Badge & Action Controls -->
+            <div class="flex items-start justify-between gap-3">
+                <div class="space-y-1">
+                    <span class="text-[11px] font-mono uppercase text-on-surface-variant tracking-wider block lang-text"
+                          data-en="{{ lbls_en.profile_data|default('Profile Data') }}"
+                          data-hi="{{ lbls_hi.profile_data|default('प्रोफ़ाइल डेटा') }}">
+                        {{ lbls.profile_data|default("Profile Data") }}
+                    </span>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h2 class="text-lg md:text-xl font-bold text-primary leading-tight tracking-tight"
+                            id="display-name">{{ cust_name or lbls.profile_name_label|default("Sender Name") }}</h2>
+                        <!-- Verified Badge (green pill, visible only when is_verified is true) -->
+                        <span id="customer-verified-badge"
+                              class="{% if not is_verified %}hidden {% endif %}inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                            {{ icon("verified", size=13) }}
+                            <span class="lang-text"
+                                  data-en="{{ lbls_en.profile_verified|default('Verified') }}"
+                                  data-hi="{{ lbls_hi.profile_verified|default('सत्यापित') }}">
+                                {{ lbls.profile_verified|default("Verified") }}
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <!-- Action Controls: Maximize & Edit -->
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                    {% if allow_maximize %}
+                        <button type="button"
+                                onclick="toggleProfileMaximize()"
+                                id="toggle-maximize-btn"
+                                aria-expanded="{{ 'true' if is_maximized else 'false' }}"
+                                title="{{ lbls.profile_view_all_details|default('View all details') }}"
+                                class="text-xs font-semibold text-primary hover:text-secondary py-1 px-2 rounded-lg hover:bg-surface-container transition-colors flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                            <span id="maximize-icon"
+                                  class="flex items-center transition-transform duration-200{% if is_maximized %} rotate-180{% endif %}">
+                                {{ icon("expand_more", size=16) }}
+                            </span>
+                            <span id="maximize-btn-text"
+                                  class="hidden sm:inline lang-text"
+                                  data-en="{{ (lbls_en.profile_hide_details if is_maximized else lbls_en.profile_view_all_details)|default('View all details') }}"
+                                  data-hi="{{ (lbls_hi.profile_hide_details if is_maximized else lbls_hi.profile_view_all_details)|default('सभी विवरण देखें') }}">
+                                {{ (lbls.profile_hide_details if is_maximized else lbls.profile_view_all_details)|default("View all details") }}
+                            </span>
+                        </button>
+                    {% endif %}
+                    {% if allow_edit %}
+                        <button type="button"
+                                onclick="toggleProfileEdit(true)"
+                                id="edit-profile-btn"
+                                class="text-secondary font-bold text-xs hover:underline py-1 px-2.5 rounded-lg hover:bg-secondary-fixed/40 transition-colors flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/20">
+                            {{ icon("edit", size=14) }}
+                            <span class="lang-text"
+                                  data-en="{{ lbls_en.profile_edit_btn|default('Edit') }}"
+                                  data-hi="{{ lbls_hi.profile_edit_btn|default('संपादित करें') }}">
+                                {{ lbls.profile_edit_btn|default("Edit") }}
+                            </span>
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Verification Progress Bar for unverified customers -->
+            <div id="customer-verification-progress-container"
+                 class="{% if is_verified %}hidden {% endif %}bg-surface-container/40 rounded-xl p-3 border border-outline-variant/40 space-y-1.5">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-on-surface-variant font-medium flex items-center gap-1.5">
+                        {{ icon("pending", size=14) }}
+                        <span class="lang-text"
+                              data-en="{{ lbls_en.profile_verification_progress|default('Verification progress') }}"
+                              data-hi="{{ lbls_hi.profile_verification_progress|default('सत्यापन प्रगति') }}">
+                            {{ lbls.profile_verification_progress|default("Verification progress") }}
+                        </span>
+                    </span>
+                    <span class="font-mono font-bold text-primary"
+                          id="verification-progress-text">{{ progress_pct }}%</span>
+                </div>
+                <div class="w-full bg-surface-container-high rounded-full h-1.5 overflow-hidden">
+                    <div id="verification-progress-bar"
+                         class="bg-primary h-1.5 rounded-full transition-all duration-300 ease-out"
+                         style="width: {{ progress_pct }}%"></div>
+                </div>
+            </div>
+            <!-- Primary Contact Data (Mobile & Desktop Responsive Grid) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                <!-- Primary Phone -->
+                <div class="flex items-center gap-2.5 text-primary text-sm min-w-0"
+                     id="phone-container">
+                    <span class="text-outline flex-shrink-0 flex items-center">{{ icon("phone_iphone", size=18) }}</span>
+                    <span class="font-mono font-semibold tracking-tight truncate"
+                          id="display-phone">{{ primary_phone or '—' }}</span>
+                </div>
+                <!-- Primary Email -->
+                <div class="flex items-center gap-2.5 text-primary text-sm min-w-0"
+                     id="email-container"
+                     {% if not primary_email %}style="display: none;"{% endif %}>
+                    <span class="text-outline flex-shrink-0 flex items-center">{{ icon("mail", size=18) }}</span>
+                    <span class="font-mono font-semibold tracking-tight truncate"
+                          id="display-email">{{ primary_email or '—' }}</span>
+                </div>
+                <!-- Primary Address -->
+                <div class="flex items-start gap-2.5 text-primary text-xs sm:col-span-2 min-w-0"
+                     id="address-container">
+                    <span class="text-outline flex-shrink-0 flex items-center mt-0.5">{{ icon("location_on", size=18) }}</span>
+                    <span class="text-on-surface-variant leading-relaxed truncate"
+                          id="display-address"
+                          title="{{ primary_address }}">
+                        {{ primary_address or lbls.profile_no_address|default("No address on file") }}
+                    </span>
+                </div>
+            </div>
+            <!-- Member Since (Rendered ONLY if customer.created exists) -->
+            {% if customer and customer.created %}
+                <div id="customer-member-since"
+                     class="pt-3 border-t border-outline-variant/30 flex items-center gap-2 text-on-surface-variant text-xs">
+                    <span class="text-outline flex items-center">{{ icon("calendar_today", size=14) }}</span>
+                    <span class="lang-text"
+                          data-en="{{ lbls_en.profile_member_since_prefix|default("Member since") }} {{ customer.created.strftime("%b %Y") }}"
+                          data-hi="{{ lbls_hi.profile_member_since_prefix|default("सदस्यता") }} {{ customer.created.strftime("%b %Y") }}">
+                        {{ lbls.profile_member_since_prefix|default("Member since") }} {{ customer.created.strftime("%b %Y") }}
+                    </span>
+                </div>
+            {% else %}
+                <div id="customer-member-since"
+                     class="pt-3 border-t border-outline-variant/30 hidden items-center gap-2 text-on-surface-variant text-xs">
+                    <span class="text-outline flex items-center">{{ icon("calendar_today", size=14) }}</span>
+                    <span id="customer-member-since-text"></span>
+                </div>
+            {% endif %}
+        </div>
+        <!-- ===================================================================== -->
+        <!-- OPTIONAL INLINE EDIT MODE (KYC ID removed) -->
+        <!-- ===================================================================== -->
+        {% if allow_edit %}
+            <form class="hidden space-y-3.5 pt-1"
+                  id="account-edit-mode"
+                  onsubmit="saveProfile(event)">
+                <div class="flex items-center justify-between pb-2 border-b border-outline-variant/30">
+                    <h3 class="text-sm font-bold text-primary lang-text"
+                        data-en="{{ lbls_en.profile_edit_title|default('Edit Account Details') }}"
+                        data-hi="{{ lbls_hi.profile_edit_title|default('खाता विवरण संपादित करें') }}">
+                        {{ lbls.profile_edit_title|default("Edit Account Details") }}
+                    </h3>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
+                           for="input-name"
+                           data-en="{{ lbls_en.profile_name_label|default('Business / Sender Name') }}"
+                           data-hi="{{ lbls_hi.profile_name_label|default('व्यवसाय / प्रेषक का नाम') }}">
+                        {{ lbls.profile_name_label|default("Business / Sender Name") }}
+                    </label>
+                    <input class="profile-input"
+                           id="input-name"
+                           required
+                           type="text"
+                           value="{{ cust_name }}">
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
+                           for="input-phone"
+                           data-en="{{ lbls_en.profile_phone_label|default('Mobile Contact') }}"
+                           data-hi="{{ lbls_hi.profile_phone_label|default('मोबाइल नंबर') }}">
+                        {{ lbls.profile_phone_label|default("Mobile Contact") }}
+                    </label>
+                    <div class="relative">
+                        <input class="profile-input pl-9 font-mono"
+                               id="input-phone"
+                               type="text"
+                               value="{{ primary_phone }}">
+                        <span class="text-outline absolute left-2.5 top-2.5 flex items-center">{{ icon("phone_iphone", size=16) }}</span>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
+                           for="input-email"
+                           data-en="{{ lbls_en.email|default('Email') }}"
+                           data-hi="{{ lbls_hi.email|default('ईमेल') }}">{{ lbls.email|default("Email") }}</label>
+                    <div class="relative">
+                        <input class="profile-input pl-9 font-mono"
+                               id="input-email"
+                               type="email"
+                               value="{{ primary_email }}">
+                        <span class="text-outline absolute left-2.5 top-2.5 flex items-center">{{ icon("mail", size=16) }}</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button"
+                            onclick="toggleProfileEdit(false)"
+                            id="cancel-profile-btn"
+                            class="px-3.5 py-1.5 rounded-lg border border-outline-variant text-primary font-semibold text-xs hover:bg-surface-container transition-colors">
+                        <span class="lang-text"
+                              data-en="{{ lbls_en.profile_cancel_btn|default('Cancel') }}"
+                              data-hi="{{ lbls_hi.profile_cancel_btn|default('रद्द करें') }}">
+                            {{ lbls.profile_cancel_btn|default("Cancel") }}
+                        </span>
+                    </button>
+                    <button type="submit"
+                            id="save-profile-btn"
+                            class="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-bold text-xs hover:bg-primary-hover transition-colors shadow-xs">
+                        <span class="lang-text"
+                              data-en="{{ lbls_en.profile_save_btn|default('Save Changes') }}"
+                              data-hi="{{ lbls_hi.profile_save_btn|default('परिवर्तन सहेजें') }}">
+                            {{ lbls.profile_save_btn|default("Save Changes") }}
+                        </span>
+                    </button>
+                </div>
+            </form>
+        {% endif %}
+        <!-- ===================================================================== -->
+        <!-- OPTIONAL MAXIMIZE VIEW (All addresses, phones, emails & KYC slot) -->
+        <!-- ===================================================================== -->
+        {% if allow_maximize %}
+            <div id="account-maximize-details"
+                 class="{% if not is_maximized %}hidden {% endif %}pt-4 mt-4 border-t border-outline-variant/30 space-y-4 transition-all">
+                <!-- 1. All Phone Numbers -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-xs font-semibold text-primary">
+                        <span class="flex items-center gap-1.5">
+                            {{ icon("phone_iphone", size=15) }}
+                            <span class="lang-text"
+                                  data-en="{{ lbls_en.profile_all_phones|default('Phone Numbers') }}"
+                                  data-hi="{{ lbls_hi.profile_all_phones|default('फ़ोन नंबर') }}">
+                                {{ lbls.profile_all_phones|default("Phone Numbers") }}
+                            </span>
+                        </span>
+                        <span class="text-[11px] font-mono text-on-surface-variant"
+                              id="phones-count">{{ customer_phones|length }}</span>
+                    </div>
+                    <div class="space-y-1.5" id="customer-phones-list">
+                        {% if customer_phones %}
+                            {% for p in customer_phones %}
+                                <div class="flex items-center gap-2 text-xs">
+                                    <span class="{% if p.is_primary %}min-w-[4.5rem] sm:min-w-[5.5rem] text-[10px] uppercase font-mono font-bold text-on-primary bg-primary shadow-xs ring-1 ring-primary/30{% else %}min-w-[4.5rem] sm:min-w-[5.5rem] text-[10px] uppercase font-mono font-bold text-on-surface-variant bg-surface-container{% endif %} px-2 py-1 rounded text-center flex-shrink-0 whitespace-nowrap"
+                                          title="{{ p.phone_type|title }}">{{ p.phone_type|title }}</span>
+                                    <div class="flex-1 flex items-center justify-between p-2 rounded-lg bg-surface-container/30 border border-outline-variant/30">
+                                        <span class="font-mono font-medium text-primary">{{ p.phone }}</span>
+                                        {% if p.is_verified %}
+                                            <span class="inline-flex items-center text-emerald-600 dark:text-emerald-400"
+                                                  title="{{ lbls.profile_verified_chip|default('Verified') }}">
+                                                {{ icon("verified", size=15) }}
+                                            </span>
+                                        {% else %}
+                                            <span class="inline-flex items-center text-amber-500/90 dark:text-amber-400/90"
+                                                  title="{{ lbls.profile_unverified_chip|default('Unverified') }}">
+                                                {{ icon("pending", size=15) }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-xs text-on-surface-variant italic py-1">{{ lbls.profile_no_phone|default("No phone on file") }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- 2. All Email Addresses -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-xs font-semibold text-primary">
+                        <span class="flex items-center gap-1.5">
+                            {{ icon("mail", size=15) }}
+                            <span class="lang-text"
+                                  data-en="{{ lbls_en.profile_all_emails|default('Email Addresses') }}"
+                                  data-hi="{{ lbls_hi.profile_all_emails|default('ईमेल पते') }}">
+                                {{ lbls.profile_all_emails|default("Email Addresses") }}
+                            </span>
+                        </span>
+                        <span class="text-[11px] font-mono text-on-surface-variant"
+                              id="emails-count">{{ customer_emails|length }}</span>
+                    </div>
+                    <div class="space-y-1.5" id="customer-emails-list">
+                        {% if customer_emails %}
+                            {% for e in customer_emails %}
+                                <div class="flex items-center gap-2 text-xs">
+                                    <span class="{% if e.is_primary %}min-w-[4.5rem] sm:min-w-[5.5rem] text-[10px] uppercase font-mono font-bold text-on-primary bg-primary shadow-xs ring-1 ring-primary/30{% else %}min-w-[4.5rem] sm:min-w-[5.5rem] text-[10px] uppercase font-mono font-bold text-on-surface-variant bg-surface-container{% endif %} px-2 py-1 rounded text-center flex-shrink-0 whitespace-nowrap"
+                                          title="{{ e.email_type|title }}">{{ e.email_type|title }}</span>
+                                    <div class="flex-1 flex items-center justify-between p-2 rounded-lg bg-surface-container/30 border border-outline-variant/30">
+                                        <span class="font-mono font-medium text-primary truncate">{{ e.email }}</span>
+                                        {% if e.is_verified %}
+                                            <span class="inline-flex items-center text-emerald-600 dark:text-emerald-400 flex-shrink-0"
+                                                  title="{{ lbls.profile_verified_chip|default('Verified') }}">
+                                                {{ icon("verified", size=15) }}
+                                            </span>
+                                        {% else %}
+                                            <span class="inline-flex items-center text-amber-500/90 dark:text-amber-400/90 flex-shrink-0"
+                                                  title="{{ lbls.profile_unverified_chip|default('Unverified') }}">
+                                                {{ icon("pending", size=15) }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-xs text-on-surface-variant italic py-1">{{ lbls.profile_no_email|default("No email on file") }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- 3. All Addresses -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-xs font-semibold text-primary">
+                        <span class="flex items-center gap-1.5">
+                            {{ icon("location_on", size=15) }}
+                            <span class="lang-text"
+                                  data-en="{{ lbls_en.profile_all_addresses|default('Addresses') }}"
+                                  data-hi="{{ lbls_hi.profile_all_addresses|default('सहेजे गए पते') }}">
+                                {{ lbls.profile_all_addresses|default("Addresses") }}
+                            </span>
+                        </span>
+                        <span class="text-[11px] font-mono text-on-surface-variant"
+                              id="addresses-count">{{ customer_addresses|length }}</span>
+                    </div>
+                    <div class="space-y-1.5" id="customer-addresses-list">
+                        {% if customer_addresses %}
+                            {% for a in customer_addresses %}
+                                <div class="flex items-start gap-2 text-xs">
+                                    <span class="{% if a.is_primary %}min-w-[4.5rem] sm:min-w-[5.5rem] text-[10px] uppercase font-mono font-bold text-on-primary bg-primary shadow-xs ring-1 ring-primary/30{% else %}min-w-[4.5rem] sm:min-w-[5.5rem] text-[10px] uppercase font-mono font-bold text-on-surface-variant bg-surface-container{% endif %} px-2 py-1 rounded text-center flex-shrink-0 mt-0.5 whitespace-nowrap"
+                                          title="{{ a.address_type|title }}">{{ a.address_type|title }}</span>
+                                    <div class="flex-1 p-2.5 rounded-lg bg-surface-container/30 border border-outline-variant/30">
+                                        <p class="text-primary font-medium leading-snug">{{ a.full_address }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-xs text-on-surface-variant italic py-1">{{ lbls.profile_no_address|default("No address on file") }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- 4. CustomerIdentification Slot (Future KYC Integration) -->
+                <div class="space-y-2 pt-1" id="customer-identifications-container">
+                    <div class="flex items-center justify-between text-xs font-semibold text-primary">
+                        <span class="flex items-center gap-1.5">
+                            {{ icon("badge", size=15) }}
+                            <span class="lang-text"
+                                  data-en="{{ lbls_en.profile_identifications|default('Identity & KYC Documents') }}"
+                                  data-hi="{{ lbls_hi.profile_identifications|default('पहचान और केवाईसी दस्तावेज') }}">
+                                {{ lbls.profile_identifications|default("Identity & KYC Documents") }}
+                            </span>
+                        </span>
+                        <span class="text-[11px] font-mono text-on-surface-variant"
+                              id="identifications-count">{{ customer_identifications|length }}</span>
+                    </div>
+                    <div class="space-y-1.5" id="customer-identifications-list">
+                        {% if customer_identifications %}
+                            {% for id_doc in customer_identifications %}
+                                <div class="flex items-center gap-2 text-xs">
+                                    <span class="min-w-[4.5rem] sm:min-w-[5.5rem] text-[10px] uppercase font-mono font-bold text-on-surface-variant bg-surface-container px-2 py-1 rounded text-center flex-shrink-0 whitespace-nowrap"
+                                          title="{{ id_doc.identity_type_display or id_doc.type|title }}">
+                                        {{ id_doc.identity_type_display or id_doc.type|title }}
+                                    </span>
+                                    <div class="flex-1 flex items-center justify-between p-2 rounded-lg bg-surface-container/30 border border-outline-variant/30 gap-2">
+                                        <div class="flex items-center gap-2 min-w-0">
+                                            {% if id_doc.document %}
+                                                {% set doc_url = id_doc.document.url if id_doc.document.url is defined else id_doc.document %}
+                                                <a href="{{ doc_url }}"
+                                                   download
+                                                   target="_blank"
+                                                   rel="noopener noreferrer"
+                                                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-primary font-semibold text-[11px] border border-outline-variant/40 transition-colors shadow-xs active:scale-95"
+                                                   title="Download {{ id_doc.identity_type_display or id_doc.type|title }}">
+                                                    {{ icon("download", size=14) }}
+                                                    <span>{{ lbls.profile_download_doc|default("Download") }}</span>
+                                                </a>
+                                            {% else %}
+                                                <span class="text-on-surface-variant text-[11px] italic">
+                                                    {{ lbls.profile_no_document_file|default("No file attached") }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            {% if id_doc.is_verified %}
+                                                <span class="inline-flex items-center text-emerald-600 dark:text-emerald-400"
+                                                      title="{{ lbls.profile_verified_chip|default('Verified') }}">
+                                                    {{ icon("verified", size=15) }}
+                                                </span>
+                                            {% else %}
+                                                <span class="inline-flex items-center text-amber-500/90 dark:text-amber-400/90"
+                                                      title="{{ id_doc.status|title if id_doc.status else lbls.profile_unverified_chip|default('Unverified') }}">
+                                                    {{ icon("pending", size=15) }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Slot Placeholder ready for KYC integration -->
+                            <div class="rounded-xl border border-dashed border-outline-variant/70 p-3 text-center text-xs text-on-surface-variant bg-surface-container/20">
+                                <span class="lang-text"
+                                      data-en="{{ lbls_en.profile_identifications_empty|default('Identity verification documents will appear here once submitted.') }}"
+                                      data-hi="{{ lbls_hi.profile_identifications_empty|default('दस्तावेज़ जमा करने के बाद पहचान सत्यापन यहाँ दिखाई देगा।') }}">
+                                    {{ lbls.profile_identifications_empty|default("Identity verification documents will appear here once submitted.") }}
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+    {% if allow_maximize %}
+        <script>
+            (function() {
+                if (typeof window.toggleProfileMaximize !== "function") {
+                    window.toggleProfileMaximize = function(forceState) {
+                        var detailsPanel = document.getElementById("account-maximize-details");
+                        var toggleBtn = document.getElementById("toggle-maximize-btn");
+                        var maxIcon = document.getElementById("maximize-icon");
+                        var btnText = document.getElementById("maximize-btn-text");
+
+                        if (!detailsPanel) return;
+
+                        var isHidden = detailsPanel.classList.contains("hidden");
+                        var shouldShow = typeof forceState === "boolean" ? forceState : isHidden;
+
+                        if (shouldShow) {
+                            detailsPanel.classList.remove("hidden");
+                            if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "true");
+                            if (maxIcon) maxIcon.classList.add("rotate-180");
+                            if (btnText) {
+                                var hideText = (window.getActiveLanguage && window.getActiveLanguage() === "hi") ? "विवरण छिपाएं" : "Hide details";
+                                btnText.textContent = hideText;
+                            }
+                        } else {
+                            detailsPanel.classList.add("hidden");
+                            if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+                            if (maxIcon) maxIcon.classList.remove("rotate-180");
+                            if (btnText) {
+                                var showText = (window.getActiveLanguage && window.getActiveLanguage() === "hi") ? "सभी विवरण देखें" : "View all details";
+                                btnText.textContent = showText;
+                            }
+                        }
+                    };
+                }
+            })();
+        </script>
+    {% endif %}
+{% endmacro %}

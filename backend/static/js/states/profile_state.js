@@ -35,6 +35,40 @@
     }
 
     /**
+     * Toggle maximize/minimize customer full details panel.
+     * @param {boolean} [forceState]
+     */
+    function toggleProfileMaximize(forceState) {
+        var detailsPanel = document.getElementById("account-maximize-details");
+        var toggleBtn = document.getElementById("toggle-maximize-btn");
+        var maxIcon = document.getElementById("maximize-icon");
+        var btnText = document.getElementById("maximize-btn-text");
+
+        if (!detailsPanel) return;
+
+        var isHidden = detailsPanel.classList.contains("hidden");
+        var shouldShow = typeof forceState === "boolean" ? forceState : isHidden;
+
+        if (shouldShow) {
+            detailsPanel.classList.remove("hidden");
+            if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "true");
+            if (maxIcon) maxIcon.classList.add("rotate-180");
+            if (btnText) {
+                var hideText = (window.getActiveLanguage && window.getActiveLanguage() === "hi") ? "विवरण छिपाएं" : "Hide details";
+                btnText.textContent = hideText;
+            }
+        } else {
+            detailsPanel.classList.add("hidden");
+            if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+            if (maxIcon) maxIcon.classList.remove("rotate-180");
+            if (btnText) {
+                var showText = (window.getActiveLanguage && window.getActiveLanguage() === "hi") ? "सभी विवरण देखें" : "View all details";
+                btnText.textContent = showText;
+            }
+        }
+    }
+
+    /**
      * Handle account details form submission and persist via CustomerService.
      * @param {Event} event
      */
@@ -183,10 +217,12 @@
      * Sign out user confirmation dialog.
      */
     function confirmSignOut() {
-        if (window.LoadShareModal) {
+        if (window.LoadShareModal && document.getElementById("signout-confirm-modal")) {
             window.LoadShareModal.open("signout-confirm-modal");
         } else {
-            var msg = "Are you sure you want to sign out of LoadShare?";
+            var msg = (window.getActiveLanguage && window.getActiveLanguage() === "hi")
+                ? "क्या आप वाकई लोडशेयर से साइन आउट करना चाहते हैं?"
+                : "Are you sure you want to sign out of LoadShare?";
             if (window.confirm(msg)) {
                 executeSignOut();
             }
@@ -197,14 +233,42 @@
      * Execute sign out and clear session tokens.
      */
     function executeSignOut() {
-        document.cookie = "loadshare_jwt=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        document.cookie = "access_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        window.location.href = "/login/";
+        var cookieNames = [
+            "access_token",
+            "refresh_token",
+            "loadshare_jwt",
+            "customer_id",
+            "sessionid",
+            "jwt_auth_synced"
+        ];
+        for (var i = 0; i < cookieNames.length; i++) {
+            var name = cookieNames[i];
+            document.cookie = name + "=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            document.cookie = name + "=; path=/; domain=" + window.location.hostname + "; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+
+        try {
+            if (window.sessionStorage) {
+                sessionStorage.removeItem("customer_id");
+                sessionStorage.removeItem("customer_data");
+                sessionStorage.removeItem("jwt_auth_synced");
+                sessionStorage.clear();
+            }
+            if (window.localStorage) {
+                localStorage.removeItem("customer_id");
+                localStorage.removeItem("customer_data");
+            }
+        } catch (e) {
+            console.debug("Sign out storage clear error:", e);
+        }
+
+        window.location.href = "/logout/";
     }
 
     // Public API
     window.LoadShareProfile = {
         toggleEdit: toggleProfileEdit,
+        toggleMaximize: toggleProfileMaximize,
         saveProfile: saveProfile,
         setFilter: setBookingFilter,
         toggleEmptyState: toggleEmptyState,
@@ -214,10 +278,12 @@
 
     // Global aliases for clean template callbacks
     window.toggleProfileEdit = toggleProfileEdit;
+    window.toggleProfileMaximize = toggleProfileMaximize;
     window.saveProfile = saveProfile;
     window.setFilter = setBookingFilter;
     window.setBookingFilter = setBookingFilter;
     window.toggleEmptyState = toggleEmptyState;
     window.confirmSignOut = confirmSignOut;
+    window.executeSignOut = executeSignOut;
 
 })(window, document);

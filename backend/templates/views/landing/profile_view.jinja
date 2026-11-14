@@ -4,6 +4,7 @@
 {% from "components/context_bar.jinja" import context_bar, context_back_btn %}
 {% from "components/modal.jinja" import modal %}
 {% from "components/booking_card.jinja" import booking_cards_container, booking_card, booking_empty_state with context %}
+{% from "components/customer_card.jinja" import customer_card with context %}
 {% set current_user = user if user is defined and user else (request.user if request is defined and request.user is defined else None) %}
 {% set customer_inst = customer if customer is defined and customer else None %}
 {% set customer_primary_phone = (customer_inst.phones.all()|selectattr("is_primary")|map(attribute="phone")|first) if (customer_inst and customer_inst.phones.exists()) else ((customer_inst.phones.all()|map(attribute="phone")|first) if (customer_inst and customer_inst.phones.exists()) else (current_user.phone_number if current_user and current_user.phone_number else (phone if phone is defined and phone else ''))) %}
@@ -35,118 +36,9 @@
             </div>
         {% endcall %}
         <!-- ========================================================================= -->
-        <!-- 2. SENDER ACCOUNT CARD -->
+        <!-- 2. CUSTOMER CARD COMPONENT -->
         <!-- ========================================================================= -->
-        <section class="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/60 shadow-sm"
-                 id="account-card">
-            <!-- Display View Mode -->
-            <div class="space-y-3" id="account-view-mode">
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <span class="text-[11px] font-mono uppercase text-on-surface-variant tracking-wider block mb-0.5 lang-text"
-                              data-en="{{ labels_en.profile_sender_account }}"
-                              data-hi="{{ labels_hi.profile_sender_account }}">
-                            {{ labels.profile_sender_account }}
-                        </span>
-                        <h2 class="text-lg font-bold text-primary leading-tight"
-                            id="display-name">{{ user_display_name or labels.profile_name_label }}</h2>
-                    </div>
-                    <button type="button"
-                            onclick="toggleProfileEdit(true)"
-                            id="edit-profile-btn"
-                            class="text-secondary font-bold text-xs hover:underline py-1 px-2.5 rounded-lg hover:bg-secondary-fixed/40 transition-colors flex items-center gap-1">
-                        {{ icon("edit", size=14) }}
-                        <span class="lang-text"
-                              data-en="{{ labels_en.profile_edit_btn }}"
-                              data-hi="{{ labels_hi.profile_edit_btn }}">{{ labels.profile_edit_btn }}</span>
-                    </button>
-                </div>
-                <div class="flex items-center gap-2 text-primary" id="phone-container">
-                    <span class="text-outline flex items-center">{{ icon("phone_iphone", size=18) }}</span>
-                    <span class="font-mono text-sm font-semibold tracking-tight"
-                          id="display-phone">{{ user_display_phone or '—' }}</span>
-                </div>
-                <div class="flex items-center gap-2 text-primary"
-                     id="email-container"
-                     {% if not user_display_email %}style="display: none;"{% endif %}>
-                    <span class="text-outline flex items-center">{{ icon("mail", size=18) }}</span>
-                    <span class="font-mono text-sm font-semibold tracking-tight"
-                          id="display-email">{{ user_display_email or '—' }}</span>
-                </div>
-                <div class="pt-3 border-t border-outline-variant/30 flex items-center gap-2 text-on-surface-variant text-xs">
-                    <span class="text-success flex items-center">{{ icon("verified", size=16) }}</span>
-                    <span class="lang-text"
-                          data-en="{{ labels_en.profile_member_since }}"
-                          data-hi="{{ labels_hi.profile_member_since }}">{{ labels.profile_member_since }}</span>
-                </div>
-            </div>
-            <!-- Inline Interactive Edit Mode (Hidden initially) -->
-            <form class="hidden space-y-3.5 pt-1"
-                  id="account-edit-mode"
-                  onsubmit="saveProfile(event)">
-                <div class="flex items-center justify-between pb-2 border-b border-outline-variant/30">
-                    <h3 class="text-sm font-bold text-primary lang-text"
-                        data-en="{{ labels_en.profile_edit_title }}"
-                        data-hi="{{ labels_hi.profile_edit_title }}">{{ labels.profile_edit_title }}</h3>
-                    <span class="text-xs font-mono text-on-surface-variant lang-text"
-                          data-en="{{ labels_en.profile_kyc_id }}"
-                          data-hi="{{ labels_hi.profile_kyc_id }}">{{ labels.profile_kyc_id }}</span>
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
-                           for="input-name"
-                           data-en="{{ labels_en.profile_name_label }}"
-                           data-hi="{{ labels_hi.profile_name_label }}">{{ labels.profile_name_label }}</label>
-                    <input class="profile-input"
-                           id="input-name"
-                           required
-                           type="text"
-                           value="{{ user_display_name }}">
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
-                           for="input-phone"
-                           data-en="{{ labels_en.profile_phone_label }}"
-                           data-hi="{{ labels_hi.profile_phone_label }}">{{ labels.profile_phone_label }}</label>
-                    <div class="relative">
-                        <input class="profile-input pl-9 font-mono"
-                               id="input-phone"
-                               type="text"
-                               value="{{ user_display_phone }}">
-                        <span class="text-outline absolute left-2.5 top-2.5 flex items-center">{{ icon("phone_iphone", size=16) }}</span>
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-on-surface-variant lang-text"
-                           for="input-email"
-                           data-en="{{ labels_en.email|default('Email') }}"
-                           data-hi="{{ labels_hi.email|default('ईमेल') }}">{{ labels.email|default("Email") }}</label>
-                    <div class="relative">
-                        <input class="profile-input pl-9 font-mono"
-                               id="input-email"
-                               type="email"
-                               value="{{ user_display_email }}">
-                        <span class="text-outline absolute left-2.5 top-2.5 flex items-center">{{ icon("mail", size=16) }}</span>
-                    </div>
-                </div>
-                <div class="flex items-center justify-end gap-2 pt-2">
-                    <button type="button"
-                            onclick="toggleProfileEdit(false)"
-                            id="cancel-profile-btn"
-                            class="px-3.5 py-1.5 rounded-lg border border-outline-variant text-primary font-semibold text-xs hover:bg-surface-container transition-colors">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.profile_cancel_btn }}"
-                              data-hi="{{ labels_hi.profile_cancel_btn }}">{{ labels.profile_cancel_btn }}</span>
-                    </button>
-                    <button type="submit"
-                            class="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-bold text-xs hover:bg-primary-hover transition-colors shadow-xs">
-                        <span class="lang-text"
-                              data-en="{{ labels_en.profile_save_btn }}"
-                              data-hi="{{ labels_hi.profile_save_btn }}">{{ labels.profile_save_btn }}</span>
-                    </button>
-                </div>
-            </form>
-        </section>
+        {{ customer_card(customer=customer_inst, user=current_user, allow_edit=true, allow_maximize=true, labels=labels, labels_en=labels_en, labels_hi=labels_hi) }}
         <!-- ========================================================================= -->
         <!-- 3. YOUR BOOKINGS LIST -->
         <!-- ========================================================================= -->
@@ -241,18 +133,20 @@
     {% call modal(id="signout-confirm-modal", title=labels.profile_sign_out, icon_name="logout", icon_classes="text-warning") %}
         <p class="text-xs text-on-surface-variant mb-4">
             <span class="lang-text"
-                  data-en="Are you sure you want to sign out of LoadShare?"
-                  data-hi="क्या आप वाकई लोडशेयर से साइन आउट करना चाहते हैं?">Are you sure you want to sign out of LoadShare?</span>
+                  data-en="{{ labels_en.profile_sign_out_confirm|default('Are you sure you want to sign out of LoadShare?') }}"
+                  data-hi="{{ labels_hi.profile_sign_out_confirm|default('क्या आप वाकई लोडशेयर से साइन आउट करना चाहते हैं?') }}">
+                {{ labels.profile_sign_out_confirm|default("Are you sure you want to sign out of LoadShare?") }}
+            </span>
         </p>
         <div class="ls-modal-actions">
             <button type="button"
                     class="ls-modal-btn ls-modal-btn--ghost"
-                    onclick="LoadShareModal.close('signout-confirm-modal')">
+                    onclick="if (window.LoadShareModal) { LoadShareModal.close('signout-confirm-modal'); } else { document.getElementById('signout-confirm-modal').style.display='none'; }">
                 <span class="lang-text" data-en="Cancel" data-hi="रद्द करें">Cancel</span>
             </button>
             <button type="button"
                     class="ls-modal-btn ls-modal-btn--danger"
-                    onclick="LoadShareProfile.executeSignOut()">
+                    onclick="executeSignOut()">
                 {{ icon("logout", size=16) }}
                 <span class="lang-text"
                       data-en="{{ labels_en.profile_sign_out }}"
@@ -260,4 +154,62 @@
             </button>
         </div>
     {% endcall %}
+    <!-- Self-contained Sign Out Controller Script -->
+    <script>
+        (function() {
+            if (!window.executeSignOut) {
+                window.executeSignOut = function() {
+                    var cookieNames = [
+                        "access_token",
+                        "refresh_token",
+                        "loadshare_jwt",
+                        "customer_id",
+                        "sessionid",
+                        "jwt_auth_synced"
+                    ];
+                    for (var i = 0; i < cookieNames.length; i++) {
+                        var name = cookieNames[i];
+                        document.cookie = name + "=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                        document.cookie = name + "=; path=/; domain=" + window.location.hostname + "; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    }
+                    try {
+                        if (window.sessionStorage) {
+                            sessionStorage.removeItem("customer_id");
+                            sessionStorage.removeItem("customer_data");
+                            sessionStorage.removeItem("jwt_auth_synced");
+                            sessionStorage.clear();
+                        }
+                        if (window.localStorage) {
+                            localStorage.removeItem("customer_id");
+                            localStorage.removeItem("customer_data");
+                        }
+                    } catch (e) {
+                        console.debug("Sign out storage clear error:", e);
+                    }
+                    window.location.href = "/logout/";
+                };
+            }
+
+            if (!window.confirmSignOut) {
+                window.confirmSignOut = function() {
+                    if (window.LoadShareModal && document.getElementById("signout-confirm-modal")) {
+                        window.LoadShareModal.open("signout-confirm-modal");
+                    } else {
+                        var isHi = (window.getActiveLanguage && window.getActiveLanguage() === "hi");
+                        var msg = isHi ?
+                            "क्या आप वाकई लोडशेयर से साइन आउट करना चाहते हैं?" :
+                            "Are you sure you want to sign out of LoadShare?";
+                        if (window.confirm(msg)) {
+                            window.executeSignOut();
+                        }
+                    }
+                };
+            }
+
+            if (window.LoadShareProfile) {
+                window.LoadShareProfile.confirmSignOut = window.confirmSignOut;
+                window.LoadShareProfile.executeSignOut = window.executeSignOut;
+            }
+        })();
+    </script>
 </section>
