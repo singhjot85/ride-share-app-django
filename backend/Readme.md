@@ -87,6 +87,10 @@ These are guidelines, not hard rules. Deviating is fine when the reason is clear
 
 Long-running or I/O-bound work (notifications, request expiry, receipts) runs in Celery workers, not in the request thread. Be clear about which thread your code runs in, and about transactions, before writing it.
 
+## Document OCR
+
+See the [Document Upload and OCR API reference](../docs/api/document-upload.md) for request fields, response examples, processing states, errors, and mobile integration details.
+
 ## Documentation
 
 - Data modeling: `docs/architecture/data-models.md`

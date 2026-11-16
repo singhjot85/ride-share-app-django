@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from core.config.settings.base import *  # noqa: F401
@@ -22,6 +23,9 @@ MEDIA_URL = "/media/"
 ROOT_URLCONF = "config.urls"
 PUBLIC_SCHEMA_URLCONF = "config.public_urls"
 
+if "overrides" not in PROJECT_APPS:
+    PROJECT_APPS = [*PROJECT_APPS, "overrides"]
+
 PROJECT_MIGRATION_PATH = "db_migrations"
 MIGRATION_MODULES = {
     "configurations": f"{PROJECT_MIGRATION_PATH}.configurations",
@@ -37,6 +41,13 @@ MIGRATION_MODULES = {
 if "overrides" not in INSTALLED_APPS:
     INSTALLED_APPS = [*INSTALLED_APPS, "overrides"]
 
+# -------------------------------------------------------
+# Host Project Templates & Static Assets
+# -------------------------------------------------------
+PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
+PRIVATE_DOCUMENT_ROOT = Path(
+    os.getenv("PRIVATE_DOCUMENT_ROOT", str(PROJECT_DIR / "private_documents"))
+)
 
 if str(PROJECT_TEMPLATES_DIR) not in TEMPLATES[0]["DIRS"]:
     TEMPLATES[0]["DIRS"] = [str(PROJECT_TEMPLATES_DIR), *TEMPLATES[0]["DIRS"]]

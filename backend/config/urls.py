@@ -22,6 +22,7 @@ from overrides.api.views import (
     SetLanguageView,
     SignupView,
 )
+from overrides.api.crm_identifications import CustomerIdentificationListView
 
 urlpatterns = [
     # UI / Template Endpoints
@@ -31,6 +32,11 @@ urlpatterns = [
     path("signup/", SignupView.as_view(), name="ui-signup"),
     path("register/", SignupView.as_view(), name="ui-register"),
     path("set-language/", SetLanguageView.as_view(), name="set-language"),
+    path(
+        "api/crm/v1/customer-identifications/",
+        CustomerIdentificationListView.as_view(),
+        name="crm-customer-identification-list",
+    ),
     # Django Admin
     path("admin/", private_admin_site.urls),
     # Backend API Endpoints
