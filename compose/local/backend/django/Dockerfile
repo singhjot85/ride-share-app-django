@@ -46,6 +46,9 @@ FROM python-image AS python-run-stage
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     libpq5 \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-hin \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy installed wheels
@@ -67,6 +70,9 @@ COPY compose/local/backend/django/start.sh /scripts/django-start.sh
 COPY compose/local/backend/celery-worker/start.sh /scripts/worker-start.sh
 COPY compose/local/backend/celery-beat/start.sh /scripts/beat-start.sh
 
-RUN chmod +x /scripts/*.sh
+
+RUN sed -i 's/\r$//' /scripts/*.sh \
+    && chmod +x /scripts/*.sh
+
 
 CMD ["/scripts/django-start.sh"]
