@@ -101,7 +101,7 @@ Do not start a phase before the previous one is finished and approved.
 
 #### Phase 1 — Analysis (What)
 
-- Create `docs/analysis/<feature-slug>.md` before analyzing. Edit it in place; do not append.
+- Create `docs/<feature-slug>/analysis.md` before analyzing. Edit it in place; do not append.
 - Answer for the feature: input source, output contract, caching needs, async needs, DB changes, cron needs.
 - For new models: what queries will run? What is the data volume per table?
 - For errors: raise, roll back, or log? Retry strategy and exhaustion behavior?
@@ -192,7 +192,7 @@ These extend the core submodule's conventions for this host project.
 - New model, setting, endpoint, or task → update the app's `Readme.md`.
 - Bug fix or refactor → update docs only if the documented behavior changed.
 - Style: short and crisp. No large code dumps. Minimal snippets only for non-obvious patterns.
-- Analysis logs go in `docs/analysis/<feature-slug>.md`.
+- Feature analysis and agent memory logs go in `docs/<feature-slug>/analysis.md` (see `docs/Readme.md`). Human-readable docs go directly alongside code in app `Readme.md` files.
 
 ---
 
