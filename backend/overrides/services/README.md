@@ -89,12 +89,15 @@ flowchart TD
     ViewSet --> Serializer
     Serializer -->|"Save document file"| Model
     Model -->|"Stores file"| GCS
-    ViewSet -->|"queue_task(id, on_commit=True)"| Task
+    ViewSet -->|"queue_task(id, on_commit=True) [See TODO below]"| Task
     Task -->|"Read file bytes"| GCS
     Task -->|"Execute OCR"| Engine
     Engine -->|"Return sanitized metadata"| Task
     Task -->|"Update status = VERIFIED, details = data"| Model
 ```
+
+> [!NOTE]
+> **TODO (Celery Beat Cron Migration)**: This OCR task should NOT remain a manually queued trigger (`queue_task`) invoked directly from the viewset/request cycle. Once Celery Beat is implemented in the deployment environment, pending document verification tasks will be processed periodically by Celery Beat on a configured cron schedule (scanning unverified `CustomerIdentification` records) instead of code manually queuing tasks per upload.
 
 ### 1. Model Binding: `CustomerIdentification`
 In `core.apps.crm.models_abstract.customer_identification`, `AbstractCustomerIdentification` already contains:
@@ -109,7 +112,7 @@ In `core.apps.crm.models_abstract.customer_identification`, `AbstractCustomerIde
 ### 2. ViewSet & Serializer Enhancements
 - Mount `MultiPartParser` and `FormParser` on `CustomerIdentificationViewSet` to support direct file uploads.
 - Enhance `CustomerIdentificationSerializer` to run `validate_pdf` on incoming `document` uploads.
-- On successful upload/update with a document attached, dispatch OCR task using `queue_task(..., on_commit=True)`.
+- **TODO (Celery Beat Cron Migration)**: While `queue_task(..., on_commit=True)` can serve as an interim trigger, the target pattern is for Celery Beat to run a scheduled cron job (e.g. `process_unverified_identifications_cron`) at a configured interval. The viewset simply saves the uploaded document with status `PENDING`/`UNVERIFIED`, and Beat picks it up without manual dispatching.
 
 ### 3. Background Task Execution
 - Move `doc_ocr.py` to `core/apps/crm/services/doc_ocr.py`.

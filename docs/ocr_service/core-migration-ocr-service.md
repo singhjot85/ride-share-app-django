@@ -32,11 +32,14 @@ This document describes the architectural alignment and step-by-step migration p
 flowchart TD
     Client["Client / Mobile App"] -->|"POST/PUT multipart/form-data"| ViewSet["core.apps.crm.CustomerIdentificationViewSet"]
     ViewSet -->|"Validates file & saves"| Model["core.apps.crm.CustomerIdentification"]
-    ViewSet -->|"queue_task(process_customer_identification_ocr, on_commit=True)"| CeleryQueue["Celery Worker"]
+    Model -->|"Celery Beat periodic cron [See TODO]"| CeleryQueue["Celery Worker / Beat"]
     CeleryQueue -->|"doc_ocr.process_pdf(file_bytes)"| OCRService["core.apps.crm.services.doc_ocr"]
     OCRService -->|"Sanitized metadata & status"| CeleryQueue
     CeleryQueue -->|"Update status, verified_on, details/attribute"| Model
 ```
+
+> [!NOTE]
+> **TODO (Celery Beat Cron Migration)**: This OCR task should NOT be a manual trigger (`queue_task`) queued per upload. Once Celery Beat is implemented, document scanning will run as a scheduled cron task querying pending records periodically.
 
 ---
 

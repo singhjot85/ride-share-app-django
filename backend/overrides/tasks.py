@@ -3,6 +3,11 @@ Document processing Celery tasks for LoadShare.
 
 NOTE: Kept temporarily in overrides.services/tasks until service redesign and
 migration to core (CRM CustomerIdentification) is completed.
+
+TODO (Celery Beat Cron Migration): This task should NOT be manually triggered
+via queue_task upon file upload. Once Celery Beat is implemented, document
+scanning will be executed periodically by Beat at its configured cron schedule
+to batch-process unverified identifications.
 """
 
 import logging
