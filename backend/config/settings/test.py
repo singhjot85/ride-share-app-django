@@ -17,9 +17,3 @@ PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
 PRIVATE_DOCUMENT_ROOT = Path(
     os.getenv("PRIVATE_DOCUMENT_ROOT", str(PROJECT_DIR / "private_documents"))
 )
-
-PROJECT_MIGRATION_PATH = "backend.db_migrations"
-MIGRATION_MODULES = {
-    app.rsplit(".", 1)[-1]: f"{PROJECT_MIGRATION_PATH}.{app.rsplit('.', 1)[-1]}"
-    for app in PROJECT_APPS
-}

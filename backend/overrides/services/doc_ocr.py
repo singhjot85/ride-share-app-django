@@ -144,9 +144,7 @@ _VERHOEFF_P = [
 def verhoeff_ok(number: str) -> bool:
     checksum = 0
     for index, character in enumerate(reversed(number)):
-        checksum = _VERHOEFF_D[checksum][
-            _VERHOEFF_P[index % 8][int(character)]
-        ]
+        checksum = _VERHOEFF_D[checksum][_VERHOEFF_P[index % 8][int(character)]]
     return checksum == 0
 
 
@@ -205,7 +203,9 @@ def classify(text: str) -> str:
     return best if scores[best] > 0 else "unknown"
 
 
-_VEHICLE_RE = re.compile(r"\b([A-Z]{2})[\s-]?(\d{1,2})[\s-]?([A-Z]{1,3})[\s-]?(\d{4})\b")
+_VEHICLE_RE = re.compile(
+    r"\b([A-Z]{2})[\s-]?(\d{1,2})[\s-]?([A-Z]{1,3})[\s-]?(\d{4})\b"
+)
 _BH_VEHICLE_RE = re.compile(r"\b(\d{2})\s?BH\s?(\d{4})\s?([A-Z]{1,2})\b")
 _DL_RE = re.compile(r"\b([A-Z]{2})[\s-]?(\d{2})[\s-]?((?:19|20)\d{2})[\s-]?(\d{7})\b")
 
@@ -239,10 +239,10 @@ def parse_aadhaar(text: str, mask: bool) -> dict[str, Any]:
     )
     output["dob"] = norm_date(dob.group(1)) if dob else None
     if not output["dob"]:
-        year_of_birth = re.search(r"(?:Year of Birth|YOB)\s*[:\-]?\s*(\d{4})", text, re.I)
-        output["year_of_birth"] = (
-            int(year_of_birth.group(1)) if year_of_birth else None
+        year_of_birth = re.search(
+            r"(?:Year of Birth|YOB)\s*[:\-]?\s*(\d{4})", text, re.I
         )
+        output["year_of_birth"] = int(year_of_birth.group(1)) if year_of_birth else None
 
     gender = re.search(r"\b(MALE|FEMALE|TRANSGENDER)\b", text, re.I)
     output["gender"] = gender.group(1).upper() if gender else None
@@ -251,8 +251,10 @@ def parse_aadhaar(text: str, mask: bool) -> dict[str, Any]:
     for index, line in enumerate(lines):
         if re.search(r"DOB|Date of Birth|Year of Birth|जन्म", line, re.I) and index:
             candidate = clean_name(lines[index - 1])
-            if candidate and len(candidate) > 2 and not re.search(
-                r"GOVERNMENT|INDIA|AADHAAR", candidate
+            if (
+                candidate
+                and len(candidate) > 2
+                and not re.search(r"GOVERNMENT|INDIA|AADHAAR", candidate)
             ):
                 name = candidate
                 break
@@ -285,7 +287,10 @@ def parse_license(text: str, mask: bool) -> dict[str, Any]:
         r"(?:VALID(?:ITY)?\s*\(?TR\)?|\bTRANSPORT\b)[^\d]{0,20}(?:TILL|UPTO|TO)?[^\d]{0,10}(\d{1,2}[/\-.]\d{1,2}[/\-.]\d{4})",
         uppercase_text,
     )
-    blood = re.search(r"BLOOD\s*GROUP\s*[:\-]?\s*(AB|A|B|O)\s*([+-]|POS(?:ITIVE)?|NEG(?:ATIVE)?)", uppercase_text)
+    blood = re.search(
+        r"BLOOD\s*GROUP\s*[:\-]?\s*(AB|A|B|O)\s*([+-]|POS(?:ITIVE)?|NEG(?:ATIVE)?)",
+        uppercase_text,
+    )
     classes = re.findall(
         r"\b(MCWG|MCWOG|LMV(?:-NT|-TR)?|HMV|HGMV|HPMV|TRANS|LMV|MGV|FVG|TRCTR|M\.?CYCL)\b",
         uppercase_text,
@@ -293,7 +298,9 @@ def parse_license(text: str, mask: bool) -> dict[str, Any]:
 
     output: dict[str, Any] = {
         "license_number": (
-            mask_tail(formatted_number, 4) if mask and formatted_number else formatted_number
+            mask_tail(formatted_number, 4)
+            if mask and formatted_number
+            else formatted_number
         ),
         "name": clean_name(after_label(text, [r"\bName"])),
         "guardian_name": clean_name(
@@ -320,7 +327,8 @@ def parse_license(text: str, mask: bool) -> dict[str, Any]:
             else None
         ),
         "vehicle_classes": sorted(set(classes)),
-        "address": clean_text(after_label(text, [r"Address", r"\bAdd\b"]) or "") or None,
+        "address": clean_text(after_label(text, [r"Address", r"\bAdd\b"]) or "")
+        or None,
         "pin_code": (
             re.search(r"\b[1-9]\d{5}\b", text).group(0)
             if re.search(r"\b[1-9]\d{5}\b", text)
