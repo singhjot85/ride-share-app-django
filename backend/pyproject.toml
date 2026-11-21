@@ -7,8 +7,13 @@ readme = "README.md"
 requires-python = ">=3.12, <4"
 
 dependencies = [
-    "core-common-django-apps @ core-common-django-apps",
+    "core-common-django-apps[social-auth,external-storages,ocr] @ core-common-django-apps",
 ]
+
+# Mirror the submodule's extras on the parent project
+[project.optional-dependencies]
+geospatial = ["core-common-django-apps[dev] @ core-common-django-apps"]
+
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
