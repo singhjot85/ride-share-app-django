@@ -101,12 +101,10 @@ Do not start a phase before the previous one is finished and approved.
 
 #### Phase 1 — Analysis (What)
 
-- Create `docs/analysis/<feature-slug>.md` before analyzing. Edit it in place; do not append.
-- Answer for the feature: input source, output contract, caching needs, async needs, DB changes, cron needs.
-- For new models: what queries will run? What is the data volume per table?
-- For errors: raise, roll back, or log? Retry strategy and exhaustion behavior?
-- Thread/process awareness: HTTP thread stays lightweight. Celery workers handle heavy work. Pass schema name explicitly to tasks in multi-tenant contexts. Plan `transaction.atomic()` blocks; dispatch side effects only after commit via `queue_task`.
-- **Stop and wait for user approval before starting Phase 2.**
+1. **Create agent context log**: Create `docs/<feature-slug>/analysis.md` (and specialized specs like `<topic>.md` if needed) before analyzing. Note: `docs/` is strictly for AI agent context; human-readable docs stay alongside code in app `Readme.md` files (see `docs/Readme.md`).
+2. **Iterate in place**: Answer for the feature: input source, output contract, caching needs, async/Celery needs, DB schema changes, query performance, and error handling. After each iteration, edit `analysis.md` in place: improve it, compact it, and remove superseded notes instead of appending.
+3. **Present summary and wait**: After each iteration, present a short plan summary and the open points that need discussion, each with your recommendation. Then **stop and wait for user feedback and approval before starting Phase 2.**
+4. **Build and document**: After final approval, use the analysis log to drive implementation (Phase 2), refactoring (Phase 3), and testing (Phase 4). Document final behavior in code docstrings and the code-adjacent `Readme.md`, keeping `docs/<feature-slug>/analysis.md` updated as the persistent agent memory record.
 
 #### Phase 2 — Implementation (How)
 
@@ -192,7 +190,7 @@ These extend the core submodule's conventions for this host project.
 - New model, setting, endpoint, or task → update the app's `Readme.md`.
 - Bug fix or refactor → update docs only if the documented behavior changed.
 - Style: short and crisp. No large code dumps. Minimal snippets only for non-obvious patterns.
-- Analysis logs go in `docs/analysis/<feature-slug>.md`.
+- Feature analysis and agent memory logs go in `docs/<feature-slug>/analysis.md` (see `docs/Readme.md`). Human-readable docs go directly alongside code in app `Readme.md` files.
 
 ---
 
