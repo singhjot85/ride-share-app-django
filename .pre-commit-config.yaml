@@ -18,6 +18,7 @@ repos:
       # Code formatter (drop-in replacement for Black)
       - id: ruff-format
         name: ruff-format
+        exclude: "(^|/)(migrations|db_migrations)/"
 
   # General Pre-Commit hooks ensuring file consistency
   - repo: https://github.com/pre-commit/pre-commit-hooks

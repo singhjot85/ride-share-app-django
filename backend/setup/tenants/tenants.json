@@ -2,7 +2,6 @@
     {
         "schema_name": "rideshare",
         "label": "Ride Share",
-        "domain": "rideshare.localhost",
-        "type": "organization"
+        "domain": "rideshare.localhost"
     }
 ]
