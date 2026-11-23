@@ -241,6 +241,40 @@
     }
 
     /**
+     * Derive theme preference code from customer preferences list.
+     * @param {Object} customer
+     * @returns {string|null}
+     */
+    function deriveThemePreference(customer) {
+        if (!customer || !customer.preferences || !Array.isArray(customer.preferences)) {
+            return null;
+        }
+        var themePref = customer.preferences.find(function (p) {
+            return p.preference_code === "theme" ||
+                   p.preference_code === "dark_mode" ||
+                   (p.preference_type && (p.preference_type.code === "theme" || p.preference_type.code === "dark_mode"));
+        });
+        if (themePref && themePref.value) {
+            if (themePref.value === true) return "dark";
+            if (themePref.value === false) return "light";
+            var val = typeof themePref.value === "string" ? themePref.value.toLowerCase() : String(themePref.value);
+            return (val === "dark" || val === "light") ? val : null;
+        }
+        return null;
+    }
+
+    /**
+     * Synchronize site appearance theme using active window applyTheme handler.
+     * @param {string} theme - 'light' | 'dark'
+     */
+    function applySiteTheme(theme) {
+        if (!theme) return;
+        if (typeof window.applyTheme === "function") {
+            window.applyTheme(theme);
+        }
+    }
+
+    /**
      * Populate profile view DOM elements with customer data.
      * @param {Object} customer
      */
@@ -521,6 +555,10 @@
             if (lang) {
                 applySiteLanguage(lang);
             }
+            var theme = deriveThemePreference(customer);
+            if (theme) {
+                applySiteTheme(theme);
+            }
         }
         return customer;
     }
@@ -533,7 +571,9 @@
         extractEmail: extractEmail,
         extractName: extractName,
         deriveLanguagePreference: deriveLanguagePreference,
+        deriveThemePreference: deriveThemePreference,
         applySiteLanguage: applySiteLanguage,
+        applySiteTheme: applySiteTheme,
         populateProfile: populateProfile,
         updateCustomer: updateCustomer,
         onLoginSuccess: onLoginSuccess

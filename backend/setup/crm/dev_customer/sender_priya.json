@@ -33,5 +33,15 @@
             "address_type": "permanent",
             "is_primary": true
         }
+    ],
+    "preferences": [
+        {
+            "preference_type": "language",
+            "value": "en"
+        },
+        {
+            "preference_type": "theme",
+            "value": "light"
+        }
     ]
 }

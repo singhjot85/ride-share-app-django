@@ -33,5 +33,15 @@
             "address_type": "office",
             "is_primary": true
         }
+    ],
+    "preferences": [
+        {
+            "preference_type": "language",
+            "value": "hi"
+        },
+        {
+            "preference_type": "theme",
+            "value": "light"
+        }
     ]
 }

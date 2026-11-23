@@ -14,6 +14,8 @@ from core.apps.crm import (
     get_customer_email_model,
     get_customer_model,
     get_customer_phone_model,
+    get_customer_preference_model,
+    get_customer_preference_type_model,
 )
 from core.apps.invoices import get_billing_organization_model
 from core.libraries.seeder.runner import SeedDevelopmentData
@@ -67,6 +69,16 @@ class TestHostSetupJSONFiles:
         assert len(record.get("phones", [])) >= 1
         assert len(record.get("emails", [])) >= 1
         assert len(record.get("addresses", [])) >= 1
+        assert len(record.get("preferences", [])) >= 1
+
+    def test_crm_preference_type_json_valid(self):
+        """Verify customer preference type theme JSON fixture is well-formed."""
+        path = SETUP_DIR / "crm" / "customer_preference_type" / "theme.json"
+        assert path.exists()
+        data = load_json(path)
+        assert data["code"] == "theme"
+        assert data["data_type"] == "choices"
+        assert "dark" in data["values"]
 
     def test_invoices_billing_organization_valid(self):
         """Verify billing organization JSON fixture defines suffix and sequence."""
@@ -118,3 +130,32 @@ class TestHostSeederExecution:
         ).exists()
         assert CustomerAddress.objects.filter(customer=customer, city="Jaipur").exists()
         assert BillingOrg.objects.filter(billing_suffix="LS").exists()
+
+    def test_customer_preferences_seeded(self):
+        """Verify language and theme preferences are seeded for customers."""
+        SeedDevelopmentData().run()
+
+        Customer = get_customer_model()
+        PreferenceType = get_customer_preference_type_model()
+        Preference = get_customer_preference_model()
+
+        assert PreferenceType.objects.filter(code="theme").exists()
+        assert PreferenceType.objects.filter(code="language").exists()
+
+        rajesh = Customer.objects.filter(first_name="Rajesh", last_name="Kumar").first()
+        assert rajesh is not None
+        assert Preference.objects.filter(
+            customer=rajesh, preference_type__code="theme", value="dark"
+        ).exists()
+        assert Preference.objects.filter(
+            customer=rajesh, preference_type__code="language", value="hi"
+        ).exists()
+
+        priya = Customer.objects.filter(first_name="Priya", last_name="Sharma").first()
+        assert priya is not None
+        assert Preference.objects.filter(
+            customer=priya, preference_type__code="theme", value="light"
+        ).exists()
+        assert Preference.objects.filter(
+            customer=priya, preference_type__code="language", value="en"
+        ).exists()

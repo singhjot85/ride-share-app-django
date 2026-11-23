@@ -1,0 +1,7 @@
+{
+    "code": "theme",
+    "label": "UI Theme",
+    "data_type": "choices",
+    "default_value": "light",
+    "values": ["light", "dark", "system"]
+}
