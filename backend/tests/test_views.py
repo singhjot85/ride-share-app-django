@@ -34,11 +34,17 @@ from overrides.api.views import (
 def user(db):
     """Create a standard active user for authenticated view tests."""
     user_model = get_user_model()
-    return user_model.objects.create_user(
+    user, _ = user_model.objects.get_or_create_user(
         username="driver_rajesh",
-        phone_number="+919876543210",
-        password=None,
+        defaults={
+            "phone_number": "+919876543210",
+            "password": None,
+        },
     )
+    if not user.phone_number:
+        user.phone_number = "+919876543210"
+        user.save(update_fields=["phone_number"])
+    return user
 
 
 class TestLandingPageView:
@@ -334,7 +340,7 @@ class TestLoginView:
                 "otp_code": code,
                 "first_name": "Rajesh",
                 "last_name": "Kumar",
-                "email": "rajesh@example.com",
+                "email": "new_rajesh@example.com",
             },
             content_type="application/json",
         )

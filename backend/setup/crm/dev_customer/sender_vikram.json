@@ -1,0 +1,37 @@
+{
+    "first_name": "Vikram",
+    "last_name": "Singh",
+    "business_name": "Jaipur Handicrafts Exporters",
+    "customer_type": "business",
+    "status": "verified",
+    "user": {
+        "$ref": {
+            "username": "sender_vikram"
+        }
+    },
+    "phones": [
+        {
+            "phone": "+919876543212",
+            "phone_type": "work",
+            "is_primary": true
+        }
+    ],
+    "emails": [
+        {
+            "email": "vikram@example.com",
+            "email_type": "work",
+            "is_primary": true
+        }
+    ],
+    "addresses": [
+        {
+            "address_line_1": "G-12, Industrial Area, Sitapura",
+            "city": "Jaipur",
+            "state": "Rajasthan",
+            "postal_code": "302022",
+            "country": "IN",
+            "address_type": "office",
+            "is_primary": true
+        }
+    ]
+}
