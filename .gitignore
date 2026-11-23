@@ -178,3 +178,11 @@ plans/
 **/agy-design-taste/
 backend/private_documents/
 .history/
+
+# Database dumps and volume backups
+compose/local/backend/postgres/pg_dump/*
+!compose/local/backend/postgres/pg_dump/.gitkeep
+compose/local/backend/postgres/pg_backup/*
+!compose/local/backend/postgres/pg_backup/.gitkeep
+*.dump
+*.tar.gz
