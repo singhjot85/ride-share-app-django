@@ -54,6 +54,7 @@ packages = [{ include = "core" }]
 [tool.ruff]
 target-version = "py312"
 line-length = 88
+exclude = ["*/migrations/*", "*/db_migrations/*"]
 
 [tool.ruff.lint]
 preview = true

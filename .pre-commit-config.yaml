@@ -18,6 +18,7 @@ repos:
       # Code formatter (drop-in replacement for Black)
       - id: ruff-format
         name: ruff-format
+        exclude: "(^|/)(migrations|db_migrations)/"
 
   # General Pre-Commit hooks ensuring file consistency
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -63,4 +64,4 @@ repos:
         args:
           - "--baseline"
           - ".secrets.baseline"
-        exclude: '^(package-lock\.json|core/setup/.*\.json)|backend/labels/.*\.json$'
+        exclude: '^(package-lock\.json|(core|backend)/setup/.*\.json)|backend/labels/.*\.json$'

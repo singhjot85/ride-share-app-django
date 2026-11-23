@@ -1,0 +1,47 @@
+{
+    "first_name": "Rajesh",
+    "last_name": "Kumar",
+    "business_name": "Kumar Heavy Freight",
+    "customer_type": "individual",
+    "status": "verified",
+    "user": {
+        "$ref": {
+            "username": "driver_rajesh"
+        }
+    },
+    "phones": [
+        {
+            "phone": "+919876543210",
+            "phone_type": "personal",
+            "is_primary": true
+        }
+    ],
+    "emails": [
+        {
+            "email": "rajesh@example.com",
+            "email_type": "work",
+            "is_primary": true
+        }
+    ],
+    "addresses": [
+        {
+            "address_line_1": "Plot 42, Transport Nagar",
+            "city": "Jaipur",
+            "state": "Rajasthan",
+            "postal_code": "302003",
+            "country": "IN",
+            "address_type": "permanent",
+            "is_primary": true
+        }
+    ],
+    "preferences": [
+        {
+            "preference_type": "language",
+            "value": "hi"
+        },
+        {
+            "preference_type": "theme",
+            "value": "dark"
+        }
+    ]
+}

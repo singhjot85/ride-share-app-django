@@ -1,0 +1,47 @@
+{
+    "first_name": "Priya",
+    "last_name": "Sharma",
+    "business_name": "Sharma Logistics Express",
+    "customer_type": "individual",
+    "status": "verified",
+    "user": {
+        "$ref": {
+            "username": "sender_priya"
+        }
+    },
+    "phones": [
+        {
+            "phone": "+919876543211",
+            "phone_type": "personal",
+            "is_primary": true
+        }
+    ],
+    "emails": [
+        {
+            "email": "priya@example.com",
+            "email_type": "work",
+            "is_primary": true
+        }
+    ],
+    "addresses": [
+        {
+            "address_line_1": "Flat 104, Cyber City Phase 2",
+            "city": "Gurugram",
+            "state": "Haryana",
+            "postal_code": "122002",
+            "country": "IN",
+            "address_type": "permanent",
+            "is_primary": true
+        }
+    ],
+    "preferences": [
+        {
+            "preference_type": "language",
+            "value": "en"
+        },
+        {
+            "preference_type": "theme",
+            "value": "light"
+        }
+    ]
+}

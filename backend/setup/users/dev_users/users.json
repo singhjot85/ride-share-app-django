@@ -1,0 +1,35 @@
+[
+    {
+        "username": "admin",
+        "password": "qwerty123",
+        "email": "admin@rideshare.localhost",
+        "phone_number": "+919876543200",
+        "first_name": "LoadShare",
+        "last_name": "Admin",
+        "create_superuser": true
+    },
+    {
+        "username": "driver_rajesh",
+        "password": "qwerty123",
+        "email": "rajesh@example.com",
+        "phone_number": "+919876543210",
+        "first_name": "Rajesh",
+        "last_name": "Kumar"
+    },
+    {
+        "username": "sender_priya",
+        "password": "qwerty123",
+        "email": "priya@example.com",
+        "phone_number": "+919876543211",
+        "first_name": "Priya",
+        "last_name": "Sharma"
+    },
+    {
+        "username": "sender_vikram",
+        "password": "qwerty123",
+        "email": "vikram@example.com",
+        "phone_number": "+919876543212",
+        "first_name": "Vikram",
+        "last_name": "Singh"
+    }
+]
