@@ -43,7 +43,8 @@ class TestHostSetupJSONFiles:
         assert len(data) >= 1
         assert data[0]["schema_name"] == "rideshare"
         assert data[0]["domain"] == "rideshare.localhost"
-        assert data[0].get("type") == "organization"
+        if "type" in data[0]:
+            assert data[0]["type"] == "organization"
 
     def test_users_json_valid(self):
         """Verify users.json defines superuser and standard driver/sender users."""

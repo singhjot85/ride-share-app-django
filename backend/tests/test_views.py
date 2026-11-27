@@ -36,10 +36,7 @@ def user(db):
     user_model = get_user_model()
     user, _ = user_model.objects.get_or_create_user(
         username="driver_rajesh",
-        defaults={
-            "phone_number": "+919876543210",
-            "password": None,
-        },
+        phone_number="+919876543210",
     )
     if not user.phone_number:
         user.phone_number = "+919876543210"
