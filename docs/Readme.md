@@ -34,6 +34,7 @@ docs/
 
 | Directory | Feature Domain | Key Documents & Agent Context |
 |---|---|---|
+| [`users_model_swap/`](./users_model_swap/) | Host User Model Swap & Permissions | [Analysis](./users_model_swap/analysis.md), model hierarchy, role flags, DRF permissions |
 | [`ocr_service/`](./ocr_service/) | Document OCR Engine & KYC Scanning | [Roadmap](./ocr_service/roadmap.md), [Migration Plan](./ocr_service/core-migration-ocr-service.md), engine heuristics, regex patterns |
 | [`landing_page/`](./landing_page/) | Host Landing Page & UI Shell | Component architecture, bilingual cookie persistence, corridor cleanup, theme overrides |
 | [`customer_api/`](./customer_api/) | CRM Customer Entity & Endpoints | Customer profile API, relational scoping, authentication context |

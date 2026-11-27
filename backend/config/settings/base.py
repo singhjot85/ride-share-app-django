@@ -23,8 +23,25 @@ MEDIA_URL = "/media/"
 ROOT_URLCONF = "config.urls"
 PUBLIC_SCHEMA_URLCONF = "config.public_urls"
 
+USERS_APP = "apps.users"
+PROJECT_APPS = [USERS_APP if app == "core.apps.users" else app for app in PROJECT_APPS]
 if "overrides" not in PROJECT_APPS:
     PROJECT_APPS = [*PROJECT_APPS, "overrides"]
+
+INSTALLED_APPS = [
+    USERS_APP if app == "core.apps.users" else app for app in INSTALLED_APPS
+]
+if "overrides" not in INSTALLED_APPS:
+    INSTALLED_APPS = [*INSTALLED_APPS, "overrides"]
+
+DJANGO_TENANT_PUBLIC_APPS = [
+    USERS_APP if app == "core.apps.users" else app for app in DJANGO_TENANT_PUBLIC_APPS
+]
+DJANGO_TENANT_PRIVATE_APPS = [
+    USERS_APP if app == "core.apps.users" else app for app in DJANGO_TENANT_PRIVATE_APPS
+]
+SHARED_APPS = DJANGO_TENANT_PUBLIC_APPS
+TENANT_APPS = DJANGO_TENANT_PRIVATE_APPS
 
 PROJECT_MIGRATION_PATH = "db_migrations"
 MIGRATION_MODULES = {
@@ -37,9 +54,6 @@ MIGRATION_MODULES = {
     "tenants": f"{PROJECT_MIGRATION_PATH}.tenants",
     "users": f"{PROJECT_MIGRATION_PATH}.users",
 }
-
-if "overrides" not in INSTALLED_APPS:
-    INSTALLED_APPS = [*INSTALLED_APPS, "overrides"]
 
 # -------------------------------------------------------
 # Host Project Templates & Static Assets
