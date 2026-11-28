@@ -2,6 +2,9 @@ import os
 from pathlib import Path
 
 from core.config.settings.base import *  # noqa: F401
+from core.libraries.app_resolver import resolve_apps
+
+from .base_models import *  # noqa: F401, F403
 
 # ------------------
 #  Custom Settings
@@ -23,25 +26,19 @@ MEDIA_URL = "/media/"
 ROOT_URLCONF = "config.urls"
 PUBLIC_SCHEMA_URLCONF = "config.public_urls"
 
-USERS_APP = "apps.users"
-PROJECT_APPS = [USERS_APP if app == "core.apps.users" else app for app in PROJECT_APPS]
-if "overrides" not in PROJECT_APPS:
-    PROJECT_APPS = [*PROJECT_APPS, "overrides"]
+# Resolve installed, shared, and tenant apps using the core app resolver
+RESOLVED_APPS = resolve_apps(
+    project_apps=[*PROJECT_APPS, "overrides"],
+    public_apps=DJANGO_TENANT_PUBLIC_APPS,
+    tenant_apps=DJANGO_TENANT_PRIVATE_APPS,
+    override_map=APP_OVERRIDE_MAP,
+)
 
-INSTALLED_APPS = [
-    USERS_APP if app == "core.apps.users" else app for app in INSTALLED_APPS
-]
-if "overrides" not in INSTALLED_APPS:
-    INSTALLED_APPS = [*INSTALLED_APPS, "overrides"]
-
-DJANGO_TENANT_PUBLIC_APPS = [
-    USERS_APP if app == "core.apps.users" else app for app in DJANGO_TENANT_PUBLIC_APPS
-]
-DJANGO_TENANT_PRIVATE_APPS = [
-    USERS_APP if app == "core.apps.users" else app for app in DJANGO_TENANT_PRIVATE_APPS
-]
-SHARED_APPS = DJANGO_TENANT_PUBLIC_APPS
-TENANT_APPS = DJANGO_TENANT_PRIVATE_APPS
+INSTALLED_APPS = RESOLVED_APPS.installed_apps
+SHARED_APPS = RESOLVED_APPS.shared_apps
+TENANT_APPS = RESOLVED_APPS.tenant_apps
+DJANGO_TENANT_PUBLIC_APPS = SHARED_APPS
+DJANGO_TENANT_PRIVATE_APPS = TENANT_APPS
 
 PROJECT_MIGRATION_PATH = "db_migrations"
 MIGRATION_MODULES = {
